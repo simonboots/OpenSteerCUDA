@@ -1,0 +1,378 @@
+// !$*UTF8*$!
+{
+	1C34DA390F6D2FB30098F991 /* OpenSteerDemo */ = {
+		isa = PBXExecutable;
+		activeArgIndices = (
+		);
+		argumentStrings = (
+		);
+		autoAttachOnCrash = 1;
+		breakpointsEnabled = 0;
+		configStateDict = {
+		};
+		customDataFormattersEnabled = 1;
+		debuggerPlugin = GDBDebugging;
+		disassemblyDisplayState = 0;
+		dylibVariantSuffix = "";
+		enableDebugStr = 1;
+		environmentEntries = (
+		);
+		executableSystemSymbolLevel = 0;
+		executableUserSymbolLevel = 0;
+		libgmallocEnabled = 0;
+		name = OpenSteerDemo;
+		sourceDirectories = (
+		);
+	};
+	1C34DA540F6D2FB50098F991 /* Source Control */ = {
+		isa = PBXSourceControlManager;
+		fallbackIsa = XCSourceControlManager;
+		isSCMEnabled = 0;
+		scmConfiguration = {
+		};
+	};
+	1C34DA550F6D2FB50098F991 /* Code sense */ = {
+		isa = PBXCodeSenseManager;
+		indexTemplatePath = "";
+	};
+	1C34DA8A0F6D35580098F991 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 32FFF53206E9CEA700E1D8A3 /* Utilities.h */;
+		name = "Utilities.h: 1";
+		rLen = 0;
+		rLoc = 0;
+		rType = 0;
+		vrLen = 428;
+		vrLoc = 10701;
+	};
+	1C34DA8B0F6D35580098F991 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 32FFF53006E9CEA700E1D8A3 /* SteerLibrary.h */;
+		name = "SteerLibrary.h: 1071";
+		rLen = 0;
+		rLoc = 37200;
+		rType = 0;
+		vrLen = 887;
+		vrLoc = 36657;
+	};
+	1C34DA8C0F6D35580098F991 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 32FFF54C06E9CEBD00E1D8A3 /* SimpleVehicle.cpp */;
+		name = "SimpleVehicle.cpp: 1";
+		rLen = 0;
+		rLoc = 0;
+		rType = 0;
+		vrLen = 1369;
+		vrLoc = 0;
+	};
+	1C34DA8D0F6D35580098F991 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 32FFF52806E9CEA700E1D8A3 /* Draw.h */;
+		name = "Draw.h: 100";
+		rLen = 13;
+		rLoc = 3706;
+		rType = 0;
+		vrLen = 1029;
+		vrLoc = 3555;
+	};
+	1C34DA8F0F6D35580098F991 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 32FFF54C06E9CEBD00E1D8A3 /* SimpleVehicle.cpp */;
+		name = "SimpleVehicle.cpp: 263";
+		rLen = 8;
+		rLoc = 10055;
+		rType = 0;
+		vrLen = 1137;
+		vrLoc = 9360;
+	};
+	1C34DA900F6D35580098F991 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 32FFF53006E9CEA700E1D8A3 /* SteerLibrary.h */;
+		name = "SteerLibrary.h: 994";
+		rLen = 28;
+		rLoc = 35041;
+		rType = 0;
+		vrLen = 742;
+		vrLoc = 1479;
+	};
+	1C34DA910F6D35580098F991 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 32FFF53206E9CEA700E1D8A3 /* Utilities.h */;
+		name = "Utilities.h: 1";
+		rLen = 0;
+		rLoc = 0;
+		rType = 0;
+		vrLen = 428;
+		vrLoc = 10701;
+	};
+	1C34DA920F6D35580098F991 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 32FFF53006E9CEA700E1D8A3 /* SteerLibrary.h */;
+		name = "SteerLibrary.h: 990";
+		rLen = 0;
+		rLoc = 34957;
+		rType = 0;
+		vrLen = 517;
+		vrLoc = 1793;
+	};
+	1C34DA930F6D35580098F991 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 32FFF52806E9CEA700E1D8A3 /* Draw.h */;
+		name = "Draw.h: 1";
+		rLen = 0;
+		rLoc = 0;
+		rType = 0;
+		vrLen = 678;
+		vrLoc = 2244;
+	};
+	1C34DA940F6D35580098F991 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 32FFF53006E9CEA700E1D8A3 /* SteerLibrary.h */;
+		name = "SteerLibrary.h: 995";
+		rLen = 0;
+		rLoc = 35068;
+		rType = 0;
+		vrLen = 798;
+		vrLoc = 31530;
+	};
+	1C34DA950F6D35580098F991 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 32FFF52806E9CEA700E1D8A3 /* Draw.h */;
+		name = "Draw.h: 100";
+		rLen = 44;
+		rLoc = 3694;
+		rType = 0;
+		vrLen = 852;
+		vrLoc = 2371;
+	};
+	1C34DA960F6D35580098F991 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 32FFF53006E9CEA700E1D8A3 /* SteerLibrary.h */;
+		name = "SteerLibrary.h: 1071";
+		rLen = 0;
+		rLoc = 37200;
+		rType = 0;
+		vrLen = 887;
+		vrLoc = 36657;
+	};
+	1C34DA970F6D35580098F991 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 32FFF54C06E9CEBD00E1D8A3 /* SimpleVehicle.cpp */;
+		name = "SimpleVehicle.cpp: 1";
+		rLen = 0;
+		rLoc = 0;
+		rType = 0;
+		vrLen = 1369;
+		vrLoc = 0;
+	};
+	1C34DA980F6D35580098F991 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 32FFF52806E9CEA700E1D8A3 /* Draw.h */;
+		name = "Draw.h: 100";
+		rLen = 13;
+		rLoc = 3706;
+		rType = 0;
+		vrLen = 1029;
+		vrLoc = 3555;
+	};
+	1C34DAA60F6D35580098F991 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 32FFF53006E9CEA700E1D8A3 /* SteerLibrary.h */;
+		name = "SteerLibrary.h: 994";
+		rLen = 28;
+		rLoc = 35041;
+		rType = 0;
+		vrLen = 1969;
+		vrLoc = 958;
+	};
+	1C34DAA80F6D37B10098F991 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 84AD12AD070E221100559513 /* OpenSteerDemo.h */;
+		name = "OpenSteerDemo.h: 58";
+		rLen = 24;
+		rLoc = 2079;
+		rType = 0;
+		vrLen = 1324;
+		vrLoc = 4159;
+	};
+	1C34DAA90F6D37B10098F991 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 32FFF54906E9CEBD00E1D8A3 /* main.cpp */;
+		name = "main.cpp: 1";
+		rLen = 0;
+		rLoc = 0;
+		rType = 0;
+		vrLen = 1369;
+		vrLoc = 0;
+	};
+	1C34DAAA0F6D37B10098F991 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 84AD12AD070E221100559513 /* OpenSteerDemo.h */;
+		name = "OpenSteerDemo.h: 58";
+		rLen = 24;
+		rLoc = 2079;
+		rType = 0;
+		vrLen = 1324;
+		vrLoc = 4159;
+	};
+	1C34DAAB0F6D37B10098F991 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 32FFF54906E9CEBD00E1D8A3 /* main.cpp */;
+		name = "main.cpp: 1";
+		rLen = 0;
+		rLoc = 0;
+		rType = 0;
+		vrLen = 1369;
+		vrLoc = 0;
+	};
+	1C34DAAC0F6D37B10098F991 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 32FFF53006E9CEA700E1D8A3 /* SteerLibrary.h */;
+		name = "SteerLibrary.h: 54";
+		rLen = 0;
+		rLoc = 2127;
+		rType = 0;
+		vrLen = 2112;
+		vrLoc = 1946;
+	};
+	1C34DAB30F6D37C80098F991 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 32FFF54906E9CEBD00E1D8A3 /* main.cpp */;
+		name = "main.cpp: 1";
+		rLen = 0;
+		rLoc = 0;
+		rType = 0;
+		vrLen = 1369;
+		vrLoc = 0;
+	};
+	1C34DAB70F6D37C80098F991 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 32FFF53006E9CEA700E1D8A3 /* SteerLibrary.h */;
+		name = "SteerLibrary.h: 54";
+		rLen = 0;
+		rLoc = 2127;
+		rType = 0;
+		vrLen = 2112;
+		vrLoc = 1946;
+	};
+	29B97313FDCFA39411CA2CEA /* Project object */ = {
+		activeBuildConfigurationName = Development;
+		activeExecutable = 1C34DA390F6D2FB30098F991 /* OpenSteerDemo */;
+		activeTarget = 8D1107260486CEB800E47090 /* OpenSteerDemo */;
+		codeSenseManager = 1C34DA550F6D2FB50098F991 /* Code sense */;
+		executables = (
+			1C34DA390F6D2FB30098F991 /* OpenSteerDemo */,
+		);
+		perUserDictionary = {
+			PBXConfiguration.PBXFileTableDataSource3.PBXFileTableDataSource = {
+				PBXFileTableDataSourceColumnSortingDirectionKey = "-1";
+				PBXFileTableDataSourceColumnSortingKey = PBXFileDataSource_Filename_ColumnID;
+				PBXFileTableDataSourceColumnWidthsKey = (
+					20,
+					138,
+					20,
+					48,
+					43,
+					43,
+					20,
+				);
+				PBXFileTableDataSourceColumnsKey = (
+					PBXFileDataSource_FiletypeID,
+					PBXFileDataSource_Filename_ColumnID,
+					PBXFileDataSource_Built_ColumnID,
+					PBXFileDataSource_ObjectSize_ColumnID,
+					PBXFileDataSource_Errors_ColumnID,
+					PBXFileDataSource_Warnings_ColumnID,
+					PBXFileDataSource_Target_ColumnID,
+				);
+			};
+			PBXPerProjectTemplateStateSaveDate = 258815941;
+			PBXWorkspaceStateSaveDate = 258815941;
+		};
+		perUserProjectItems = {
+			1C34DA8A0F6D35580098F991 = 1C34DA8A0F6D35580098F991 /* PBXTextBookmark */;
+			1C34DA8B0F6D35580098F991 = 1C34DA8B0F6D35580098F991 /* PBXTextBookmark */;
+			1C34DA8C0F6D35580098F991 = 1C34DA8C0F6D35580098F991 /* PBXTextBookmark */;
+			1C34DA8D0F6D35580098F991 = 1C34DA8D0F6D35580098F991 /* PBXTextBookmark */;
+			1C34DA8F0F6D35580098F991 = 1C34DA8F0F6D35580098F991 /* PBXTextBookmark */;
+			1C34DA900F6D35580098F991 = 1C34DA900F6D35580098F991 /* PBXTextBookmark */;
+			1C34DA910F6D35580098F991 = 1C34DA910F6D35580098F991 /* PBXTextBookmark */;
+			1C34DA920F6D35580098F991 = 1C34DA920F6D35580098F991 /* PBXTextBookmark */;
+			1C34DA930F6D35580098F991 = 1C34DA930F6D35580098F991 /* PBXTextBookmark */;
+			1C34DA940F6D35580098F991 = 1C34DA940F6D35580098F991 /* PBXTextBookmark */;
+			1C34DA950F6D35580098F991 = 1C34DA950F6D35580098F991 /* PBXTextBookmark */;
+			1C34DA960F6D35580098F991 = 1C34DA960F6D35580098F991 /* PBXTextBookmark */;
+			1C34DA970F6D35580098F991 = 1C34DA970F6D35580098F991 /* PBXTextBookmark */;
+			1C34DA980F6D35580098F991 = 1C34DA980F6D35580098F991 /* PBXTextBookmark */;
+			1C34DAA60F6D35580098F991 = 1C34DAA60F6D35580098F991 /* PBXTextBookmark */;
+			1C34DAA80F6D37B10098F991 = 1C34DAA80F6D37B10098F991 /* PBXTextBookmark */;
+			1C34DAA90F6D37B10098F991 = 1C34DAA90F6D37B10098F991 /* PBXTextBookmark */;
+			1C34DAAA0F6D37B10098F991 = 1C34DAAA0F6D37B10098F991 /* PBXTextBookmark */;
+			1C34DAAB0F6D37B10098F991 = 1C34DAAB0F6D37B10098F991 /* PBXTextBookmark */;
+			1C34DAAC0F6D37B10098F991 = 1C34DAAC0F6D37B10098F991 /* PBXTextBookmark */;
+			1C34DAB30F6D37C80098F991 /* PBXTextBookmark */ = 1C34DAB30F6D37C80098F991 /* PBXTextBookmark */;
+			1C34DAB70F6D37C80098F991 /* PBXTextBookmark */ = 1C34DAB70F6D37C80098F991 /* PBXTextBookmark */;
+		};
+		sourceControlManager = 1C34DA540F6D2FB50098F991 /* Source Control */;
+		userBuildSettings = {
+		};
+	};
+	32FFF52406E9CEA700E1D8A3 /* AbstractVehicle.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {705, 1498}}";
+			sepNavSelRange = "{1957, 55}";
+			sepNavVisRange = "{0, 2586}";
+			sepNavWindowFrame = "{{499, 37}, {764, 1130}}";
+		};
+	};
+	32FFF52806E9CEA700E1D8A3 /* Draw.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {705, 5656}}";
+			sepNavSelRange = "{2319, 0}";
+			sepNavVisRange = "{1034, 2469}";
+			sepNavWindowFrame = "{{61, 1}, {764, 1130}}";
+		};
+	};
+	32FFF53006E9CEA700E1D8A3 /* SteerLibrary.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {705, 16450}}";
+			sepNavSelRange = "{2127, 0}";
+			sepNavVisRange = "{1946, 2112}";
+			sepNavWindowFrame = "{{15, 43}, {764, 1130}}";
+		};
+	};
+	32FFF53206E9CEA700E1D8A3 /* Utilities.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {853, 4438}}";
+			sepNavSelRange = "{0, 0}";
+			sepNavVisRange = "{10701, 428}";
+		};
+	};
+	32FFF54906E9CEBD00E1D8A3 /* main.cpp */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {853, 714}}";
+			sepNavSelRange = "{0, 0}";
+			sepNavVisRange = "{0, 1369}";
+		};
+	};
+	32FFF54C06E9CEBD00E1D8A3 /* SimpleVehicle.cpp */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {853, 4522}}";
+			sepNavSelRange = "{0, 0}";
+			sepNavVisRange = "{0, 1369}";
+		};
+	};
+	84AD12AD070E221100559513 /* OpenSteerDemo.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {853, 4186}}";
+			sepNavSelRange = "{2079, 24}";
+			sepNavVisRange = "{4159, 1324}";
+		};
+	};
+	8D1107260486CEB800E47090 /* OpenSteerDemo */ = {
+		activeExec = 0;
+		executables = (
+			1C34DA390F6D2FB30098F991 /* OpenSteerDemo */,
+		);
+	};
+}

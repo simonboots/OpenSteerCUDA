@@ -54,7 +54,7 @@
 
 #include "Vec3.h"
 #include "AbstractVehicle.h"
-
+#include "OpenSteerDemo.h"
 
 // ------------------------------------------------------------------------
 // for convenience, names of a few common RGB colors as Vec3 values
