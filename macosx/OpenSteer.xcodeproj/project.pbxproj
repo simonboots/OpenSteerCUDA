@@ -7,6 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1CCAD26A0F6E741A005A3712 /* OneTurningCUDA.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1CCAD2690F6E741A005A3712 /* OneTurningCUDA.cpp */; };
+		1CCAD2AE0F6E7C5A005A3712 /* OneTurningCUDAStarter.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1CCAD26F0F6E7726005A3712 /* OneTurningCUDAStarter.cu */; };
+		1CCAD2AF0F6E7C67005A3712 /* OneTurningCUDAKernel.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1CCAD2950F6E7809005A3712 /* OneTurningCUDAKernel.cu */; };
+		1CCAD2CD0F6E81CA005A3712 /* libcuda.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1CCAD2CB0F6E81CA005A3712 /* libcuda.dylib */; };
+		1CCAD2CE0F6E81CA005A3712 /* libcudart.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1CCAD2CC0F6E81CA005A3712 /* libcudart.dylib */; };
 		32FFF49306E90A9F00E1D8A3 /* GLUT.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 32FFF49106E90A9F00E1D8A3 /* GLUT.framework */; };
 		32FFF49406E90A9F00E1D8A3 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 32FFF49206E90A9F00E1D8A3 /* OpenGL.framework */; };
 		32FFF4FB06E958DE00E1D8A3 /* libstdc++.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 32FFF4FA06E958DE00E1D8A3 /* libstdc++.a */; };
@@ -35,9 +40,28 @@
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXBuildRule section */
+		1CCAD2BB0F6E7D03005A3712 /* PBXBuildRule */ = {
+			isa = PBXBuildRule;
+			compilerSpec = com.apple.compilers.proxy.script;
+			filePatterns = "*.cu";
+			fileType = pattern.proxy;
+			isEditable = 1;
+			outputFiles = (
+				"$(DERIVED_FILES_DIR)/$(INPUT_FILE_BASE).o",
+			);
+			script = "/usr/local/cuda/bin/nvcc -c ${INPUT_FILE_PATH} -o ${DERIVED_FILES_DIR}/${INPUT_FILE_BASE}.o -I/usr/local/cuda/include/";
+		};
+/* End PBXBuildRule section */
+
 /* Begin PBXFileReference section */
 		089C165DFE840E0CC02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
+		1CCAD2690F6E741A005A3712 /* OneTurningCUDA.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = OneTurningCUDA.cpp; sourceTree = "<group>"; };
+		1CCAD26F0F6E7726005A3712 /* OneTurningCUDAStarter.cu */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 4; path = OneTurningCUDAStarter.cu; sourceTree = "<group>"; };
+		1CCAD2950F6E7809005A3712 /* OneTurningCUDAKernel.cu */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 4; path = OneTurningCUDAKernel.cu; sourceTree = "<group>"; };
+		1CCAD2CB0F6E81CA005A3712 /* libcuda.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libcuda.dylib; path = /usr/local/cuda/lib/libcuda.dylib; sourceTree = "<absolute>"; };
+		1CCAD2CC0F6E81CA005A3712 /* libcudart.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libcudart.dylib; path = /usr/local/cuda/lib/libcudart.dylib; sourceTree = "<absolute>"; };
 		29B97319FDCFA39411CA2CEA /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/MainMenu.nib; sourceTree = "<group>"; };
 		3248EFBB06F0A6380069A576 /* README_CVS_WITH_XCODE.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README_CVS_WITH_XCODE.txt; sourceTree = "<group>"; };
 		32FFF49106E90A9F00E1D8A3 /* GLUT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUT.framework; path = /System/Library/Frameworks/GLUT.framework; sourceTree = "<absolute>"; };
@@ -93,6 +117,8 @@
 				32FFF49306E90A9F00E1D8A3 /* GLUT.framework in Frameworks */,
 				32FFF49406E90A9F00E1D8A3 /* OpenGL.framework in Frameworks */,
 				32FFF4FB06E958DE00E1D8A3 /* libstdc++.a in Frameworks */,
+				1CCAD2CD0F6E81CA005A3712 /* libcuda.dylib in Frameworks */,
+				1CCAD2CE0F6E81CA005A3712 /* libcudart.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -133,6 +159,8 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				1CCAD2CB0F6E81CA005A3712 /* libcuda.dylib */,
+				1CCAD2CC0F6E81CA005A3712 /* libcudart.dylib */,
 				32FFF4FA06E958DE00E1D8A3 /* libstdc++.a */,
 				32FFF49106E90A9F00E1D8A3 /* GLUT.framework */,
 				32FFF49206E90A9F00E1D8A3 /* OpenGL.framework */,
@@ -200,8 +228,11 @@
 				32FFF56706E9CECE00E1D8A3 /* MapDrive.cpp */,
 				32FFF56806E9CECE00E1D8A3 /* MultiplePursuit.cpp */,
 				32FFF56906E9CECE00E1D8A3 /* OneTurning.cpp */,
+				1CCAD2690F6E741A005A3712 /* OneTurningCUDA.cpp */,
 				32FFF56A06E9CECE00E1D8A3 /* Pedestrian.cpp */,
 				32FFF56B06E9CECE00E1D8A3 /* Soccer.cpp */,
+				1CCAD26F0F6E7726005A3712 /* OneTurningCUDAStarter.cu */,
+				1CCAD2950F6E7809005A3712 /* OneTurningCUDAKernel.cu */,
 			);
 			name = plugins;
 			path = ../plugins;
@@ -239,6 +270,7 @@
 				8D11072E0486CEB800E47090 /* Frameworks */,
 			);
 			buildRules = (
+				1CCAD2BB0F6E7D03005A3712 /* PBXBuildRule */,
 			);
 			dependencies = (
 			);
@@ -302,6 +334,9 @@
 				32FFF57206E9CECE00E1D8A3 /* Pedestrian.cpp in Sources */,
 				32FFF57306E9CECE00E1D8A3 /* Soccer.cpp in Sources */,
 				84AD12B2070E224000559513 /* OpenSteerDemo.cpp in Sources */,
+				1CCAD26A0F6E741A005A3712 /* OneTurningCUDA.cpp in Sources */,
+				1CCAD2AE0F6E7C5A005A3712 /* OneTurningCUDAStarter.cu in Sources */,
+				1CCAD2AF0F6E7C67005A3712 /* OneTurningCUDAKernel.cu in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -382,7 +417,10 @@
 				HEADER_SEARCH_PATHS = ../include;
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
-				LIBRARY_SEARCH_PATHS = /usr/lib/gcc/darwin/3.3;
+				LIBRARY_SEARCH_PATHS = (
+					/usr/lib/gcc/darwin/3.3,
+					/usr/local/cuda/lib,
+				);
 				PRODUCT_NAME = OpenSteerDemo;
 				WRAPPER_EXTENSION = app;
 				ZERO_LINK = YES;
@@ -402,7 +440,10 @@
 				HEADER_SEARCH_PATHS = ../include;
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
-				LIBRARY_SEARCH_PATHS = /usr/lib/gcc/darwin/3.3;
+				LIBRARY_SEARCH_PATHS = (
+					/usr/lib/gcc/darwin/3.3,
+					/usr/local/cuda/lib,
+				);
 				PRODUCT_NAME = OpenSteerDemo;
 				WRAPPER_EXTENSION = app;
 				ZERO_LINK = NO;
@@ -417,7 +458,10 @@
 				GCC_PREFIX_HEADER = "";
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
-				LIBRARY_SEARCH_PATHS = /usr/lib/gcc/darwin/3.3;
+				LIBRARY_SEARCH_PATHS = (
+					/usr/lib/gcc/darwin/3.3,
+					/usr/local/cuda/lib,
+				);
 				PRODUCT_NAME = OpenSteerDemo;
 				WRAPPER_EXTENSION = app;
 			};
