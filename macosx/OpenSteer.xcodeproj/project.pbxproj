@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1CC9C2190F70FD1400990434 /* Polonaise.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1CC9C2180F70FD1400990434 /* Polonaise.cpp */; };
 		1CCAD26A0F6E741A005A3712 /* OneTurningCUDA.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1CCAD2690F6E741A005A3712 /* OneTurningCUDA.cpp */; };
 		1CCAD2AE0F6E7C5A005A3712 /* OneTurningCUDAStarter.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1CCAD26F0F6E7726005A3712 /* OneTurningCUDAStarter.cu */; };
 		1CCAD2AF0F6E7C67005A3712 /* OneTurningCUDAKernel.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1CCAD2950F6E7809005A3712 /* OneTurningCUDAKernel.cu */; };
@@ -57,6 +58,7 @@
 /* Begin PBXFileReference section */
 		089C165DFE840E0CC02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
+		1CC9C2180F70FD1400990434 /* Polonaise.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Polonaise.cpp; sourceTree = "<group>"; };
 		1CCAD2690F6E741A005A3712 /* OneTurningCUDA.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = OneTurningCUDA.cpp; sourceTree = "<group>"; };
 		1CCAD26F0F6E7726005A3712 /* OneTurningCUDAStarter.cu */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 4; path = OneTurningCUDAStarter.cu; sourceTree = "<group>"; };
 		1CCAD2950F6E7809005A3712 /* OneTurningCUDAKernel.cu */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 4; path = OneTurningCUDAKernel.cu; sourceTree = "<group>"; };
@@ -230,6 +232,7 @@
 				32FFF56906E9CECE00E1D8A3 /* OneTurning.cpp */,
 				1CCAD2690F6E741A005A3712 /* OneTurningCUDA.cpp */,
 				32FFF56A06E9CECE00E1D8A3 /* Pedestrian.cpp */,
+				1CC9C2180F70FD1400990434 /* Polonaise.cpp */,
 				32FFF56B06E9CECE00E1D8A3 /* Soccer.cpp */,
 				1CCAD26F0F6E7726005A3712 /* OneTurningCUDAStarter.cu */,
 				1CCAD2950F6E7809005A3712 /* OneTurningCUDAKernel.cu */,
@@ -337,6 +340,7 @@
 				1CCAD26A0F6E741A005A3712 /* OneTurningCUDA.cpp in Sources */,
 				1CCAD2AE0F6E7C5A005A3712 /* OneTurningCUDAStarter.cu in Sources */,
 				1CCAD2AF0F6E7C67005A3712 /* OneTurningCUDAKernel.cu in Sources */,
+				1CC9C2190F70FD1400990434 /* Polonaise.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
