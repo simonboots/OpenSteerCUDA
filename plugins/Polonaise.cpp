@@ -28,9 +28,9 @@
 // ----------------------------------------------------------------------------
 //
 //
-// One vehicle turning way: a (near) minimal OpenSteerDemo PlugIn
+// Polonaise: a Polonaise OpenSteerDemo PlugIn
 //
-// 06-24-02 cwr: created 
+// 03-18-09 sst: created 
 //
 //
 // ----------------------------------------------------------------------------
@@ -53,22 +53,35 @@ class Polonaise : public SimpleVehicle
 public:
 
     // constructor
-    Polonaise () {reset ();}
+    Polonaise (std::vector<Polonaise*> *vehicles) {
+        allVehicles = vehicles;
+        reset ();
+    }
 
     // reset state
     void reset (void)
     {
         SimpleVehicle::reset (); // reset the vehicle 
         setSpeed (1.5f);         // speed along Forward direction.
-        setMaxForce (0.3f);      // steering force is clipped to this magnitude
+        setMaxForce (10.f);      // steering force is clipped to this magnitude
         setMaxSpeed (5);         // velocity is clipped to this magnitude
+        setPosition ( RandomUnitVectorOnXZPlane() * 5);        // randomize initial position
+        randomizeHeadingOnXZPlane();
         clearTrailHistory ();    // prevent long streaks due to teleportation 
     }
 
     // per frame simulation update
     void update (const float currentTime, const float elapsedTime)
     {
-        applySteeringForce (Vec3 (-2, 0, -3), elapsedTime);
+        int i = 0;
+        // find self in vector
+        for (iterator iter = allVehicles->begin(); iter != allVehicles->end(); iter++) {
+            if ((*iter) == this) break;
+            i++;
+        }
+        
+        Polonaise *follow = allVehicles->at((i+1)%allVehicles->size());
+        applySteeringForce (steerForSeek(follow->position()), elapsedTime);
         annotationVelocityAcceleration ();
         recordTrailVertex (currentTime, position());
     }
@@ -79,6 +92,10 @@ public:
         drawBasic2dCircularVehicle (*this, gGray50);
         drawTrail ();
     }
+private:
+    std::vector<Polonaise*> *allVehicles;
+    typedef std::vector<Polonaise*>::const_iterator iterator;
+    
 };
 
 
@@ -92,16 +109,20 @@ public:
     
     const char* name (void) {return "Polonaise";}
 
-    float selectionOrderSortKey (void) {return 0.06f;}
+    float selectionOrderSortKey (void) {return 0.001f;}
+    
+    const static int numOfAgents = 100;
 
     // be more "nice" to avoid a compiler warning
     virtual ~PolonaisePlugIn() {}
 
     void open (void)
     {
-        gPolonaise = new Polonaise;
+        for (int i = 0; i<numOfAgents; i++) {
+            theVehicle.push_back(new Polonaise(&theVehicle));
+        }
+        gPolonaise = theVehicle.front();
         OpenSteerDemo::selectedVehicle = gPolonaise;
-        theVehicle.push_back (gPolonaise);
 
         // initialize camera
         OpenSteerDemo::init2dCamera (*gPolonaise);
@@ -113,14 +134,16 @@ public:
 
     void update (const float currentTime, const float elapsedTime)
     {
-        // update simulation of test vehicle
-        gPolonaise->update (currentTime, elapsedTime);
+        for (iterator iter = theVehicle.begin(); iter != theVehicle.end(); iter++) {
+            (*iter)->update(currentTime, elapsedTime);
+        }
     }
 
     void redraw (const float currentTime, const float elapsedTime)
     {
-        // draw test vehicle
-        gPolonaise->draw ();
+        for (iterator iter = theVehicle.begin(); iter != theVehicle.end(); iter++) {
+            (*iter)->draw();
+        }
 
         // textual annotation (following the test vehicle's screen position)
         std::ostringstream annote;
@@ -145,14 +168,16 @@ public:
 
     void reset (void)
     {
-        // reset vehicle
-        gPolonaise->reset ();
+        for (iterator iter = theVehicle.begin(); iter != theVehicle.end(); iter++) {
+            (*iter)->reset();
+        }
     }
 
     const AVGroup& allVehicles (void) {return (const AVGroup&) theVehicle;}
 
     Polonaise* gPolonaise;
     std::vector<Polonaise*> theVehicle; // for allVehicles
+    typedef std::vector<Polonaise*>::const_iterator iterator;
 };
 
 
