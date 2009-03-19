@@ -42,18 +42,20 @@
 #include "OpenSteer/OpenSteerDemo.h"
 
 
+void runPolonaiseKernel(float *data, int numOfAgents);
+
 using namespace OpenSteer;
 
 
 // ----------------------------------------------------------------------------
 
 
-class Polonaise : public SimpleVehicle
+class PolonaiseCUDA : public SimpleVehicle
 {
 public:
 
     // constructor
-    Polonaise (std::vector<Polonaise*> *vehicles) {
+    PolonaiseCUDA (std::vector<PolonaiseCUDA*> *vehicles) {
         allVehicles = vehicles;
         reset ();
     }
@@ -71,17 +73,9 @@ public:
     }
 
     // per frame simulation update
-    void update (const float currentTime, const float elapsedTime)
-    {
-        int i = 0;
-        // find self in vector
-        for (iterator iter = allVehicles->begin(); iter != allVehicles->end(); iter++) {
-            if ((*iter) == this) break;
-            i++;
-        }
-        
-        Polonaise *follow = allVehicles->at((i+1)%allVehicles->size());
-        applySteeringForce (steerForSeek(follow->position()), elapsedTime);
+    void update (const float currentTime, const float elapsedTime, Vec3& desiredVelocity)
+    {        
+        applySteeringForce (desiredVelocity, elapsedTime);
         annotationVelocityAcceleration ();
         recordTrailVertex (currentTime, position());
     }
@@ -93,8 +87,8 @@ public:
         drawTrail ();
     }
 private:
-    std::vector<Polonaise*> *allVehicles;
-    typedef std::vector<Polonaise*>::const_iterator iterator;
+    std::vector<PolonaiseCUDA*> *allVehicles;
+    typedef std::vector<PolonaiseCUDA*>::const_iterator iterator;
     
 };
 
@@ -103,23 +97,23 @@ private:
 // PlugIn for OpenSteerDemo
 
 
-class PolonaisePlugIn : public PlugIn
+class PolonaiseCUDAPlugIn : public PlugIn
 {
 public:
     
-    const char* name (void) {return "Polonaise";}
+    const char* name (void) {return "Polonaise CUDA";}
 
-    float selectionOrderSortKey (void) {return 0.001f;}
+    float selectionOrderSortKey (void) {return 0.002f;}
     
     const static int numOfAgents = 1024;
 
     // be more "nice" to avoid a compiler warning
-    virtual ~PolonaisePlugIn() {}
+    virtual ~PolonaiseCUDAPlugIn() {}
 
     void open (void)
     {
         for (int i = 0; i<numOfAgents; i++) {
-            theVehicle.push_back(new Polonaise(&theVehicle));
+            theVehicle.push_back(new PolonaiseCUDA(&theVehicle));
         }
         gPolonaise = theVehicle.front();
         OpenSteerDemo::selectedVehicle = gPolonaise;
@@ -134,9 +128,44 @@ public:
 
     void update (const float currentTime, const float elapsedTime)
     {
+        /* For steerForSeek we need 3 Vec3s:
+           1. position
+           2. velocity
+           3. target
+         
+           target can be omitted as target is position of forerunner
+         
+           For each agent we need 6 float values
+           desiredVelocity is stored in Velocity data
+         */
+        
+        float *rawValues = new float[numOfAgents * 6];
+
+        // copy all data to rawValues array
+        int i = 0;
         for (iterator iter = theVehicle.begin(); iter != theVehicle.end(); iter++) {
-            (*iter)->update(currentTime, elapsedTime);
+            rawValues[i] = (*iter)->position().x;
+            rawValues[i+1] = (*iter)->position().y;
+            rawValues[i+2] = (*iter)->position().z;
+            rawValues[i+3] = (*iter)->velocity().x;
+            rawValues[i+4] = (*iter)->velocity().y;
+            rawValues[i+5] = (*iter)->velocity().z;
+            i += 6;
         }
+        
+        runPolonaiseKernel(rawValues, numOfAgents);
+        
+        
+        // use new data for desiredVelocity
+        i = 0;
+        for (iterator iter = theVehicle.begin(); iter != theVehicle.end(); iter++) {
+            Vec3 desiredVelocity(rawValues[i+3], rawValues[i+4], rawValues[i+5]);
+            (*iter)->update(currentTime, elapsedTime, desiredVelocity);
+            i += 6;
+        }
+        
+        
+        delete[] rawValues;
     }
 
     void redraw (const float currentTime, const float elapsedTime)
@@ -175,13 +204,13 @@ public:
 
     const AVGroup& allVehicles (void) {return (const AVGroup&) theVehicle;}
 
-    Polonaise* gPolonaise;
-    std::vector<Polonaise*> theVehicle; // for allVehicles
-    typedef std::vector<Polonaise*>::const_iterator iterator;
+    PolonaiseCUDA* gPolonaise;
+    std::vector<PolonaiseCUDA*> theVehicle; // for allVehicles
+    typedef std::vector<PolonaiseCUDA*>::const_iterator iterator;
 };
 
 
-PolonaisePlugIn gPolonaisePlugIn;
+PolonaiseCUDAPlugIn gPolonaiseCUDAPlugIn;
 
 
 

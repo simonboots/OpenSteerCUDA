@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1CBD02090F72795400DEE3E8 /* PolonaiseCUDA.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1CBD02080F72795400DEE3E8 /* PolonaiseCUDA.cpp */; };
+		1CBD02440F728BE100DEE3E8 /* PolonaiseCUDAStarter.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1CBD023E0F72876D00DEE3E8 /* PolonaiseCUDAStarter.cu */; };
+		1CBD02450F728BE400DEE3E8 /* PolonaiseCUDAKernel.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1CBD023F0F7288A300DEE3E8 /* PolonaiseCUDAKernel.cu */; };
+		1CBD02870F728D4800DEE3E8 /* libcutil.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1CBD02860F728D4800DEE3E8 /* libcutil.a */; };
 		1CC9C2190F70FD1400990434 /* Polonaise.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1CC9C2180F70FD1400990434 /* Polonaise.cpp */; };
 		1CCAD26A0F6E741A005A3712 /* OneTurningCUDA.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1CCAD2690F6E741A005A3712 /* OneTurningCUDA.cpp */; };
 		1CCAD2AE0F6E7C5A005A3712 /* OneTurningCUDAStarter.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1CCAD26F0F6E7726005A3712 /* OneTurningCUDAStarter.cu */; };
@@ -51,13 +55,17 @@
 			outputFiles = (
 				"$(DERIVED_FILES_DIR)/$(INPUT_FILE_BASE).o",
 			);
-			script = "/usr/local/cuda/bin/nvcc -c ${INPUT_FILE_PATH} -o ${DERIVED_FILES_DIR}/${INPUT_FILE_BASE}.o -I/usr/local/cuda/include/";
+			script = "/usr/local/cuda/bin/nvcc -c ${INPUT_FILE_PATH} -o ${DERIVED_FILES_DIR}/${INPUT_FILE_BASE}.o -I/usr/local/cuda/include/ -I/Developer/CUDA/common/inc";
 		};
 /* End PBXBuildRule section */
 
 /* Begin PBXFileReference section */
 		089C165DFE840E0CC02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
+		1CBD02080F72795400DEE3E8 /* PolonaiseCUDA.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PolonaiseCUDA.cpp; sourceTree = "<group>"; };
+		1CBD023E0F72876D00DEE3E8 /* PolonaiseCUDAStarter.cu */ = {isa = PBXFileReference; explicitFileType = sourcecode.c; fileEncoding = 4; path = PolonaiseCUDAStarter.cu; sourceTree = "<group>"; };
+		1CBD023F0F7288A300DEE3E8 /* PolonaiseCUDAKernel.cu */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.c; fileEncoding = 4; path = PolonaiseCUDAKernel.cu; sourceTree = "<group>"; };
+		1CBD02860F728D4800DEE3E8 /* libcutil.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libcutil.a; path = CUDA/lib/libcutil.a; sourceTree = SYSTEM_DEVELOPER_DIR; };
 		1CC9C2180F70FD1400990434 /* Polonaise.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Polonaise.cpp; sourceTree = "<group>"; };
 		1CCAD2690F6E741A005A3712 /* OneTurningCUDA.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = OneTurningCUDA.cpp; sourceTree = "<group>"; };
 		1CCAD26F0F6E7726005A3712 /* OneTurningCUDAStarter.cu */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 4; path = OneTurningCUDAStarter.cu; sourceTree = "<group>"; };
@@ -121,6 +129,7 @@
 				32FFF4FB06E958DE00E1D8A3 /* libstdc++.a in Frameworks */,
 				1CCAD2CD0F6E81CA005A3712 /* libcuda.dylib in Frameworks */,
 				1CCAD2CE0F6E81CA005A3712 /* libcudart.dylib in Frameworks */,
+				1CBD02870F728D4800DEE3E8 /* libcutil.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -161,6 +170,7 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				1CBD02860F728D4800DEE3E8 /* libcutil.a */,
 				1CCAD2CB0F6E81CA005A3712 /* libcuda.dylib */,
 				1CCAD2CC0F6E81CA005A3712 /* libcudart.dylib */,
 				32FFF4FA06E958DE00E1D8A3 /* libstdc++.a */,
@@ -233,9 +243,12 @@
 				1CCAD2690F6E741A005A3712 /* OneTurningCUDA.cpp */,
 				32FFF56A06E9CECE00E1D8A3 /* Pedestrian.cpp */,
 				1CC9C2180F70FD1400990434 /* Polonaise.cpp */,
+				1CBD02080F72795400DEE3E8 /* PolonaiseCUDA.cpp */,
 				32FFF56B06E9CECE00E1D8A3 /* Soccer.cpp */,
 				1CCAD26F0F6E7726005A3712 /* OneTurningCUDAStarter.cu */,
 				1CCAD2950F6E7809005A3712 /* OneTurningCUDAKernel.cu */,
+				1CBD023E0F72876D00DEE3E8 /* PolonaiseCUDAStarter.cu */,
+				1CBD023F0F7288A300DEE3E8 /* PolonaiseCUDAKernel.cu */,
 			);
 			name = plugins;
 			path = ../plugins;
@@ -341,6 +354,9 @@
 				1CCAD2AE0F6E7C5A005A3712 /* OneTurningCUDAStarter.cu in Sources */,
 				1CCAD2AF0F6E7C67005A3712 /* OneTurningCUDAKernel.cu in Sources */,
 				1CC9C2190F70FD1400990434 /* Polonaise.cpp in Sources */,
+				1CBD02090F72795400DEE3E8 /* PolonaiseCUDA.cpp in Sources */,
+				1CBD02440F728BE100DEE3E8 /* PolonaiseCUDAStarter.cu in Sources */,
+				1CBD02450F728BE400DEE3E8 /* PolonaiseCUDAKernel.cu in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -424,7 +440,9 @@
 				LIBRARY_SEARCH_PATHS = (
 					/usr/lib/gcc/darwin/3.3,
 					/usr/local/cuda/lib,
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
 				);
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(DEVELOPER_DIR)/CUDA/lib\"";
 				PRODUCT_NAME = OpenSteerDemo;
 				WRAPPER_EXTENSION = app;
 				ZERO_LINK = YES;
@@ -447,7 +465,9 @@
 				LIBRARY_SEARCH_PATHS = (
 					/usr/lib/gcc/darwin/3.3,
 					/usr/local/cuda/lib,
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
 				);
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(DEVELOPER_DIR)/CUDA/lib\"";
 				PRODUCT_NAME = OpenSteerDemo;
 				WRAPPER_EXTENSION = app;
 				ZERO_LINK = NO;
@@ -465,7 +485,9 @@
 				LIBRARY_SEARCH_PATHS = (
 					/usr/lib/gcc/darwin/3.3,
 					/usr/local/cuda/lib,
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
 				);
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(DEVELOPER_DIR)/CUDA/lib\"";
 				PRODUCT_NAME = OpenSteerDemo;
 				WRAPPER_EXTENSION = app;
 			};
