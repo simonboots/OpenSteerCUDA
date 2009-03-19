@@ -71,17 +71,17 @@ public:
     }
 
     // per frame simulation update
-    void update (const float currentTime, const float elapsedTime)
+    void update (const float currentTime, const float elapsedTime, Polonaise *follower)
     {
         int i = 0;
         // find self in vector
-        for (iterator iter = allVehicles->begin(); iter != allVehicles->end(); iter++) {
-            if ((*iter) == this) break;
-            i++;
-        }
+        //for (iterator iter = allVehicles->begin(); iter != allVehicles->end(); iter++) {
+        //    if ((*iter) == this) break;
+        //    i++;
+        //}
         
-        Polonaise *follow = allVehicles->at((i+1)%allVehicles->size());
-        applySteeringForce (steerForSeek(follow->position()), elapsedTime);
+        //Polonaise *follow = allVehicles->at((i+1)%allVehicles->size());
+        applySteeringForce (steerForSeek(follower->position()), elapsedTime);
         annotationVelocityAcceleration ();
         recordTrailVertex (currentTime, position());
     }
@@ -134,8 +134,10 @@ public:
 
     void update (const float currentTime, const float elapsedTime)
     {
+        Polonaise *follower = theVehicle.back();
         for (iterator iter = theVehicle.begin(); iter != theVehicle.end(); iter++) {
-            (*iter)->update(currentTime, elapsedTime);
+            (*iter)->update(currentTime, elapsedTime, follower);
+            follower = (*iter);
         }
     }
 

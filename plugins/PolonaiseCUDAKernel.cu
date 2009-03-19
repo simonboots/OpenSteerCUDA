@@ -8,7 +8,7 @@ PolonaiseKernel(float *data)
     int numOfAgents = gridDim.x * blockDim.x;
     
     // find follower
-    int follower = ((id/6 + 1) % numOfAgents) * 6;
+    int follower = ((id/6 - 1) % numOfAgents) * 6;
     
 //    const Vec3 desiredVelocity = target - position();
 //    return desiredVelocity - velocity();
