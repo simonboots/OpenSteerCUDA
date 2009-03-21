@@ -1,12 +1,13 @@
 #include <cuda_runtime.h>
 #include <cutil.h>
+#include "vehicle_t.h"
 
 #define TPB 512
 
 __global__ void
-PolonaiseKernel(float *);
+PolonaiseKernel(vehicle_t *);
 
-void runPolonaiseKernel(float *data, int numOfAgents) {
+void runPolonaiseKernel(vehicle_t *data, int numOfAgents) {
     int gpu_count;
     cudaGetDeviceCount(&gpu_count);
     if (gpu_count < 1) {
@@ -15,9 +16,9 @@ void runPolonaiseKernel(float *data, int numOfAgents) {
     
     cudaSetDevice(0);
     
-    const unsigned int mem_size = sizeof(float) * numOfAgents * 6;
+    const unsigned int mem_size = sizeof(vehicle_t) * numOfAgents;
     
-    float* d_data;
+    vehicle_t* d_data;
     cudaMalloc((void **) &d_data, mem_size);
     cudaMemcpy(d_data, data, mem_size, cudaMemcpyHostToDevice);
     

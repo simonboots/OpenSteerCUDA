@@ -72,6 +72,7 @@
 		1CCAD2950F6E7809005A3712 /* OneTurningCUDAKernel.cu */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 4; path = OneTurningCUDAKernel.cu; sourceTree = "<group>"; };
 		1CCAD2CB0F6E81CA005A3712 /* libcuda.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libcuda.dylib; path = /usr/local/cuda/lib/libcuda.dylib; sourceTree = "<absolute>"; };
 		1CCAD2CC0F6E81CA005A3712 /* libcudart.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libcudart.dylib; path = /usr/local/cuda/lib/libcudart.dylib; sourceTree = "<absolute>"; };
+		1CFE61FF0F75032200A5232A /* vehicle_t.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vehicle_t.h; sourceTree = "<group>"; };
 		29B97319FDCFA39411CA2CEA /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/MainMenu.nib; sourceTree = "<group>"; };
 		3248EFBB06F0A6380069A576 /* README_CVS_WITH_XCODE.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README_CVS_WITH_XCODE.txt; sourceTree = "<group>"; };
 		32FFF49106E90A9F00E1D8A3 /* GLUT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUT.framework; path = /System/Library/Frameworks/GLUT.framework; sourceTree = "<absolute>"; };
@@ -249,6 +250,7 @@
 				1CCAD2950F6E7809005A3712 /* OneTurningCUDAKernel.cu */,
 				1CBD023E0F72876D00DEE3E8 /* PolonaiseCUDAStarter.cu */,
 				1CBD023F0F7288A300DEE3E8 /* PolonaiseCUDAKernel.cu */,
+				1CFE61FF0F75032200A5232A /* vehicle_t.h */,
 			);
 			name = plugins;
 			path = ../plugins;
@@ -389,18 +391,21 @@
 					"$(OTHER_CFLAGS)",
 					"-fpermissive",
 				);
+				USER_HEADER_SEARCH_PATHS = /usr/local/cuda/include/;
 			};
 			name = Development;
 		};
 		1C34DA490F6D2FB50098F991 /* Deployment */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				USER_HEADER_SEARCH_PATHS = /usr/local/cuda/include/;
 			};
 			name = Deployment;
 		};
 		1C34DA4A0F6D2FB50098F991 /* Default */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				USER_HEADER_SEARCH_PATHS = /usr/local/cuda/include/;
 			};
 			name = Default;
 		};

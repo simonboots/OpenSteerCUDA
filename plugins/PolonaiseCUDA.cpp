@@ -40,9 +40,10 @@
 #include <sstream>
 #include "OpenSteer/SimpleVehicle.h"
 #include "OpenSteer/OpenSteerDemo.h"
+#include "vehicle_t.h"
 
 
-void runPolonaiseKernel(float *data, int numOfAgents);
+void runPolonaiseKernel(vehicle_t *data, int numOfAgents);
 
 using namespace OpenSteer;
 
@@ -139,33 +140,31 @@ public:
            desiredVelocity is stored in Velocity data
          */
         
-        float *rawValues = new float[numOfAgents * 6];
+        vehicle_t *vehicleData = new vehicle_t[numOfAgents];
 
-        // copy all data to rawValues array
+        // copy all data to vehicleData array
         int i = 0;
         for (iterator iter = theVehicle.begin(); iter != theVehicle.end(); iter++) {
-            rawValues[i] = (*iter)->position().x;
-            rawValues[i+1] = (*iter)->position().y;
-            rawValues[i+2] = (*iter)->position().z;
-            rawValues[i+3] = (*iter)->velocity().x;
-            rawValues[i+4] = (*iter)->velocity().y;
-            rawValues[i+5] = (*iter)->velocity().z;
-            i += 6;
+            vehicleData[i].position = make_float3((*iter)->position().x, (*iter)->position().y, (*iter)->position().z);
+            vehicleData[i].velocity = make_float3((*iter)->velocity().x, (*iter)->velocity().y, (*iter)->velocity().z);
+            vehicleData[i].new_position = make_float3(0.0f, 0.0f, 0.0f);
+            vehicleData[i].speed = (*iter)->speed();
+            i++;
         }
         
-        runPolonaiseKernel(rawValues, numOfAgents);
+        runPolonaiseKernel(vehicleData, numOfAgents);
         
         
         // use new data for desiredVelocity
         i = 0;
         for (iterator iter = theVehicle.begin(); iter != theVehicle.end(); iter++) {
-            Vec3 desiredVelocity(rawValues[i+3], rawValues[i+4], rawValues[i+5]);
+            Vec3 desiredVelocity(vehicleData[i].velocity.x, vehicleData[i].velocity.y, vehicleData[i].velocity.z);
             (*iter)->update(currentTime, elapsedTime, desiredVelocity);
-            i += 6;
+            i++;
         }
         
         
-        delete[] rawValues;
+        delete[] vehicleData;
     }
 
     void redraw (const float currentTime, const float elapsedTime)
