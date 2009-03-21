@@ -43,7 +43,7 @@
 #include "vehicle_t.h"
 
 
-void runPolonaiseKernel(vehicle_t *data, int numOfAgents);
+void runPolonaiseKernel(vehicle_t *data, int numOfAgents, float elapsedTime);
 
 using namespace OpenSteer;
 
@@ -74,7 +74,7 @@ public:
     }
 
     // per frame simulation update
-    void update (const float currentTime, const float elapsedTime, Vec3& desiredVelocity)
+    void update (const float currentTime, const float elapsedTime, Vec3 desiredVelocity)
     {        
         applySteeringForce (desiredVelocity, elapsedTime);
         annotationVelocityAcceleration ();
@@ -104,9 +104,10 @@ public:
     
     const char* name (void) {return "Polonaise CUDA";}
 
-    float selectionOrderSortKey (void) {return 0.002f;}
+    float selectionOrderSortKey (void) {return 0.00002f;}
     
-    const static int numOfAgents = 1024;
+    const static int numOfAgents = 2048;
+    vehicle_t *vehicleData;
 
     // be more "nice" to avoid a compiler warning
     virtual ~PolonaiseCUDAPlugIn() {}
@@ -125,10 +126,13 @@ public:
                                            OpenSteerDemo::camera2dElevation,
                                            10);
         OpenSteerDemo::camera.fixedPosition.set (40, 40, 40);
+        
+        vehicleData = new vehicle_t[numOfAgents];
     }
 
     void update (const float currentTime, const float elapsedTime)
     {
+        static int counter = 0;
         /* For steerForSeek we need 3 Vec3s:
            1. position
            2. velocity
@@ -139,32 +143,47 @@ public:
            For each agent we need 6 float values
            desiredVelocity is stored in Velocity data
          */
-        
-        vehicle_t *vehicleData = new vehicle_t[numOfAgents];
 
         // copy all data to vehicleData array
         int i = 0;
-        for (iterator iter = theVehicle.begin(); iter != theVehicle.end(); iter++) {
-            vehicleData[i].position = make_float3((*iter)->position().x, (*iter)->position().y, (*iter)->position().z);
-            vehicleData[i].velocity = make_float3((*iter)->velocity().x, (*iter)->velocity().y, (*iter)->velocity().z);
-            vehicleData[i].new_position = make_float3(0.0f, 0.0f, 0.0f);
-            vehicleData[i].speed = (*iter)->speed();
-            i++;
+        if (counter == 0) {
+            
+            for (iterator iter = theVehicle.begin(); iter != theVehicle.end(); iter++) {
+                vehicleData[i].position = make_float3((*iter)->position().x, (*iter)->position().y, (*iter)->position().z);
+                vehicleData[i].velocity = make_float3((*iter)->velocity().x, (*iter)->velocity().y, (*iter)->velocity().z);
+                vehicleData[i].follow_velocity = make_float3(0.f, 0.f, 0.f);
+                vehicleData[i].forward = make_float3((*iter)->forward().x, (*iter)->forward().y, (*iter)->forward().z);
+                vehicleData[i].side = make_float3((*iter)->side().x, (*iter)->side().y, (*iter)->side().z);
+                vehicleData[i].up = make_float3((*iter)->up().x, (*iter)->up().y, (*iter)->up().z);
+                vehicleData[i].new_position = make_float3(0.0f, 0.0f, 0.0f);
+                vehicleData[i].smoothedAcceleration = make_float3(0.0f, 0.0f, 0.0f);
+                vehicleData[i].speed = (*iter)->speed();
+                vehicleData[i].maxSpeed = (*iter)->maxSpeed();
+                vehicleData[i].maxForce = (*iter)->maxForce();
+                vehicleData[i].mass = (*iter)->mass();
+                i++;
+            }
         }
         
-        runPolonaiseKernel(vehicleData, numOfAgents);
+        runPolonaiseKernel(vehicleData, numOfAgents, elapsedTime);
         
         
         // use new data for desiredVelocity
         i = 0;
         for (iterator iter = theVehicle.begin(); iter != theVehicle.end(); iter++) {
-            Vec3 desiredVelocity(vehicleData[i].velocity.x, vehicleData[i].velocity.y, vehicleData[i].velocity.z);
-            (*iter)->update(currentTime, elapsedTime, desiredVelocity);
+            (*iter)->setSpeed(vehicleData[i].speed);
+            (*iter)->setPosition(Vec3(vehicleData[i].new_position.x, vehicleData[i].new_position.y, vehicleData[i].new_position.z));
+            (*iter)->setForward(Vec3(vehicleData[i].forward.x, vehicleData[i].forward.y, vehicleData[i].forward.z));
+            (*iter)->setSide(Vec3(vehicleData[i].side.x, vehicleData[i].side.y, vehicleData[i].side.z));
+            (*iter)->resetSmoothedAcceleration(Vec3(vehicleData[i].smoothedAcceleration.x, vehicleData[i].smoothedAcceleration.y, vehicleData[i].smoothedAcceleration.z));
+            vehicleData[i].position = vehicleData[i].new_position;
+
+            (*iter)->update(currentTime, elapsedTime, Vec3(vehicleData[i].velocity.x, vehicleData[i].velocity.y, vehicleData[i].velocity.z));
             i++;
         }
         
         
-        delete[] vehicleData;
+        counter = 1;
     }
 
     void redraw (const float currentTime, const float elapsedTime)
@@ -172,7 +191,6 @@ public:
         for (iterator iter = theVehicle.begin(); iter != theVehicle.end(); iter++) {
             (*iter)->draw();
         }
-
         // textual annotation (following the test vehicle's screen position)
         std::ostringstream annote;
         annote << std::setprecision (2) << std::setiosflags (std::ios::fixed);
@@ -192,6 +210,7 @@ public:
         theVehicle.clear ();
         delete (gPolonaise);
         gPolonaise = NULL;
+        delete[] vehicleData;
     }
 
     void reset (void)

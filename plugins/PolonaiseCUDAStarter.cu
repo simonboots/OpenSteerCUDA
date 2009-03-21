@@ -2,12 +2,12 @@
 #include <cutil.h>
 #include "vehicle_t.h"
 
-#define TPB 512
+#define TPB 128
 
 __global__ void
-PolonaiseKernel(vehicle_t *);
+PolonaiseKernel(vehicle_t *, float);
 
-void runPolonaiseKernel(vehicle_t *data, int numOfAgents) {
+void runPolonaiseKernel(vehicle_t *data, int numOfAgents, float elapsedTime) {
     int gpu_count;
     cudaGetDeviceCount(&gpu_count);
     if (gpu_count < 1) {
@@ -26,7 +26,7 @@ void runPolonaiseKernel(vehicle_t *data, int numOfAgents) {
     dim3 threads(TPB,1,1);
     
     // call kernel
-    PolonaiseKernel<<<grid, threads>>>(d_data);
+    PolonaiseKernel<<<grid, threads>>>(d_data, elapsedTime);
     CUT_CHECK_ERROR("Kernel execution failed");
     
     cudaThreadSynchronize();
