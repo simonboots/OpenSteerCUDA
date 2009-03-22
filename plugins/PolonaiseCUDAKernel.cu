@@ -147,7 +147,7 @@ limitMaxDeviationAngle(float3 source, float cosineOfConeAngle, float3 basis)
 __device__ float
 float3length(float3 value)
 {
-    return sqrt(float3lengthSquared(value));
+    return sqrtf(float3lengthSquared(value));
 }
 
 __device__ float

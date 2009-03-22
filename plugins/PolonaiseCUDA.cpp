@@ -68,7 +68,7 @@ public:
         setSpeed (1.5f);         // speed along Forward direction.
         setMaxForce (10.f);      // steering force is clipped to this magnitude
         setMaxSpeed (5);         // velocity is clipped to this magnitude
-        setPosition ( RandomUnitVectorOnXZPlane() * 5);        // randomize initial position
+        setPosition ( RandomUnitVectorOnXZPlane() * 10);        // randomize initial position
         randomizeHeadingOnXZPlane();
         clearTrailHistory ();    // prevent long streaks due to teleportation 
     }
@@ -85,7 +85,7 @@ public:
     void draw (void)
     {
         drawBasic2dCircularVehicle (*this, gGray50);
-        drawTrail ();
+        //drawTrail ();
     }
 private:
     std::vector<PolonaiseCUDA*> *allVehicles;
@@ -106,7 +106,7 @@ public:
 
     float selectionOrderSortKey (void) {return 0.00002f;}
     
-    const static int numOfAgents = 2048;
+    const static int numOfAgents = 4096;
     vehicle_t *vehicleData;
 
     // be more "nice" to avoid a compiler warning
@@ -188,21 +188,21 @@ public:
 
     void redraw (const float currentTime, const float elapsedTime)
     {
-        for (iterator iter = theVehicle.begin(); iter != theVehicle.end(); iter++) {
-            (*iter)->draw();
-        }
-        // textual annotation (following the test vehicle's screen position)
-        std::ostringstream annote;
-        annote << std::setprecision (2) << std::setiosflags (std::ios::fixed);
-        annote << "      speed: " << gPolonaise->speed() << std::ends;
-        draw2dTextAt3dLocation (annote, gPolonaise->position(), gRed);
-        draw2dTextAt3dLocation (*"start", Vec3::zero, gGreen);
-
-        // update camera, tracking test vehicle
-        OpenSteerDemo::updateCamera (currentTime, elapsedTime, *gPolonaise);
-
-        // draw "ground plane"
-        OpenSteerDemo::gridUtility (gPolonaise->position());
+//        for (iterator iter = theVehicle.begin(); iter != theVehicle.end(); iter++) {
+//            (*iter)->draw();
+//        }
+//        // textual annotation (following the test vehicle's screen position)
+//        std::ostringstream annote;
+//        annote << std::setprecision (2) << std::setiosflags (std::ios::fixed);
+//        annote << "      speed: " << gPolonaise->speed() << std::ends;
+//        draw2dTextAt3dLocation (annote, gPolonaise->position(), gRed);
+//        draw2dTextAt3dLocation (*"start", Vec3::zero, gGreen);
+//
+//        // update camera, tracking test vehicle
+//        OpenSteerDemo::updateCamera (currentTime, elapsedTime, *gPolonaise);
+//
+//        // draw "ground plane"
+//        OpenSteerDemo::gridUtility (gPolonaise->position());
     }
 
     void close (void)
