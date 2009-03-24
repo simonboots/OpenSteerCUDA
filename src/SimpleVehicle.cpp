@@ -168,40 +168,40 @@ OpenSteer::SimpleVehicle::applySteeringForce (const Vec3& force,
                                               const float elapsedTime)
 {
 
-//    const Vec3 adjustedForce = adjustRawSteeringForce (force, elapsedTime);
-//
-//    // enforce limit on magnitude of steering force
-//    const Vec3 clippedForce = adjustedForce.truncateLength (maxForce ());
-//
-//    // compute acceleration and velocity
-//    Vec3 newAcceleration = (clippedForce / mass());
-//    Vec3 newVelocity = velocity();
-//
-//    // damp out abrupt changes and oscillations in steering acceleration
-//    // (rate is proportional to time step, then clipped into useful range)
-//    if (elapsedTime > 0)
-//    {
-//        const float smoothRate = clip (9 * elapsedTime, 0.15f, 0.4f);
-//        blendIntoAccumulator (smoothRate,
-//                              newAcceleration,
-//                              _smoothedAcceleration);
-//    }
-//
-//    // Euler integrate (per frame) acceleration into velocity
-//    newVelocity += _smoothedAcceleration * elapsedTime;
-//
-//    // enforce speed limit
-//    newVelocity = newVelocity.truncateLength (maxSpeed ());
-//
-//    // update Speed
-//    setSpeed (newVelocity.length());
-//
-//    // Euler integrate (per frame) velocity into position
-//    setPosition (position() + (newVelocity * elapsedTime));
-//
-//    // regenerate local space (by default: align vehicle's forward axis with
-//    // new velocity, but this behavior may be overridden by derived classes.)
-//    regenerateLocalSpace (newVelocity, elapsedTime);
+    const Vec3 adjustedForce = adjustRawSteeringForce (force, elapsedTime);
+
+    // enforce limit on magnitude of steering force
+    const Vec3 clippedForce = adjustedForce.truncateLength (maxForce ());
+
+    // compute acceleration and velocity
+    Vec3 newAcceleration = (clippedForce / mass());
+    Vec3 newVelocity = velocity();
+
+    // damp out abrupt changes and oscillations in steering acceleration
+    // (rate is proportional to time step, then clipped into useful range)
+    if (elapsedTime > 0)
+    {
+        const float smoothRate = clip (9 * elapsedTime, 0.15f, 0.4f);
+        blendIntoAccumulator (smoothRate,
+                              newAcceleration,
+                              _smoothedAcceleration);
+    }
+
+    // Euler integrate (per frame) acceleration into velocity
+    newVelocity += _smoothedAcceleration * elapsedTime;
+
+    // enforce speed limit
+    newVelocity = newVelocity.truncateLength (maxSpeed ());
+
+    // update Speed
+    setSpeed (newVelocity.length());
+
+    // Euler integrate (per frame) velocity into position
+    setPosition (position() + (newVelocity * elapsedTime));
+
+    // regenerate local space (by default: align vehicle's forward axis with
+    // new velocity, but this behavior may be overridden by derived classes.)
+    regenerateLocalSpace (newVelocity, elapsedTime);
 
     // maintain path curvature information
     measurePathCurvature (elapsedTime);

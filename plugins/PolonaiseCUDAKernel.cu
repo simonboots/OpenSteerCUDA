@@ -2,9 +2,10 @@
 #define _POLONAISE_CUDA_KERNEL_H_
 
 #include "vehicle_t.h"
+#include "PolonaiseCUDA.h"
 
 __device__ void
-regenerateLocalSpace(vehicle_t *data, int agendID, float3 newVelocity);
+regenerateLocalSpace(vehicle_t *data, int agentID, float3 newVelocity);
 
 __device__ float3
 float3BlendIn(float smoothRate, float3 newvalue, float3 smoothedAccu);
@@ -57,14 +58,29 @@ PolonaiseKernel(vehicle_t *data, float elapsedTime)
     int id = (blockIdx.x * blockDim.x + threadIdx.x);
     int numOfAgents = gridDim.x * blockDim.x;
     
+    // shared memory
+    __shared__ vehicle_t agentData[TPB];
+    // copy global memory to shared
+    agentData[threadIdx.x].position.x = data[id].position.x;
+    agentData[threadIdx.x].position.y = data[id].position.y;
+    agentData[threadIdx.x].position.z = data[id].position.z;
+    agentData[threadIdx.x].new_position.x = data[id].new_position.x;
+    agentData[threadIdx.x].new_position.y = data[id].new_position.y;
+    agentData[threadIdx.x].new_position.z = data[id].new_position.z;
+    
+    agentData[threadIdx.x] = data[id];
+    
     // find follower
     int follower = ((id + 1) % numOfAgents);
     
-    data[id].follow_velocity.x = (data[follower].position.x - data[id].position.x) - data[id].velocity.x;
-    data[id].follow_velocity.y = (data[follower].position.y - data[id].position.y) - data[id].velocity.y;
-    data[id].follow_velocity.z = (data[follower].position.z - data[id].position.z) - data[id].velocity.z;
+    agentData[threadIdx.x].follow_velocity.x = (data[follower].position.x - agentData[threadIdx.x].position.x) - agentData[threadIdx.x].velocity.x;
+    agentData[threadIdx.x].follow_velocity.y = (data[follower].position.y - agentData[threadIdx.x].position.y) - agentData[threadIdx.x].velocity.y;
+    agentData[threadIdx.x].follow_velocity.z = (data[follower].position.z - agentData[threadIdx.x].position.z) - agentData[threadIdx.x].velocity.z;
     
-    applySteeringForce(data, id, elapsedTime);
+    applySteeringForce(agentData, threadIdx.x, elapsedTime);
+    
+    // copy shared mem to global memory
+    data[id] = agentData[threadIdx.x];
 }
 
 __device__ void

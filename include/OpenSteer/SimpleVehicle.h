@@ -236,10 +236,11 @@ namespace OpenSteer {
         float _curvature;
         Vec3 _lastForward;
         Vec3 _lastPosition;
-        Vec3 _smoothedPosition;
         float _smoothedCurvature;
         Vec3 _smoothedAcceleration;
 
+    public:
+        Vec3 _smoothedPosition;
         // measure path curvature (1/turning-radius), maintain smoothed version
         void measurePathCurvature (const float elapsedTime);
     };

@@ -44,6 +44,7 @@
 
 
 void runPolonaiseKernel(vehicle_t *data, int numOfAgents, float elapsedTime);
+void endPolonaise(void);
 
 using namespace OpenSteer;
 
@@ -74,9 +75,15 @@ public:
     }
 
     // per frame simulation update
-    void update (const float currentTime, const float elapsedTime, Vec3 desiredVelocity)
-    {        
-        applySteeringForce (desiredVelocity, elapsedTime);
+    void update (const float currentTime, const float elapsedTime)
+    {
+        measurePathCurvature (elapsedTime);
+        
+        // running average of recent positions
+        blendIntoAccumulator (elapsedTime * 0.06f, // QQQ
+                              position (),
+                              _smoothedPosition);
+        
         annotationVelocityAcceleration ();
         recordTrailVertex (currentTime, position());
     }
@@ -85,7 +92,7 @@ public:
     void draw (void)
     {
         drawBasic2dCircularVehicle (*this, gGray50);
-        //drawTrail ();
+        drawTrail ();
     }
 private:
     std::vector<PolonaiseCUDA*> *allVehicles;
@@ -106,8 +113,8 @@ public:
 
     float selectionOrderSortKey (void) {return 0.00002f;}
     
-    const static int numOfAgents = 4096;
-    vehicle_t *vehicleData;
+    const static int numOfAgents = NUM_OF_AGENTS;
+    vehicle_t vehicleData;
 
     // be more "nice" to avoid a compiler warning
     virtual ~PolonaiseCUDAPlugIn() {}
@@ -127,58 +134,38 @@ public:
                                            10);
         OpenSteerDemo::camera.fixedPosition.set (40, 40, 40);
         
-        vehicleData = new vehicle_t[numOfAgents];
     }
 
     void update (const float currentTime, const float elapsedTime)
     {
         static int counter = 0;
-        /* For steerForSeek we need 3 Vec3s:
-           1. position
-           2. velocity
-           3. target
-         
-           target can be omitted as target is position of forerunner
-         
-           For each agent we need 6 float values
-           desiredVelocity is stored in Velocity data
-         */
 
         // copy all data to vehicleData array
         int i = 0;
         if (counter == 0) {
             
             for (iterator iter = theVehicle.begin(); iter != theVehicle.end(); iter++) {
-                vehicleData[i].position = make_float3((*iter)->position().x, (*iter)->position().y, (*iter)->position().z);
-                vehicleData[i].velocity = make_float3((*iter)->velocity().x, (*iter)->velocity().y, (*iter)->velocity().z);
-                vehicleData[i].follow_velocity = make_float3(0.f, 0.f, 0.f);
-                vehicleData[i].forward = make_float3((*iter)->forward().x, (*iter)->forward().y, (*iter)->forward().z);
-                vehicleData[i].side = make_float3((*iter)->side().x, (*iter)->side().y, (*iter)->side().z);
-                vehicleData[i].up = make_float3((*iter)->up().x, (*iter)->up().y, (*iter)->up().z);
-                vehicleData[i].new_position = make_float3(0.0f, 0.0f, 0.0f);
-                vehicleData[i].smoothedAcceleration = make_float3(0.0f, 0.0f, 0.0f);
-                vehicleData[i].speed = (*iter)->speed();
-                vehicleData[i].maxSpeed = (*iter)->maxSpeed();
-                vehicleData[i].maxForce = (*iter)->maxForce();
-                vehicleData[i].mass = (*iter)->mass();
+                vehicleData.position[i] = make_float2((*iter)->position().x, (*iter)->position().z);
+                vehicleData.velocity[i] = make_float2((*iter)->velocity().x, (*iter)->velocity().z);
+                vehicleData.side[i] = make_float2((*iter)->side().x, (*iter)->side().z);
+                vehicleData.smoothedAcceleration[i] = make_float2(0.0f, 0.0f);
                 i++;
             }
         }
         
-        runPolonaiseKernel(vehicleData, numOfAgents, elapsedTime);
+        runPolonaiseKernel(&vehicleData, numOfAgents, elapsedTime);
         
         
         // use new data for desiredVelocity
         i = 0;
         for (iterator iter = theVehicle.begin(); iter != theVehicle.end(); iter++) {
-            (*iter)->setSpeed(vehicleData[i].speed);
-            (*iter)->setPosition(Vec3(vehicleData[i].new_position.x, vehicleData[i].new_position.y, vehicleData[i].new_position.z));
-            (*iter)->setForward(Vec3(vehicleData[i].forward.x, vehicleData[i].forward.y, vehicleData[i].forward.z));
-            (*iter)->setSide(Vec3(vehicleData[i].side.x, vehicleData[i].side.y, vehicleData[i].side.z));
-            (*iter)->resetSmoothedAcceleration(Vec3(vehicleData[i].smoothedAcceleration.x, vehicleData[i].smoothedAcceleration.y, vehicleData[i].smoothedAcceleration.z));
-            vehicleData[i].position = vehicleData[i].new_position;
+            (*iter)->setSpeed(Vec3(vehicleData.velocity[i].x, 0.f, vehicleData.velocity[i].y).length());
+            (*iter)->setPosition(Vec3(vehicleData.position[i].x, 0.f, vehicleData.position[i].y));
+            (*iter)->setForward(Vec3(vehicleData.velocity[i].x, 0.f, vehicleData.velocity[i].y) / (*iter)->speed());
+            (*iter)->setSide(Vec3(vehicleData.side[i].x, 0.f, vehicleData.side[i].y));
+            (*iter)->resetSmoothedAcceleration(Vec3(vehicleData.smoothedAcceleration[i].x, 0.f, vehicleData.smoothedAcceleration[i].y));
 
-            (*iter)->update(currentTime, elapsedTime, Vec3(vehicleData[i].velocity.x, vehicleData[i].velocity.y, vehicleData[i].velocity.z));
+            (*iter)->update(currentTime, elapsedTime);
             i++;
         }
         
@@ -188,29 +175,29 @@ public:
 
     void redraw (const float currentTime, const float elapsedTime)
     {
-//        for (iterator iter = theVehicle.begin(); iter != theVehicle.end(); iter++) {
-//            (*iter)->draw();
-//        }
-//        // textual annotation (following the test vehicle's screen position)
-//        std::ostringstream annote;
-//        annote << std::setprecision (2) << std::setiosflags (std::ios::fixed);
-//        annote << "      speed: " << gPolonaise->speed() << std::ends;
-//        draw2dTextAt3dLocation (annote, gPolonaise->position(), gRed);
-//        draw2dTextAt3dLocation (*"start", Vec3::zero, gGreen);
-//
-//        // update camera, tracking test vehicle
-//        OpenSteerDemo::updateCamera (currentTime, elapsedTime, *gPolonaise);
-//
-//        // draw "ground plane"
-//        OpenSteerDemo::gridUtility (gPolonaise->position());
+        for (iterator iter = theVehicle.begin(); iter != theVehicle.end(); iter++) {
+            (*iter)->draw();
+        }
+        // textual annotation (following the test vehicle's screen position)
+        std::ostringstream annote;
+        annote << std::setprecision (2) << std::setiosflags (std::ios::fixed);
+        annote << "      speed: " << gPolonaise->speed() << std::ends;
+        draw2dTextAt3dLocation (annote, gPolonaise->position(), gRed);
+        draw2dTextAt3dLocation (*"start", Vec3::zero, gGreen);
+
+        // update camera, tracking test vehicle
+        OpenSteerDemo::updateCamera (currentTime, elapsedTime, *gPolonaise);
+
+        // draw "ground plane"
+        OpenSteerDemo::gridUtility (gPolonaise->position());
     }
 
     void close (void)
     {
         theVehicle.clear ();
         delete (gPolonaise);
-        gPolonaise = NULL;
-        delete[] vehicleData;
+        gPolonaise = NULL;        
+        endPolonaise();
     }
 
     void reset (void)

@@ -245,12 +245,12 @@ namespace OpenSteer {
 
         bool isAhead (const Vec3& target, float cosThreshold) const
         {
-            const Vec3 targetDirection = (target - position ()).normalize ();
+            const Vec3 targetDirection = (target - position()).normalize ();
             return forward().dot(targetDirection) > cosThreshold;
         };
         bool isAside (const Vec3& target, float cosThreshold) const
         {
-            const Vec3 targetDirection = (target - position ()).normalize ();
+            const Vec3 targetDirection = (target - position()).normalize ();
             const float dp = forward().dot(targetDirection);
             return (dp < cosThreshold) && (dp > -cosThreshold);
         };
@@ -975,7 +975,7 @@ steerForPursuit (const AbstractVehicle& quarry,
     // (1 means dead ahead, 0 is directly to the side, -1 is straight back)
     const float forwardness = forward().dot (unitOffset);
 
-    const float directTravelTime = distance / speed ();
+    const float directTravelTime = distance / speed();
     const int f = intervalComparison (forwardness,  -0.707f, 0.707f);
     const int p = intervalComparison (parallelness, -0.707f, 0.707f);
 

@@ -1628,7 +1628,7 @@ namespace {
     int DeferredLine::index = 0;
     // const int DeferredLine::size = 1000;
     // const int DeferredLine::size = 2000;
-    const int DeferredLine::size = 3000;
+    const int DeferredLine::size = 300000;
     DeferredLine DeferredLine::deferredLineArray [DeferredLine::size];
 
 } // anonymous namespace

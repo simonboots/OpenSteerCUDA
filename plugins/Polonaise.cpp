@@ -111,7 +111,7 @@ public:
 
     float selectionOrderSortKey (void) {return 0.001f;}
     
-    const static int numOfAgents = 1024;
+    const static int numOfAgents = 2048;
 
     // be more "nice" to avoid a compiler warning
     virtual ~PolonaisePlugIn() {}

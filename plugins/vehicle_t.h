@@ -3,26 +3,15 @@
 
 #include <cuda_runtime.h>
 
-#if defined(NVCC)
-typedef struct __align__(16) vehicle {
-#else
-typedef struct vehicle {
-#endif
+#define NUM_OF_AGENTS 4096
+
+
+typedef struct vehicle {    
+    float2 position[NUM_OF_AGENTS];
+    float2 velocity[NUM_OF_AGENTS];
     
-    float3 position;
-    float3 new_position;
-    float3 velocity;
-    float3 follow_velocity;
-    
-    float3 smoothedAcceleration;
-    float3 forward;
-    float3 side;
-    float3 up;
-    
-    float speed;
-    float maxSpeed;
-    float maxForce;
-    float mass;
+    float2 smoothedAcceleration[NUM_OF_AGENTS];
+    float2 side[NUM_OF_AGENTS];
     
 } vehicle_t;
 
