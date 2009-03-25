@@ -2,7 +2,6 @@
 #define _POLONAISE_CUDA_ACCELERATION_KERNEL_H_
 
 #include "vehicle_t.h"
-#include "PolonaiseCUDA.h"
 #include <stdio.h>
 #include <cutil.h>
 
@@ -55,7 +54,7 @@ __device__ float3
 float3cross(float3 a, float3 b);
 
 __global__ void
-polonaiseCUDAAccelerationKernel(vehicle_t *vehicleData, float elapsedTime)
+updateKernel(vehicle_t *vehicleData, float2 *steeringVectors, float elapsedTime)
 {
     int id = (blockIdx.x * blockDim.x + threadIdx.x);
     int numOfAgents = gridDim.x * blockDim.x;
@@ -74,8 +73,8 @@ polonaiseCUDAAccelerationKernel(vehicle_t *vehicleData, float elapsedTime)
         
     // slow global memory access (global memory is float2!)
     V(threadIdx.x) = make_float3((*vehicleData).velocity[id].x, 0.f, (*vehicleData).velocity[id].y);
-    FV(threadIdx.x).x = ((*vehicleData).position[follower].x - (*vehicleData).position[id].x) - V(threadIdx.x).x;
-    FV(threadIdx.x).z = ((*vehicleData).position[follower].y - (*vehicleData).position[id].y) - V(threadIdx.x).z;
+    FV(threadIdx.x).x = steeringVectors[id].x;
+    FV(threadIdx.x).z = steeringVectors[id].y;
     FV(threadIdx.x).y = 0.f;
     SA(threadIdx.x) = make_float3((*vehicleData).smoothedAcceleration[id].x, 0.f, (*vehicleData).smoothedAcceleration[id].y);
     

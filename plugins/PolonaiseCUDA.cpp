@@ -43,7 +43,7 @@
 #include "vehicle_t.h"
 
 
-void runPolonaiseKernel(vehicle_t *data, int numOfAgents, float elapsedTime);
+void runPolonaiseKernel(vehicle_t *h_vehicleData, float2 *h_seekVectors, int numOfAgents, float elapsedTime);
 void endPolonaise(void);
 
 using namespace OpenSteer;
@@ -115,6 +115,7 @@ public:
     
     const static int numOfAgents = NUM_OF_AGENTS;
     vehicle_t vehicleData;
+    float2 *seekVectors;
 
     // be more "nice" to avoid a compiler warning
     virtual ~PolonaiseCUDAPlugIn() {}
@@ -133,6 +134,8 @@ public:
                                            OpenSteerDemo::camera2dElevation,
                                            10);
         OpenSteerDemo::camera.fixedPosition.set (40, 40, 40);
+        
+        seekVectors = new float2[numOfAgents];
         
     }
 
@@ -153,7 +156,17 @@ public:
             }
         }
         
-        runPolonaiseKernel(&vehicleData, numOfAgents, elapsedTime);
+        // find seekVectors
+        i = 0;
+
+        PolonaiseCUDA *seek = theVehicle.back();
+        for (iterator iter = theVehicle.begin(); iter != theVehicle.end(); iter++) {
+            seekVectors[i] = make_float2(seek->position().x, seek->position().z);
+            seek = (*iter);
+            i++;
+        }
+        
+        runPolonaiseKernel(&vehicleData, seekVectors, numOfAgents, elapsedTime);
         
         
         // use new data for desiredVelocity
@@ -194,6 +207,7 @@ public:
 
     void close (void)
     {
+        delete[] seekVectors;
         theVehicle.clear ();
         delete (gPolonaise);
         gPolonaise = NULL;        
