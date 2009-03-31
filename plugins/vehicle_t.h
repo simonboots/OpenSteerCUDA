@@ -3,10 +3,10 @@
 
 #include <cuda_runtime.h>
 
-#define NUM_OF_AGENTS 128
+#define NUM_OF_AGENTS 4096
 #define TPB 128
-#define MAX_SPEED 5.0f
-#define MAX_FORCE 10.0f
+#define MAX_SPEED 3.0f
+#define MAX_FORCE 5.0f
 #define MASS 1.0f
 
 

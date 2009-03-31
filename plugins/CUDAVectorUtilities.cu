@@ -37,6 +37,21 @@ __device__ float3
 float3Cross(float3 a, float3 b);
 
 __device__ float3
+float3Div(float3 vec, float div);
+
+__device__ float3
+float3Sub(float3 a, float3 b);
+
+__device__ float3
+float3Add(float3 a, float3 b);
+
+__device__ float3
+float3Mul(float3 vec, float mul);
+
+__device__ float3
+float3PredictFuturePosition(float3 position, float3 velocity, float predictionTime);
+
+__device__ float3
 float3Interpolate(float alpha, float3 x0, float3 x1) {
     return make_float3(x0.x + ((x1.x - x0.x) * alpha),
                        x0.y + ((x1.y - x0.y) * alpha),
@@ -130,6 +145,36 @@ __device__ float3
 float3BlendIn(float smoothRate, float3 newvalue, float3 smoothedAccu)
 {
     return float3Interpolate(clip(smoothRate, 0, 1), smoothedAccu, newvalue);
+}
+
+__device__ float3
+float3Div(float3 vec, float div)
+{
+    return make_float3(vec.x / div, vec.y / div, vec.z / div);
+}
+
+__device__ float3
+float3Sub(float3 a, float3 b)
+{
+    return make_float3(a.x - b.x, a.y - b.y, a.z - b.z);
+}
+
+__device__ float3
+float3Add(float3 a, float3 b)
+{
+    return make_float3(a.x + b.x, a.y + b.y, a.z + b.z);
+}
+
+__device__ float3
+float3Mul(float3 vec, float mul)
+{
+    return make_float3(vec.x * mul, vec.y * mul, vec.z * mul);
+}
+
+__device__ float3
+float3PredictFuturePosition(float3 position, float3 velocity, float predictionTime)
+{
+    return float3Add(position, float3Mul(velocity, predictionTime));
 }
 
 #endif // _CUDA_VECTOR_UTILITIES_H_

@@ -10,6 +10,6 @@ steerForSeekKernel(vehicle_t *vehicleData, float2 *seekVectors, float2 *steering
     
     steeringVectors[id].x = (seekVectors[id].x - (*vehicleData).position[id].x) - (*vehicleData).velocity[id].x;
     steeringVectors[id].y = (seekVectors[id].y - (*vehicleData).position[id].y) - (*vehicleData).velocity[id].y;
-}
+}   
 
 #endif // _STEER_FOR_SEEK_KERNEL_H_

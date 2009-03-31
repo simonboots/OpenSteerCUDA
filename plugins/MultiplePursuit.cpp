@@ -165,7 +165,7 @@ public:
 
     const char* name (void) {return "Multiple Pursuit";}
 
-    float selectionOrderSortKey (void) {return 0.04f;}
+    float selectionOrderSortKey (void) {return 0.000015f;}
 
     virtual ~MpPlugIn() {} // be more "nice" to avoid a compiler warning
 
@@ -176,7 +176,7 @@ public:
         allMP.push_back (wanderer);
 
         // create the specified number of pursuers, save pointers to them
-        const int pursuerCount = 30;
+        const int pursuerCount = 4096;
         for (int i = 0; i < pursuerCount; i++)
             allMP.push_back (new MpPursuer (wanderer));
         pBegin = allMP.begin() + 1;  // iterator pointing to first pursuer

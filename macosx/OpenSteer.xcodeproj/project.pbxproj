@@ -12,6 +12,8 @@
 		1C18EDE00F7BC45E00100C21 /* steerForFleeKernel.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1C18EDA90F7BC3B600100C21 /* steerForFleeKernel.cu */; };
 		1C18EE140F7BE15400100C21 /* steerForTargetSpeedKernel.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1C18EE130F7BE14200100C21 /* steerForTargetSpeedKernel.cu */; };
 		1C18EE1D0F7BF24A00100C21 /* MultiplePursuitCUDA.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1C18EE1C0F7BF24A00100C21 /* MultiplePursuitCUDA.cpp */; };
+		1C18EE6D0F7C039A00100C21 /* steerForPursuitKernel.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1C18EE6C0F7C037F00100C21 /* steerForPursuitKernel.cu */; };
+		1C6473A80F821F92006F4046 /* MemoryBackend.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1C6473A70F821F92006F4046 /* MemoryBackend.cpp */; };
 		1C8DA56C0F768139006231F5 /* updateKernel.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1C8DA5670F767783006231F5 /* updateKernel.cu */; };
 		1CBD02090F72795400DEE3E8 /* PolonaiseCUDA.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1CBD02080F72795400DEE3E8 /* PolonaiseCUDA.cpp */; };
 		1CBD02440F728BE100DEE3E8 /* PolonaiseCUDAStarter.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1CBD023E0F72876D00DEE3E8 /* PolonaiseCUDAStarter.cu */; };
@@ -24,6 +26,7 @@
 		1CCAD2CE0F6E81CA005A3712 /* libcudart.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1CCAD2CC0F6E81CA005A3712 /* libcudart.dylib */; };
 		1CCE694C0F7A3C5800DB4AA8 /* steerForSeekKernel.cu in Resources */ = {isa = PBXBuildFile; fileRef = 1CCE694B0F7A3C4800DB4AA8 /* steerForSeekKernel.cu */; };
 		1CCE69670F7A43B600DB4AA8 /* steerForSeekKernel.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1CCE694B0F7A3C4800DB4AA8 /* steerForSeekKernel.cu */; };
+		1CDFFCCE0F7FA7AF00A9159E /* MultiplePursuitCUDAStarter.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1C18EE640F7C031300100C21 /* MultiplePursuitCUDAStarter.cu */; };
 		32FFF49306E90A9F00E1D8A3 /* GLUT.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 32FFF49106E90A9F00E1D8A3 /* GLUT.framework */; };
 		32FFF49406E90A9F00E1D8A3 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 32FFF49206E90A9F00E1D8A3 /* OpenGL.framework */; };
 		32FFF4FB06E958DE00E1D8A3 /* libstdc++.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 32FFF4FA06E958DE00E1D8A3 /* libstdc++.a */; };
@@ -75,7 +78,12 @@
 		1C18EDEA0F7BC6BF00100C21 /* steerForWanderKernel.cu */ = {isa = PBXFileReference; explicitFileType = sourcecode.c; fileEncoding = 4; name = steerForWanderKernel.cu; path = ../plugins/steerForWanderKernel.cu; sourceTree = "<group>"; };
 		1C18EE130F7BE14200100C21 /* steerForTargetSpeedKernel.cu */ = {isa = PBXFileReference; explicitFileType = sourcecode.c; fileEncoding = 4; name = steerForTargetSpeedKernel.cu; path = ../plugins/steerForTargetSpeedKernel.cu; sourceTree = SOURCE_ROOT; };
 		1C18EE1C0F7BF24A00100C21 /* MultiplePursuitCUDA.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MultiplePursuitCUDA.cpp; sourceTree = "<group>"; };
+		1C18EE640F7C031300100C21 /* MultiplePursuitCUDAStarter.cu */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.c; fileEncoding = 4; path = MultiplePursuitCUDAStarter.cu; sourceTree = "<group>"; };
+		1C18EE6C0F7C037F00100C21 /* steerForPursuitKernel.cu */ = {isa = PBXFileReference; explicitFileType = sourcecode.c; fileEncoding = 4; name = steerForPursuitKernel.cu; path = ../plugins/steerForPursuitKernel.cu; sourceTree = "<group>"; };
+		1C6473A60F821F92006F4046 /* MemoryBackend.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MemoryBackend.h; sourceTree = "<group>"; };
+		1C6473A70F821F92006F4046 /* MemoryBackend.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MemoryBackend.cpp; sourceTree = "<group>"; };
 		1C8DA5670F767783006231F5 /* updateKernel.cu */ = {isa = PBXFileReference; explicitFileType = sourcecode.c; fileEncoding = 4; name = updateKernel.cu; path = ../plugins/updateKernel.cu; sourceTree = "<group>"; };
+		1CA56B4B0F82266200819A74 /* VehicleData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VehicleData.h; sourceTree = "<group>"; };
 		1CBD02080F72795400DEE3E8 /* PolonaiseCUDA.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PolonaiseCUDA.cpp; sourceTree = "<group>"; };
 		1CBD023E0F72876D00DEE3E8 /* PolonaiseCUDAStarter.cu */ = {isa = PBXFileReference; explicitFileType = sourcecode.c; fileEncoding = 4; path = PolonaiseCUDAStarter.cu; sourceTree = "<group>"; };
 		1CBD023F0F7288A300DEE3E8 /* PolonaiseCUDAKernel_old.cu */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.c; fileEncoding = 4; path = PolonaiseCUDAKernel_old.cu; sourceTree = "<group>"; };
@@ -178,6 +186,7 @@
 				1C18EDA90F7BC3B600100C21 /* steerForFleeKernel.cu */,
 				1C18EDEA0F7BC6BF00100C21 /* steerForWanderKernel.cu */,
 				1C18EE130F7BE14200100C21 /* steerForTargetSpeedKernel.cu */,
+				1C18EE6C0F7C037F00100C21 /* steerForPursuitKernel.cu */,
 			);
 			name = Kernels;
 			sourceTree = "<group>";
@@ -247,6 +256,8 @@
 				32FFF53006E9CEA700E1D8A3 /* SteerLibrary.h */,
 				32FFF53206E9CEA700E1D8A3 /* Utilities.h */,
 				32FFF53306E9CEA700E1D8A3 /* Vec3.h */,
+				1C6473A60F821F92006F4046 /* MemoryBackend.h */,
+				1CA56B4B0F82266200819A74 /* VehicleData.h */,
 			);
 			path = OpenSteer;
 			sourceTree = "<group>";
@@ -254,6 +265,7 @@
 		32FFF54406E9CEBD00E1D8A3 /* src */ = {
 			isa = PBXGroup;
 			children = (
+				1C6473A70F821F92006F4046 /* MemoryBackend.cpp */,
 				32FFF54506E9CEBD00E1D8A3 /* Camera.cpp */,
 				32FFF54606E9CEBD00E1D8A3 /* Clock.cpp */,
 				32FFF54706E9CEBD00E1D8A3 /* Draw.cpp */,
@@ -277,6 +289,8 @@
 				32FFF56606E9CECE00E1D8A3 /* LowSpeedTurn.cpp */,
 				32FFF56706E9CECE00E1D8A3 /* MapDrive.cpp */,
 				32FFF56806E9CECE00E1D8A3 /* MultiplePursuit.cpp */,
+				1C18EE1C0F7BF24A00100C21 /* MultiplePursuitCUDA.cpp */,
+				1C18EE640F7C031300100C21 /* MultiplePursuitCUDAStarter.cu */,
 				32FFF56906E9CECE00E1D8A3 /* OneTurning.cpp */,
 				1CCAD2690F6E741A005A3712 /* OneTurningCUDA.cpp */,
 				32FFF56A06E9CECE00E1D8A3 /* Pedestrian.cpp */,
@@ -288,7 +302,6 @@
 				1CBD023E0F72876D00DEE3E8 /* PolonaiseCUDAStarter.cu */,
 				1CBD023F0F7288A300DEE3E8 /* PolonaiseCUDAKernel_old.cu */,
 				1CFE61FF0F75032200A5232A /* vehicle_t.h */,
-				1C18EE1C0F7BF24A00100C21 /* MultiplePursuitCUDA.cpp */,
 			);
 			name = plugins;
 			path = ../plugins;
@@ -405,6 +418,9 @@
 				1C18EDE00F7BC45E00100C21 /* steerForFleeKernel.cu in Sources */,
 				1C18EE140F7BE15400100C21 /* steerForTargetSpeedKernel.cu in Sources */,
 				1C18EE1D0F7BF24A00100C21 /* MultiplePursuitCUDA.cpp in Sources */,
+				1C18EE6D0F7C039A00100C21 /* steerForPursuitKernel.cu in Sources */,
+				1CDFFCCE0F7FA7AF00A9159E /* MultiplePursuitCUDAStarter.cu in Sources */,
+				1C6473A80F821F92006F4046 /* MemoryBackend.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
