@@ -18,36 +18,44 @@ namespace OpenSteer {
         }
         
         Vec3 side(int) const;
-        void setSide(int, Vec3&);
+        Vec3 setSide(int, const Vec3&);
+        Vec3 setSide(int, float, float, float);
         Vec3 up(int) const;
-        void setUp(int, Vec3&);
+        Vec3 setUp(int, const Vec3&);
+        Vec3 setUp(int, float, float, float);
         Vec3 forward(int) const;
-        void setForward(int, Vec3&);
+        Vec3 setForward(int, const Vec3&);
+        Vec3 setForward(int, float, float, float);
         Vec3 position(int) const;
-        void setPosition(int, Vec3&);
+        Vec3 setPosition(int, const Vec3&);
+        Vec3 setPosition(int, float, float, float);
         
         float mass(int) const;
-        void setMass(int, float);
+        float setMass(int, float);
         float radius(int) const;
-        void setRadius(int, float);
+        float setRadius(int, float);
         float speed(int) const;
-        void setSpeed(int, float);
+        float setSpeed(int, float);
         float maxForce(int) const;
-        void setMaxForce(int, float);
+        float setMaxForce(int, float);
         float maxSpeed(int) const;
-        void setMaxSpeed(int, float);
+        float setMaxSpeed(int, float);
         float curvature(int) const;
-        void setCurvature(int, float);
+        float setCurvature(int, float);
         Vec3 lastForward(int) const;
-        void setLastForward(int, Vec3&);
+        Vec3 setLastForward(int, const Vec3&);
+        Vec3 setLastForward(int, float, float, float);
         Vec3 lastPosition(int) const;
-        void setLastPosition(int, Vec3&);
+        Vec3 setLastPosition(int, const Vec3&);
+        Vec3 setLastPosition(int, float, float, float);
         float smoothedCurvature(int) const;
-        void setSmoothedCurvature(int, float);
+        float setSmoothedCurvature(int, float);
         Vec3 smoothedAcceleration(int) const;
-        void setSmoothedAcceleration(int, Vec3&);
+        Vec3 setSmoothedAcceleration(int, const Vec3&);
+        Vec3 setSmoothedAcceleration(int, float, float, float);
         Vec3 smoothedPosition(int) const;
-        void setSmoothedPosition(int, Vec3&);
+        Vec3 setSmoothedPosition(int, const Vec3&);
+        Vec3 setSmoothedPosition(int, float, float, float);
         
         int getNextID(void);
         

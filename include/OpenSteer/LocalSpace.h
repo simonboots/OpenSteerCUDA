@@ -65,6 +65,7 @@
 
 
 #include "Vec3.h"
+#include "MemoryBackend.h"
 
 
 // ----------------------------------------------------------------------------
@@ -359,28 +360,25 @@ namespace OpenSteer {
             // origin of the local space.  These correspond to the "rows" of
             // a 3x4 transformation matrix with [0 0 0 1] as the final column
             
-        private:
-            
-            Vec3 _side;     //    side-pointing unit basis vector
-            Vec3 _up;       //  upward-pointing unit basis vector
-            Vec3 _forward;  // forward-pointing unit basis vector
-            Vec3 _position; // origin of local space
+        protected:
+            MemoryBackend *mb;
+            int mb_id;
             
         public:
             
             // accessors (get and set) for side, up, forward and position
-            Vec3 side     (void) const {return _side;};
-            Vec3 up       (void) const {return _up;};
-            Vec3 forward  (void) const {return _forward;};
-            Vec3 position (void) const {return _position;};
-            Vec3 setSide     (Vec3 s) {return _side = s;};
-            Vec3 setUp       (Vec3 u) {return _up = u;};
-            Vec3 setForward  (Vec3 f) {return _forward = f;};
-            Vec3 setPosition (Vec3 p) {return _position = p;};
-            Vec3 setSide     (float x, float y, float z){return _side.set    (x,y,z);};
-            Vec3 setUp       (float x, float y, float z){return _up.set      (x,y,z);};
-            Vec3 setForward  (float x, float y, float z){return _forward.set (x,y,z);};
-            Vec3 setPosition (float x, float y, float z){return _position.set(x,y,z);};
+            Vec3 side     (void) const {return mb->side(mb_id);};
+            Vec3 up       (void) const {return mb->up(mb_id);};
+            Vec3 forward  (void) const {return mb->forward(mb_id);};
+            Vec3 position (void) const {return mb->position(mb_id);};
+            Vec3 setSide     (Vec3 s) {return mb->setSide(mb_id, s);};
+            Vec3 setUp       (Vec3 u) {return mb->setUp(mb_id, u);};
+            Vec3 setForward  (Vec3 f) {return mb->setForward(mb_id, f);};
+            Vec3 setPosition (Vec3 p) {return mb->setPosition(mb_id, p);};
+            Vec3 setSide     (float x, float y, float z){return mb->setSide(mb_id, x, y, z);};
+            Vec3 setUp       (float x, float y, float z){return mb->setUp(mb_id, x, y, z);};
+            Vec3 setForward  (float x, float y, float z){return mb->setForward(mb_id, x,y,z);};
+            Vec3 setPosition (float x, float y, float z){return mb->setPosition(mb_id, x, y, z);};
             
             
             // ------------------------------------------------------------------------
@@ -405,20 +403,20 @@ namespace OpenSteer {
                              const Vec3& Forward,
                              const Vec3& Position)
             {
-                _side = Side;
-                _up = Up;
-                _forward = Forward;
-                _position = Position;
+                setSide(Side);
+                setUp(Up);
+                setForward(Forward);
+                setPosition(Position);
             };
             
             
             LocalSpaceMixin (const Vec3& Up,
                              const Vec3& Forward,
                              const Vec3& Position)
-            {
-                _up = Up;
-                _forward = Forward;
-                _position = Position;
+            {                
+                setUp(Up);
+                setForward(Forward);
+                setPosition(Position);
                 setUnitSideFromForwardAndUp ();
             };
             
@@ -436,10 +434,15 @@ namespace OpenSteer {
             
             void resetLocalSpace (void)
             {
-                _forward.set (0, 0, 1);
-                _side = localRotateForwardToSide (_forward);
-                _up.set (0, 1, 0);
-                _position.set (0, 0, 0);
+                if (mb != 0) {
+                    mb = MemoryBackend::instance();
+                    mb_id = mb->getNextID();
+                }
+                
+                setForward(0, 0, 1);
+                setSide(localRotateForwardToSide (forward()));
+                setUp(0, 1, 0);
+                setPosition(0, 0, 0);
             };
             
             
@@ -450,9 +453,9 @@ namespace OpenSteer {
             Vec3 localizeDirection (const Vec3& globalDirection) const
             {
                 // dot offset with local basis vectors to obtain local coordiantes
-                return Vec3 (globalDirection.dot (_side),
-                             globalDirection.dot (_up),
-                             globalDirection.dot (_forward));
+                return Vec3 (globalDirection.dot (side()),
+                             globalDirection.dot (up()),
+                             globalDirection.dot (forward()));
             };
             
             
@@ -463,7 +466,7 @@ namespace OpenSteer {
             Vec3 localizePosition (const Vec3& globalPosition) const
             {
                 // global offset from local origin
-                Vec3 globalOffset = globalPosition - _position;
+                Vec3 globalOffset = globalPosition - position();
                 
                 // dot offset with local basis vectors to obtain local coordiantes
                 return localizeDirection (globalOffset);
@@ -476,7 +479,7 @@ namespace OpenSteer {
             
             Vec3 globalizePosition (const Vec3& localPosition) const
             {
-                return _position + globalizeDirection (localPosition);
+                return position() + globalizeDirection (localPosition);
             };
             
             
@@ -486,9 +489,9 @@ namespace OpenSteer {
             
             Vec3 globalizeDirection (const Vec3& localDirection) const
             {
-                return ((_side    * localDirection.x) +
-                        (_up      * localDirection.y) +
-                        (_forward * localDirection.z));
+                return ((side()    * localDirection.x) +
+                        (up()      * localDirection.y) +
+                        (forward() * localDirection.z));
             };
             
             
@@ -499,11 +502,12 @@ namespace OpenSteer {
             void setUnitSideFromForwardAndUp (void)
             {
                 // derive new unit side basis vector from forward and up
+                Vec3 tside = side();
                 if (rightHanded())
-                    _side.cross (_forward, _up);
+                    tside.cross (forward(), up());
                 else
-                    _side.cross (_up, _forward);
-                _side = _side.normalize ();
+                    tside.cross (up(), forward());
+                setSide(tside.normalize ());
             }
             
             
@@ -514,7 +518,7 @@ namespace OpenSteer {
             
             void regenerateOrthonormalBasisUF (const Vec3& newUnitForward)
             {
-                _forward = newUnitForward;
+                setForward(newUnitForward);
                 
                 // derive new side basis vector from NEW forward and OLD up
                 setUnitSideFromForwardAndUp ();
@@ -522,10 +526,12 @@ namespace OpenSteer {
                 // derive new Up basis vector from new Side and new Forward
                 // (should have unit length since Side and Forward are
                 // perpendicular and unit length)
+                Vec3 tup = up();
                 if (rightHanded())
-                    _up.cross (_side, _forward);
+                    tup.cross (side(), forward());
                 else
-                    _up.cross (_forward, _side);
+                    tup.cross (forward(), side());
+                setUp(tup);
             }
             
             
@@ -542,7 +548,7 @@ namespace OpenSteer {
             void regenerateOrthonormalBasis (const Vec3& newForward,
                                              const Vec3& newUp)
             {
-                _up = newUp;
+                setUp(newUp);
                 regenerateOrthonormalBasis (newForward.normalize());
             }
             

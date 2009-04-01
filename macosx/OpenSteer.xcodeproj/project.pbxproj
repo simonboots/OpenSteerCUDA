@@ -15,6 +15,7 @@
 		1C18EE6D0F7C039A00100C21 /* steerForPursuitKernel.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1C18EE6C0F7C037F00100C21 /* steerForPursuitKernel.cu */; };
 		1C6473A80F821F92006F4046 /* MemoryBackend.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1C6473A70F821F92006F4046 /* MemoryBackend.cpp */; };
 		1C8DA56C0F768139006231F5 /* updateKernel.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1C8DA5670F767783006231F5 /* updateKernel.cu */; };
+		1CA56BDF0F824EF800819A74 /* SimpleVehicleMB.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1CA56BDE0F824EF800819A74 /* SimpleVehicleMB.cpp */; };
 		1CBD02090F72795400DEE3E8 /* PolonaiseCUDA.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1CBD02080F72795400DEE3E8 /* PolonaiseCUDA.cpp */; };
 		1CBD02440F728BE100DEE3E8 /* PolonaiseCUDAStarter.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1CBD023E0F72876D00DEE3E8 /* PolonaiseCUDAStarter.cu */; };
 		1CBD02870F728D4800DEE3E8 /* libcutil.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1CBD02860F728D4800DEE3E8 /* libcutil.a */; };
@@ -84,6 +85,8 @@
 		1C6473A70F821F92006F4046 /* MemoryBackend.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MemoryBackend.cpp; sourceTree = "<group>"; };
 		1C8DA5670F767783006231F5 /* updateKernel.cu */ = {isa = PBXFileReference; explicitFileType = sourcecode.c; fileEncoding = 4; name = updateKernel.cu; path = ../plugins/updateKernel.cu; sourceTree = "<group>"; };
 		1CA56B4B0F82266200819A74 /* VehicleData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VehicleData.h; sourceTree = "<group>"; };
+		1CA56BDD0F824EF800819A74 /* SimpleVehicleMB.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SimpleVehicleMB.h; sourceTree = "<group>"; };
+		1CA56BDE0F824EF800819A74 /* SimpleVehicleMB.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = SimpleVehicleMB.cpp; path = ../include/OpenSteer/SimpleVehicleMB.cpp; sourceTree = "<group>"; };
 		1CBD02080F72795400DEE3E8 /* PolonaiseCUDA.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PolonaiseCUDA.cpp; sourceTree = "<group>"; };
 		1CBD023E0F72876D00DEE3E8 /* PolonaiseCUDAStarter.cu */ = {isa = PBXFileReference; explicitFileType = sourcecode.c; fileEncoding = 4; path = PolonaiseCUDAStarter.cu; sourceTree = "<group>"; };
 		1CBD023F0F7288A300DEE3E8 /* PolonaiseCUDAKernel_old.cu */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.c; fileEncoding = 4; path = PolonaiseCUDAKernel_old.cu; sourceTree = "<group>"; };
@@ -253,6 +256,7 @@
 				32FFF52D06E9CEA700E1D8A3 /* PlugIn.h */,
 				32FFF52E06E9CEA700E1D8A3 /* Proximity.h */,
 				32FFF52F06E9CEA700E1D8A3 /* SimpleVehicle.h */,
+				1CA56BDD0F824EF800819A74 /* SimpleVehicleMB.h */,
 				32FFF53006E9CEA700E1D8A3 /* SteerLibrary.h */,
 				32FFF53206E9CEA700E1D8A3 /* Utilities.h */,
 				32FFF53306E9CEA700E1D8A3 /* Vec3.h */,
@@ -275,6 +279,7 @@
 				32FFF54A06E9CEBD00E1D8A3 /* Pathway.cpp */,
 				32FFF54B06E9CEBD00E1D8A3 /* PlugIn.cpp */,
 				32FFF54C06E9CEBD00E1D8A3 /* SimpleVehicle.cpp */,
+				1CA56BDE0F824EF800819A74 /* SimpleVehicleMB.cpp */,
 				32FFF54E06E9CEBD00E1D8A3 /* Vec3.cpp */,
 			);
 			name = src;
@@ -421,6 +426,7 @@
 				1C18EE6D0F7C039A00100C21 /* steerForPursuitKernel.cu in Sources */,
 				1CDFFCCE0F7FA7AF00A9159E /* MultiplePursuitCUDAStarter.cu in Sources */,
 				1C6473A80F821F92006F4046 /* MemoryBackend.cpp in Sources */,
+				1CA56BDF0F824EF800819A74 /* SimpleVehicleMB.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

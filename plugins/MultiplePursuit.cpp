@@ -35,8 +35,8 @@
 //
 // ----------------------------------------------------------------------------
 
-
 #include "OpenSteer/SimpleVehicle.h"
+//#include "OpenSteer/SimpleVehicleMB.h"
 #include "OpenSteer/OpenSteerDemo.h"
 
 
@@ -49,6 +49,7 @@ using namespace OpenSteer;
 
 
 class MpBase : public SimpleVehicle
+//class MpBase : public SimpleVehicleMB
 {
 public:
 
@@ -59,6 +60,7 @@ public:
     void reset (void)
     {
         SimpleVehicle::reset (); // reset the vehicle 
+        //SimpleVehicleMB::reset (); // reset the vehicle 
         setSpeed (0);            // speed along Forward direction.
         setMaxForce (5.0);       // steering force is clipped to this magnitude
         setMaxSpeed (3.0);       // velocity is clipped to this magnitude
