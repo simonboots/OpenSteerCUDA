@@ -152,6 +152,7 @@ class MpPursuerCUDA : public MpBaseCUDAMB
         {
             MpPursuerCUDA::did_reset = true;
             MpBaseCUDAMB::reset ();
+            setMaxSpeed (3.2);       // velocity is clipped to this magnitude
             bodyColor.set (0.6f, 0.4f, 0.4f); // redish
             randomizeStartingPositionAndHeading ();
         }
@@ -265,7 +266,6 @@ class MpPlugInCUDA : public PlugIn
             
            
             // copy data back
-            n = 0;
             for (iterator i = pBegin; i != pEnd; i++)
             {
 //                (*i)->setSpeed(Vec3(vehicleData.velocity[n].x, 0.f, vehicleData.velocity[n].y).length());
@@ -273,8 +273,7 @@ class MpPlugInCUDA : public PlugIn
 //                (*i)->setForward(Vec3(vehicleData.velocity[n].x, 0.f, vehicleData.velocity[n].y) / (*i)->speed());
 //                (*i)->setSide(Vec3(vehicleData.side[n].x, 0.f, vehicleData.side[n].y));
 //                (*i)->resetSmoothedAcceleration(Vec3(vehicleData.smoothedAcceleration[n].x, 0.f, vehicleData.smoothedAcceleration[n].y));
-                ((MpPursuerCUDA&) (**i)).update (currentTime, elapsedTime);
-                n++;
+                  ((MpPursuerCUDA&) (**i)).update (currentTime, elapsedTime);
             }
             
             

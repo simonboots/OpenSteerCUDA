@@ -3,7 +3,7 @@
 
 #include <cuda_runtime.h>
 
-#define MAX_VEHICLE 128
+#define MAX_VEHICLE 4096
 
 
 typedef struct vehicle_data {
