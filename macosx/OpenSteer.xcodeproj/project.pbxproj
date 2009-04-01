@@ -16,8 +16,6 @@
 		1C6473A80F821F92006F4046 /* MemoryBackend.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1C6473A70F821F92006F4046 /* MemoryBackend.cpp */; };
 		1C8DA56C0F768139006231F5 /* updateKernel.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1C8DA5670F767783006231F5 /* updateKernel.cu */; };
 		1CA56BDF0F824EF800819A74 /* SimpleVehicleMB.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1CA56BDE0F824EF800819A74 /* SimpleVehicleMB.cpp */; };
-		1CBD02090F72795400DEE3E8 /* PolonaiseCUDA.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1CBD02080F72795400DEE3E8 /* PolonaiseCUDA.cpp */; };
-		1CBD02440F728BE100DEE3E8 /* PolonaiseCUDAStarter.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1CBD023E0F72876D00DEE3E8 /* PolonaiseCUDAStarter.cu */; };
 		1CBD02870F728D4800DEE3E8 /* libcutil.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1CBD02860F728D4800DEE3E8 /* libcutil.a */; };
 		1CC9C2190F70FD1400990434 /* Polonaise.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1CC9C2180F70FD1400990434 /* Polonaise.cpp */; };
 		1CCAD26A0F6E741A005A3712 /* OneTurningCUDA.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1CCAD2690F6E741A005A3712 /* OneTurningCUDA.cpp */; };
@@ -66,7 +64,7 @@
 			outputFiles = (
 				"$(DERIVED_FILES_DIR)/$(INPUT_FILE_BASE).o",
 			);
-			script = "/usr/local/cuda/bin/nvcc -O3 -c ${INPUT_FILE_PATH} -o ${DERIVED_FILES_DIR}/${INPUT_FILE_BASE}.o -DNVCC -I/usr/local/cuda/include/ -I/Developer/CUDA/common/inc --ptxas-options=-v";
+			script = "/usr/local/cuda/bin/nvcc -g --device-emulation -c ${INPUT_FILE_PATH} -o ${DERIVED_FILES_DIR}/${INPUT_FILE_BASE}.o -DNVCC -I/usr/local/cuda/include/ -I/Developer/CUDA/common/inc -I${INPUT_FILE_DIR}/../include/OpenSteer/ --ptxas-options=-v";
 		};
 /* End PBXBuildRule section */
 
@@ -81,6 +79,7 @@
 		1C18EE1C0F7BF24A00100C21 /* MultiplePursuitCUDA.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MultiplePursuitCUDA.cpp; sourceTree = "<group>"; };
 		1C18EE640F7C031300100C21 /* MultiplePursuitCUDAStarter.cu */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.c; fileEncoding = 4; path = MultiplePursuitCUDAStarter.cu; sourceTree = "<group>"; };
 		1C18EE6C0F7C037F00100C21 /* steerForPursuitKernel.cu */ = {isa = PBXFileReference; explicitFileType = sourcecode.c; fileEncoding = 4; name = steerForPursuitKernel.cu; path = ../plugins/steerForPursuitKernel.cu; sourceTree = "<group>"; };
+		1C5B66280F8392EE00F4AD6D /* MultiplePursuitCUDADefines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MultiplePursuitCUDADefines.h; sourceTree = "<group>"; };
 		1C6473A60F821F92006F4046 /* MemoryBackend.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MemoryBackend.h; sourceTree = "<group>"; };
 		1C6473A70F821F92006F4046 /* MemoryBackend.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MemoryBackend.cpp; sourceTree = "<group>"; };
 		1C8DA5670F767783006231F5 /* updateKernel.cu */ = {isa = PBXFileReference; explicitFileType = sourcecode.c; fileEncoding = 4; name = updateKernel.cu; path = ../plugins/updateKernel.cu; sourceTree = "<group>"; };
@@ -307,6 +306,7 @@
 				1CBD023E0F72876D00DEE3E8 /* PolonaiseCUDAStarter.cu */,
 				1CBD023F0F7288A300DEE3E8 /* PolonaiseCUDAKernel_old.cu */,
 				1CFE61FF0F75032200A5232A /* vehicle_t.h */,
+				1C5B66280F8392EE00F4AD6D /* MultiplePursuitCUDADefines.h */,
 			);
 			name = plugins;
 			path = ../plugins;
@@ -415,8 +415,6 @@
 				1CCAD2AE0F6E7C5A005A3712 /* OneTurningCUDAStarter.cu in Sources */,
 				1CCAD2AF0F6E7C67005A3712 /* OneTurningCUDAKernel.cu in Sources */,
 				1CC9C2190F70FD1400990434 /* Polonaise.cpp in Sources */,
-				1CBD02090F72795400DEE3E8 /* PolonaiseCUDA.cpp in Sources */,
-				1CBD02440F728BE100DEE3E8 /* PolonaiseCUDAStarter.cu in Sources */,
 				1C8DA56C0F768139006231F5 /* updateKernel.cu in Sources */,
 				1C18ED9E0F7BB6A800100C21 /* CUDAVectorUtilities.cu in Sources */,
 				1C18EDA70F7BC2FD00100C21 /* CUDAFloatUtilities.cu in Sources */,

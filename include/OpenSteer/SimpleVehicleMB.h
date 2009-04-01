@@ -77,19 +77,19 @@ namespace OpenSteer {
     
     
     // SimpleVehicle_1 adds concrete LocalSpace methods to AbstractVehicle
-    typedef LocalSpaceMixinMB<AbstractVehicle> SimpleVehicle_1;
+    typedef LocalSpaceMixinMB<AbstractVehicle> SimpleVehicleMB_1;
     
     
     // SimpleVehicle_2 adds concrete annotation methods to SimpleVehicle_1
-    typedef AnnotationMixin<SimpleVehicle_1> SimpleVehicle_2;
+    typedef AnnotationMixin<SimpleVehicleMB_1> SimpleVehicleMB_2;
     
     
     // SimpleVehicle_3 adds concrete steering methods to SimpleVehicle_2
-    typedef SteerLibraryMixin<SimpleVehicle_2> SimpleVehicle_3;
+    typedef SteerLibraryMixin<SimpleVehicleMB_2> SimpleVehicleMB_3;
     
     
     // SimpleVehicle adds concrete vehicle methods to SimpleVehicle_3
-    class SimpleVehicleMB : public SimpleVehicle_3
+    class SimpleVehicleMB : public SimpleVehicleMB_3
         {
         public:
             
@@ -107,7 +107,7 @@ namespace OpenSteer {
                 
                 // reset SteerLibraryMixin state
                 // (XXX this seems really fragile, needs to be redesigned XXX)
-                SimpleVehicle_3::reset ();
+                SimpleVehicleMB_3::reset ();
                 
                 setMass (1);          // mass (defaults to 1 so acceleration=force)
                 setSpeed (0);         // speed along Forward direction.

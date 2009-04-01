@@ -58,6 +58,8 @@ namespace OpenSteer {
         Vec3 setSmoothedPosition(int, float, float, float);
         
         int getNextID(void);
+        VehicleData* getVehicleData(void);
+        void setVehicleData(VehicleData*);
         
         ~MemoryBackend();
         

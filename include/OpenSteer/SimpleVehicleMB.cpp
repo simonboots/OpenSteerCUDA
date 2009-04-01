@@ -79,6 +79,9 @@ int OpenSteer::SimpleVehicleMB::serialNumberCounter = 0;
 
 OpenSteer::SimpleVehicleMB::SimpleVehicleMB (void)
 {
+    mb = MemoryBackend::instance();
+    mb_id = mb->getNextID();
+    
     // set inital state
     reset ();
     

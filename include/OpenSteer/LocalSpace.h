@@ -434,10 +434,10 @@ namespace OpenSteer {
             
             void resetLocalSpace (void)
             {
-                if (mb != 0) {
-                    mb = MemoryBackend::instance();
-                    mb_id = mb->getNextID();
-                }
+                //if (mb != 0) {
+                //    mb = MemoryBackend::instance();
+                //    mb_id = mb->getNextID();
+                //}
                 
                 setForward(0, 0, 1);
                 setSide(localRotateForwardToSide (forward()));

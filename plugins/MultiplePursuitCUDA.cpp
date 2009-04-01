@@ -37,10 +37,12 @@
 
 
 #include "OpenSteer/SimpleVehicle.h"
+#include "OpenSteer/SimpleVehicleMB.h"
 #include "OpenSteer/OpenSteerDemo.h"
-#include "vehicle_t.h"
+#include "VehicleData.h"
+#include "MultiplePursuitCUDADefines.h"
 
-void runMultiplePursuitKernel(vehicle_t *h_vehicleData, float3 wandererPosition, float3 wandererVelocity, float elapsedTime, int copy_vehicle_data);
+void runMultiplePursuitKernel(VehicleData *h_vehicleData, float3 wandererPosition, float3 wandererVelocity, float elapsedTime, int copy_vehicle_data);
 void endMultiplePursuit(void);
 
 using namespace OpenSteer;
@@ -61,6 +63,35 @@ class MpBaseCUDA : public SimpleVehicle
         void reset (void)
         {
             SimpleVehicle::reset (); // reset the vehicle 
+            setSpeed (3.f);            // speed along Forward direction.
+            setMaxForce (5.0);       // steering force is clipped to this magnitude
+            setMaxSpeed (3.0);       // velocity is clipped to this magnitude
+            clearTrailHistory ();    // prevent long streaks due to teleportation 
+            gaudyPursuitAnnotation = true; // select use of 9-color annotation
+        }
+        
+        // draw into the scene
+        void draw (void)
+        {
+            drawBasic2dCircularVehicle (*this, bodyColor);
+            drawTrail ();
+        }
+        
+        // for draw method
+        Vec3 bodyColor;
+    };
+
+class MpBaseCUDAMB : public SimpleVehicleMB
+    {
+    public:
+        
+        // constructor
+        MpBaseCUDAMB () {reset ();}
+        
+        // reset state
+        void reset (void)
+        {
+            SimpleVehicleMB::reset (); // reset the vehicle 
             setSpeed (3.f);            // speed along Forward direction.
             setMaxForce (5.0);       // steering force is clipped to this magnitude
             setMaxSpeed (3.0);       // velocity is clipped to this magnitude
@@ -108,7 +139,7 @@ class MpWandererCUDA : public MpBaseCUDA
     };
 
 
-class MpPursuerCUDA : public MpBaseCUDA
+class MpPursuerCUDA : public MpBaseCUDAMB
     {
     public:
         
@@ -120,7 +151,7 @@ class MpPursuerCUDA : public MpBaseCUDA
         void reset (void)
         {
             MpPursuerCUDA::did_reset = true;
-            MpBaseCUDA::reset ();
+            MpBaseCUDAMB::reset ();
             bodyColor.set (0.6f, 0.4f, 0.4f); // redish
             randomizeStartingPositionAndHeading ();
         }
@@ -177,7 +208,7 @@ class MpPlugInCUDA : public PlugIn
         
         float selectionOrderSortKey (void) {return 0.00001f;}
         
-        vehicle_t vehicleData;
+        VehicleData *vData;
         
         virtual ~MpPlugInCUDA() {} // be more "nice" to avoid a compiler warning
         
@@ -185,13 +216,13 @@ class MpPlugInCUDA : public PlugIn
         {
             // create the wanderer, saving a pointer to it
             wanderer = new MpWandererCUDA;
-            allMP.push_back (wanderer);
+            //allMP.push_back (wanderer);
             
             // create the specified number of pursuers, save pointers to them
             const int pursuerCount = NUM_OF_AGENTS;
             for (int i = 0; i < pursuerCount; i++)
                 allMP.push_back (new MpPursuerCUDA (wanderer));
-            pBegin = allMP.begin() + 1;  // iterator pointing to first pursuer
+            pBegin = allMP.begin();  // iterator pointing to first pursuer
             pEnd = allMP.end();          // iterator pointing to last pursuer
             
             // initialize camera
@@ -209,19 +240,22 @@ class MpPlugInCUDA : public PlugIn
             static bool copy_vehicle_data = true;
 
             int n = 0;
-            if (copy_vehicle_data == true) {
-                // copy all data into vehicle_t
-                for (iterator i = pBegin; i != pEnd; i++)
-                {
-                    vehicleData.position[n] = make_float2((*i)->position().x, (*i)->position().z);
-                    vehicleData.velocity[n] = make_float2((*i)->velocity().x, (*i)->velocity().z);
-                    vehicleData.side[n] = make_float2((*i)->side().x, (*i)->side().z);
-                    vehicleData.smoothedAcceleration[n] = make_float2(0.f, 0.f);
-                    n++;
-                }     
-            }
+//            if (copy_vehicle_data == true) {
+//                // copy all data into vehicle_t
+//                for (iterator i = pBegin; i != pEnd; i++)
+//                {
+//                    vehicleData.position[n] = make_float2((*i)->position().x, (*i)->position().z);
+//                    vehicleData.velocity[n] = make_float2((*i)->velocity().x, (*i)->velocity().z);
+//                    vehicleData.side[n] = make_float2((*i)->side().x, (*i)->side().z);
+//                    vehicleData.smoothedAcceleration[n] = make_float2(0.f, 0.f);
+//                    n++;
+//                }     
+//            }
             
-            runMultiplePursuitKernel(&vehicleData,
+            MemoryBackend *mb = MemoryBackend::instance();
+            vData = mb->getVehicleData();
+            
+            runMultiplePursuitKernel(vData,
                                      make_float3(wanderer->position().x, wanderer->position().y, wanderer->position().z),
                                      make_float3(wanderer->velocity().x, wanderer->velocity().y, wanderer->velocity().z),
                                      elapsedTime,
@@ -234,11 +268,11 @@ class MpPlugInCUDA : public PlugIn
             n = 0;
             for (iterator i = pBegin; i != pEnd; i++)
             {
-                (*i)->setSpeed(Vec3(vehicleData.velocity[n].x, 0.f, vehicleData.velocity[n].y).length());
-                (*i)->setPosition(Vec3(vehicleData.position[n].x, 0.f, vehicleData.position[n].y));
-                (*i)->setForward(Vec3(vehicleData.velocity[n].x, 0.f, vehicleData.velocity[n].y) / (*i)->speed());
-                (*i)->setSide(Vec3(vehicleData.side[n].x, 0.f, vehicleData.side[n].y));
-                (*i)->resetSmoothedAcceleration(Vec3(vehicleData.smoothedAcceleration[n].x, 0.f, vehicleData.smoothedAcceleration[n].y));
+//                (*i)->setSpeed(Vec3(vehicleData.velocity[n].x, 0.f, vehicleData.velocity[n].y).length());
+//                (*i)->setPosition(Vec3(vehicleData.position[n].x, 0.f, vehicleData.position[n].y));
+//                (*i)->setForward(Vec3(vehicleData.velocity[n].x, 0.f, vehicleData.velocity[n].y) / (*i)->speed());
+//                (*i)->setSide(Vec3(vehicleData.side[n].x, 0.f, vehicleData.side[n].y));
+//                (*i)->resetSmoothedAcceleration(Vec3(vehicleData.smoothedAcceleration[n].x, 0.f, vehicleData.smoothedAcceleration[n].y));
                 ((MpPursuerCUDA&) (**i)).update (currentTime, elapsedTime);
                 n++;
             }
@@ -263,6 +297,7 @@ class MpPlugInCUDA : public PlugIn
             OpenSteerDemo::gridUtility (selected.position());
             
             // draw each vehicles
+            wanderer->draw();
             for (iterator i = allMP.begin(); i != pEnd; i++) (**i).draw ();
             
             // highlight vehicle nearest mouse
@@ -293,8 +328,8 @@ class MpPlugInCUDA : public PlugIn
         const AVGroup& allVehicles (void) {return (const AVGroup&) allMP;}
         
         // a group (STL vector) of all vehicles
-        std::vector<MpBaseCUDA*> allMP;
-        typedef std::vector<MpBaseCUDA*>::const_iterator iterator;
+        std::vector<MpBaseCUDAMB*> allMP;
+        typedef std::vector<MpBaseCUDAMB*>::const_iterator iterator;
         iterator pBegin, pEnd;
         
         MpWandererCUDA* wanderer;

@@ -1,18 +1,19 @@
 #include <cuda_runtime.h>
 #include <cutil.h>
 #include <stdio.h>
-#include "vehicle_t.h"
+#include "VehicleData.h"
+#include "MultiplePursuitCUDADefines.h"
 
 __global__ __device__ void
-steerForPursuitKernel(vehicle_t *vehicleData, float3 wandererPosition, float3 wandererVelocity, float2 *steeringVectors, float maxPredictionTime);
+steerForPursuitKernel(VehicleData *vehicleData, float3 wandererPosition, float3 wandererVelocity, float3 *steeringVectors, float maxPredictionTime);
 
 __global__ void
-updateKernel(vehicle_t *vehicleData, float2 *steeringVectors, float elapsedTime);
+updateKernel(VehicleData *vehicleData, float3 *steeringVectors, float elapsedTime);
 
-static float2 *d_steeringVectors = NULL;
-static vehicle_t *d_vehicleData = NULL;
+static float3 *d_steeringVectors = NULL;
+static VehicleData *d_vehicleData = NULL;
 
-void runMultiplePursuitKernel(vehicle_t *h_vehicleData, float3 wandererPosition, float3 wandererVelocity, float elapsedTime, int copy_vehicle_data)
+void runMultiplePursuitKernel(VehicleData *h_vehicleData, float3 wandererPosition, float3 wandererVelocity, float elapsedTime, int copy_vehicle_data)
 {
     const float h_timeFactorTable[9] = {2.f, 4.f, 0.85f, 2.f, 0.8f, 1.8f, 0.5f, 1.f, 4.f};
     
@@ -31,13 +32,13 @@ void runMultiplePursuitKernel(vehicle_t *h_vehicleData, float3 wandererPosition,
     dim3 threads(TPB,1,1);
         
     // prepare memory for steeringVectors
-    const unsigned int mem_size_steering = sizeof(float2) * NUM_OF_AGENTS;
+    const unsigned int mem_size_steering = sizeof(float3) * NUM_OF_AGENTS;
     if (d_steeringVectors == NULL) {
         cudaMalloc((void **) &d_steeringVectors, mem_size_steering);
     }
     
     // prepare vehicle data
-    const unsigned int mem_size_vehicle = sizeof(vehicle_t);
+    const unsigned int mem_size_vehicle = sizeof(VehicleData);
     
     if (d_vehicleData == NULL || copy_vehicle_data == 1) {
         if (d_vehicleData == NULL)

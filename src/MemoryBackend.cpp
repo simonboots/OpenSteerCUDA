@@ -6,7 +6,7 @@ OpenSteer::MemoryBackend* OpenSteer::MemoryBackend::_instance = 0;
 int OpenSteer::MemoryBackend::_idCounter = 0;
 
 OpenSteer::MemoryBackend::MemoryBackend() {
-    _data = new OpenSteer::VehicleData;
+    _data = new VehicleData;
     std::cout << "MemoryBackend initialized" << std::endl;
 }
 
@@ -16,10 +16,19 @@ OpenSteer::MemoryBackend::~MemoryBackend() {
 }
 
 int OpenSteer::MemoryBackend::getNextID(void) {
-    if ((_idCounter + 1) >= MAX_VEHICLE) {
+    if ((_idCounter + 1) > MAX_VEHICLE) {
         throw std::exception();
     }
+    std::cout << "new ID: " << _idCounter << std::endl;
     return _idCounter++;
+}
+
+VehicleData* OpenSteer::MemoryBackend::getVehicleData(void) {
+    return _data;
+}
+
+void OpenSteer::MemoryBackend::setVehicleData(VehicleData* vd) {
+    _data = vd;
 }
 
 

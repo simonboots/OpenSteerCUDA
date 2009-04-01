@@ -3,7 +3,8 @@
 
 #include <cutil.h>
 #include "CUDAVectorUtilities.cu"
-#include "vehicle_t.h"
+#include "VehicleData.h"
+#include "MultiplePursuitCUDADefines.h"
 #include <stdio.h>
 
 #define CHECK_BANK_CONFLICTS 0
@@ -19,13 +20,13 @@
 
 // prototype
 __device__ void
-steerForSeekKernelSingle(float3 position, float3 velocity, float3 seekVector, float2 *steeringVectors);
+steerForSeekKernelSingle(float3 position, float3 velocity, float3 seekVector, float3 *steeringVectors);
 
 // constant memory (timeFactorTable)
 __constant__ float timeFactorTable[9];
 
 __global__ void
-steerForPursuitKernel(vehicle_t *vehicleData, float3 wandererPosition, float3 wandererVelocity, float2 *steeringVectors, float maxPredictionTime)
+steerForPursuitKernel(VehicleData *vehicleData, float3 wandererPosition, float3 wandererVelocity, float3 *steeringVectors, float maxPredictionTime)
 {
     int id = (blockIdx.x * blockDim.x + threadIdx.x);
  
@@ -40,17 +41,17 @@ steerForPursuitKernel(vehicle_t *vehicleData, float3 wandererPosition, float3 wa
 
     
     // copy velocity data from global memory to shared memory
-    V(threadIdx.x) = make_float3((*vehicleData).velocity[id].x, 0.f, (*vehicleData).velocity[id].y);
+    float speed = (*vehicleData).speed[id];
+    F(threadIdx.x) = (*vehicleData).forward[id];
+    __syncthreads();
+    V(threadIdx.x) = float3Mul(F(threadIdx.x), speed);
     
     //printf("V: (%f, %f, %f)\n", V(threadIdx.x).x, V(threadIdx.x).y, V(threadIdx.x).z);
     
-    float speed = float3Length(V(threadIdx.x));
-    
-    // calculate forward data from velocity vector
-    F(threadIdx.x) = float3Div(V(threadIdx.x), speed);
-    
     // copy position vector to shared memory
-    P(threadIdx.x) = make_float3((*vehicleData).position[id].x, 0.f, (*vehicleData).position[id].y);
+    P(threadIdx.x) = (*vehicleData).position[id];
+    
+    __syncthreads();
     
     // offset from this to quarry, that distance, unit vector toward quarry
     float3 offset = make_float3(wandererPosition.x - P(threadIdx.x).x, 0.f, wandererPosition.z - P(threadIdx.x).z);
@@ -159,7 +160,7 @@ steerForPursuitKernel(vehicle_t *vehicleData, float3 wandererPosition, float3 wa
 }
 
 __device__ void
-steerForSeekKernelSingle(float3 position, float3 velocity, float3 seekVector, float2 *steeringVectors)
+steerForSeekKernelSingle(float3 position, float3 velocity, float3 seekVector, float3 *steeringVectors)
 {
     int id = (blockIdx.x * blockDim.x + threadIdx.x);
 
@@ -167,7 +168,8 @@ steerForSeekKernelSingle(float3 position, float3 velocity, float3 seekVector, fl
     //printf("1: sv.x: %f, sv.y: %f\n", steeringVectors[id].x, steeringVectors[id].y);
     
     steeringVectors[id].x = (seekVector.x - position.x) - velocity.x;
-    steeringVectors[id].y = (seekVector.z - position.z) - velocity.z;
+    steeringVectors[id].y = (seekVector.y - position.y) - velocity.y;
+    steeringVectors[id].z = (seekVector.z - position.z) - velocity.z;
     
     //printf("2: sv.x: %f, sv.y: %f\n", steeringVectors[id].x, steeringVectors[id].y);
 } 
