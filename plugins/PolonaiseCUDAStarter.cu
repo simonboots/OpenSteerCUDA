@@ -1,19 +1,23 @@
 #include <cuda_runtime.h>
 #include <cutil.h>
 #include <stdio.h>
-#include "vehicle_t.h"
+#include "VehicleData.h"
+#include "PolonaiseCUDADefines.h"
 
 __global__ void
-steerForSeekKernel(vehicle_t *vehicleData, float2 *seekVectors, float2 *steeringVectors);
+steerForSeekKernel(VehicleData *vehicleData, float3 *seekVectors, float3 *steeringVectors);
 
 __global__ void
-updateKernel(vehicle_t *vehicleData, float2 *steeringVectors, float elapsedTime);
+updateKernel(VehicleData *vehicleData, float3 *steeringVectors, float elapsedTime);
 
-static vehicle_t* d_vehicleData = NULL;
-static float2* d_steeringVectors = NULL;
-static int i = 0;
+__global__ void
+findFollowerKernel(VehicleData *vehicleData, float3 *seekVectors);
 
-void runPolonaiseKernel(vehicle_t *h_vehicleData, float2 *h_seekVectors, int numOfAgents, float elapsedTime) {
+static VehicleData* d_vehicleData = NULL;
+static float3* d_steeringVectors = NULL;
+static float3* d_seekVectors = NULL;
+
+void runPolonaiseKernel(VehicleData *h_vehicleData, int numOfAgents, float elapsedTime) {
 
     int gpu_count;
     cudaGetDeviceCount(&gpu_count);
@@ -27,13 +31,13 @@ void runPolonaiseKernel(vehicle_t *h_vehicleData, float2 *h_seekVectors, int num
     dim3 threads(TPB,1,1);
     
     // prepare memory for steeringVectors
-    const unsigned int mem_size_steering = sizeof(float2) * numOfAgents;
+    const unsigned int mem_size_steering = sizeof(float3) * numOfAgents;
     if (d_steeringVectors == NULL) {
         cudaMalloc((void **) &d_steeringVectors, mem_size_steering);
     }
     
     // prepare vehicle data
-    const unsigned int mem_size_vehicle = sizeof(vehicle_t);
+    const unsigned int mem_size_vehicle = sizeof(VehicleData);
     
     if (d_vehicleData == NULL) {
         cudaMalloc((void **) &d_vehicleData, mem_size_vehicle);
@@ -41,20 +45,35 @@ void runPolonaiseKernel(vehicle_t *h_vehicleData, float2 *h_seekVectors, int num
     }
     
     // prepare steerForSeekKernel
-    float2* d_seekVectors = NULL;
-    const unsigned int mem_size_seek_vectors = sizeof(float2) * numOfAgents;
-    cudaMalloc((void **) &d_seekVectors, mem_size_seek_vectors);
-    cudaMemcpy(d_seekVectors, h_seekVectors, mem_size_seek_vectors, cudaMemcpyHostToDevice);
+    const unsigned int mem_size_seek_vectors = sizeof(float3) * numOfAgents;
+    if (d_seekVectors == NULL) {
+        cudaMalloc((void **) &d_seekVectors, mem_size_seek_vectors);
+    }
+    
+    // create and start timer
+    unsigned int timer = 0;
+    CUT_SAFE_CALL(cutCreateTimer(&timer));
+    CUT_SAFE_CALL(cutStartTimer(timer));
+    
+    // call findFollowerKernel
+    findFollowerKernel<<<grid, threads>>>(d_vehicleData, d_seekVectors);
+    CUT_CHECK_ERROR("Kernel execution failed");
+    
+    // stop and destroy timer
+    CUT_SAFE_CALL(cutStopTimer(timer));
+    printf("Raw processing time (findFollowerKernel): %f (ms) \n", cutGetTimerValue(timer));
+    CUT_SAFE_CALL(cutDeleteTimer(timer));
+    CUT_SAFE_CALL(cutCreateTimer(&timer));
+    CUT_SAFE_CALL(cutStartTimer(timer));
 
     // call steerForSeekKernel
     steerForSeekKernel<<<grid, threads>>>(d_vehicleData, d_seekVectors, d_steeringVectors);
     CUT_CHECK_ERROR("Kernel execution failed");
-    
-    cudaFree(d_seekVectors);
-
-        
-    // create and start timer
-    unsigned int timer = 0;
+            
+    // stop and destroy timer
+    CUT_SAFE_CALL(cutStopTimer(timer));
+    printf("Raw processing time (steerForSeekKernel): %f (ms) \n", cutGetTimerValue(timer));
+    CUT_SAFE_CALL(cutDeleteTimer(timer));
     CUT_SAFE_CALL(cutCreateTimer(&timer));
     CUT_SAFE_CALL(cutStartTimer(timer));
 
@@ -66,7 +85,7 @@ void runPolonaiseKernel(vehicle_t *h_vehicleData, float2 *h_seekVectors, int num
     
     // stop and destroy timer
     CUT_SAFE_CALL(cutStopTimer(timer));
-    printf("Raw processing time: %f (ms) \n", cutGetTimerValue(timer));
+    printf("Raw processing time (updateKernel): %f (ms) \n", cutGetTimerValue(timer));
     CUT_SAFE_CALL(cutDeleteTimer(timer));
     CUT_SAFE_CALL(cutCreateTimer(&timer));
     CUT_SAFE_CALL(cutStartTimer(timer));
@@ -86,4 +105,9 @@ void endPolonaise(void)
 {
     cudaFree(d_vehicleData);
     cudaFree(d_steeringVectors);
+    cudaFree(d_seekVectors);
+    
+    d_vehicleData = NULL;
+    d_steeringVectors = NULL;
+    d_seekVectors = NULL;
 }

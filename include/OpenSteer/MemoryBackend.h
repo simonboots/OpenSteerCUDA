@@ -17,6 +17,12 @@ namespace OpenSteer {
             return _instance;
         }
         
+        static void reset() {
+            delete _instance;
+            _instance = 0;
+            _idCounter = 0;
+        }
+        
         Vec3 side(int) const;
         Vec3 setSide(int, const Vec3&);
         Vec3 setSide(int, float, float, float);

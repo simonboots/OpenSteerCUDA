@@ -93,4 +93,7 @@ void endMultiplePursuit(void)
 {
     cudaFree(d_vehicleData);
     cudaFree(d_steeringVectors);
+    
+    d_vehicleData = NULL;
+    d_steeringVectors = NULL;
 }

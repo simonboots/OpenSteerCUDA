@@ -239,19 +239,6 @@ class MpPlugInCUDA : public PlugIn
             wanderer->update (currentTime, elapsedTime);
             
             static bool copy_vehicle_data = true;
-
-            int n = 0;
-//            if (copy_vehicle_data == true) {
-//                // copy all data into vehicle_t
-//                for (iterator i = pBegin; i != pEnd; i++)
-//                {
-//                    vehicleData.position[n] = make_float2((*i)->position().x, (*i)->position().z);
-//                    vehicleData.velocity[n] = make_float2((*i)->velocity().x, (*i)->velocity().z);
-//                    vehicleData.side[n] = make_float2((*i)->side().x, (*i)->side().z);
-//                    vehicleData.smoothedAcceleration[n] = make_float2(0.f, 0.f);
-//                    n++;
-//                }     
-//            }
             
             MemoryBackend *mb = MemoryBackend::instance();
             vData = mb->getVehicleData();
@@ -268,11 +255,6 @@ class MpPlugInCUDA : public PlugIn
             // copy data back
             for (iterator i = pBegin; i != pEnd; i++)
             {
-//                (*i)->setSpeed(Vec3(vehicleData.velocity[n].x, 0.f, vehicleData.velocity[n].y).length());
-//                (*i)->setPosition(Vec3(vehicleData.position[n].x, 0.f, vehicleData.position[n].y));
-//                (*i)->setForward(Vec3(vehicleData.velocity[n].x, 0.f, vehicleData.velocity[n].y) / (*i)->speed());
-//                (*i)->setSide(Vec3(vehicleData.side[n].x, 0.f, vehicleData.side[n].y));
-//                (*i)->resetSmoothedAcceleration(Vec3(vehicleData.smoothedAcceleration[n].x, 0.f, vehicleData.smoothedAcceleration[n].y));
                   ((MpPursuerCUDA&) (**i)).update (currentTime, elapsedTime);
             }
             
@@ -311,6 +293,9 @@ class MpPlugInCUDA : public PlugIn
             for (iterator i = pBegin; i != pEnd; i++) delete ((MpPursuerCUDA*)*i);
             allMP.clear();
             endMultiplePursuit();
+            
+            // reset MemoryBackend of SimpleVehicleMB
+            SimpleVehicleMB::resetBackend();
         }
         
         void reset (void)

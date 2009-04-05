@@ -99,6 +99,12 @@ namespace OpenSteer {
             // destructor
             ~SimpleVehicleMB ();
             
+            // reset memory backend
+            static void resetBackend()
+            {
+                MemoryBackend::reset();
+            }
+            
             // reset vehicle state
             void reset (void)
             {

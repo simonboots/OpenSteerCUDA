@@ -11,7 +11,9 @@ OpenSteer::MemoryBackend::MemoryBackend() {
 }
 
 OpenSteer::MemoryBackend::~MemoryBackend() {
+    std::cout << "MemoryBackend reset" << std::endl;
     delete _data;
+    _instance = 0;
     _idCounter = 0;
 }
 

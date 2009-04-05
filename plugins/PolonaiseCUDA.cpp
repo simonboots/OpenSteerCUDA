@@ -38,12 +38,13 @@
 
 #include <iomanip>
 #include <sstream>
-#include "OpenSteer/SimpleVehicle.h"
+#include "OpenSteer/SimpleVehicleMB.h"
 #include "OpenSteer/OpenSteerDemo.h"
-#include "vehicle_t.h"
+#include "VehicleData.h"
+#include "PolonaiseCUDADefines.h"
 
 
-void runPolonaiseKernel(vehicle_t *h_vehicleData, float2 *h_seekVectors, int numOfAgents, float elapsedTime);
+void runPolonaiseKernel(VehicleData *h_vehicleData, int numOfAgents, float elapsedTime);
 void endPolonaise(void);
 
 using namespace OpenSteer;
@@ -52,7 +53,7 @@ using namespace OpenSteer;
 // ----------------------------------------------------------------------------
 
 
-class PolonaiseCUDA : public SimpleVehicle
+class PolonaiseCUDA : public SimpleVehicleMB
 {
 public:
 
@@ -65,7 +66,7 @@ public:
     // reset state
     void reset (void)
     {
-        SimpleVehicle::reset (); // reset the vehicle 
+        SimpleVehicleMB::reset (); // reset the vehicle 
         setSpeed (1.5f);         // speed along Forward direction.
         setMaxForce (10.f);      // steering force is clipped to this magnitude
         setMaxSpeed (5);         // velocity is clipped to this magnitude
@@ -77,12 +78,12 @@ public:
     // per frame simulation update
     void update (const float currentTime, const float elapsedTime)
     {
-        measurePathCurvature (elapsedTime);
-        
-        // running average of recent positions
-        blendIntoAccumulator (elapsedTime * 0.06f, // QQQ
-                              position (),
-                              _smoothedPosition);
+//          measurePathCurvature (elapsedTime);
+//        
+//        // running average of recent positions
+//        blendIntoAccumulator (elapsedTime * 0.06f, // QQQ
+//                              position (),
+//                              _smoothedPosition);
         
         annotationVelocityAcceleration ();
         recordTrailVertex (currentTime, position());
@@ -111,11 +112,10 @@ public:
     
     const char* name (void) {return "Polonaise CUDA";}
 
-    float selectionOrderSortKey (void) {return 0.00002f;}
+    float selectionOrderSortKey (void) {return 0.00000002f;}
     
     const static int numOfAgents = NUM_OF_AGENTS;
-    vehicle_t vehicleData;
-    float2 *seekVectors;
+    VehicleData *vData;
 
     // be more "nice" to avoid a compiler warning
     virtual ~PolonaiseCUDAPlugIn() {}
@@ -134,56 +134,18 @@ public:
                                            OpenSteerDemo::camera2dElevation,
                                            10);
         OpenSteerDemo::camera.fixedPosition.set (40, 40, 40);
-        
-        seekVectors = new float2[numOfAgents];
-        
     }
 
     void update (const float currentTime, const float elapsedTime)
-    {
-        static int counter = 0;
-
-        // copy all data to vehicleData array
-        int i = 0;
-        if (counter == 0) {
-            
-            for (iterator iter = theVehicle.begin(); iter != theVehicle.end(); iter++) {
-                vehicleData.position[i] = make_float2((*iter)->position().x, (*iter)->position().z);
-                vehicleData.velocity[i] = make_float2((*iter)->velocity().x, (*iter)->velocity().z);
-                vehicleData.side[i] = make_float2((*iter)->side().x, (*iter)->side().z);
-                vehicleData.smoothedAcceleration[i] = make_float2(0.0f, 0.0f);
-                i++;
-            }
-        }
+    {        
+        MemoryBackend *mb = MemoryBackend::instance();
+        vData = mb->getVehicleData();
         
-        // find seekVectors
-        i = 0;
-
-        PolonaiseCUDA *seek = theVehicle.back();
+        runPolonaiseKernel(vData, numOfAgents, elapsedTime);
+        
         for (iterator iter = theVehicle.begin(); iter != theVehicle.end(); iter++) {
-            seekVectors[i] = make_float2(seek->position().x, seek->position().z);
-            seek = (*iter);
-            i++;
-        }
-        
-        runPolonaiseKernel(&vehicleData, seekVectors, numOfAgents, elapsedTime);
-        
-        
-        // use new data for desiredVelocity
-        i = 0;
-        for (iterator iter = theVehicle.begin(); iter != theVehicle.end(); iter++) {
-            (*iter)->setSpeed(Vec3(vehicleData.velocity[i].x, 0.f, vehicleData.velocity[i].y).length());
-            (*iter)->setPosition(Vec3(vehicleData.position[i].x, 0.f, vehicleData.position[i].y));
-            (*iter)->setForward(Vec3(vehicleData.velocity[i].x, 0.f, vehicleData.velocity[i].y) / (*iter)->speed());
-            (*iter)->setSide(Vec3(vehicleData.side[i].x, 0.f, vehicleData.side[i].y));
-            (*iter)->resetSmoothedAcceleration(Vec3(vehicleData.smoothedAcceleration[i].x, 0.f, vehicleData.smoothedAcceleration[i].y));
-
             (*iter)->update(currentTime, elapsedTime);
-            i++;
         }
-        
-        
-        counter = 1;
     }
 
     void redraw (const float currentTime, const float elapsedTime)
@@ -207,11 +169,13 @@ public:
 
     void close (void)
     {
-        delete[] seekVectors;
         theVehicle.clear ();
         delete (gPolonaise);
         gPolonaise = NULL;        
         endPolonaise();
+        
+        // reset MemoryBackend of SimpleVehicleMB
+        SimpleVehicleMB::resetBackend();
     }
 
     void reset (void)
