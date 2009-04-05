@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1C0FEF1D0F88C816002009B6 /* RandomizedVector.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1C0FEF1C0F88C816002009B6 /* RandomizedVector.cpp */; };
 		1C18ED9E0F7BB6A800100C21 /* CUDAVectorUtilities.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1C18ED9A0F7BB51000100C21 /* CUDAVectorUtilities.cu */; };
 		1C18EDA70F7BC2FD00100C21 /* CUDAFloatUtilities.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1C18EDA60F7BC25D00100C21 /* CUDAFloatUtilities.cu */; };
 		1C18EDE00F7BC45E00100C21 /* steerForFleeKernel.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1C18EDA90F7BC3B600100C21 /* steerForFleeKernel.cu */; };
@@ -71,6 +72,8 @@
 /* Begin PBXFileReference section */
 		089C165DFE840E0CC02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
+		1C0FEF1C0F88C816002009B6 /* RandomizedVector.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RandomizedVector.cpp; sourceTree = "<group>"; };
+		1C0FEF380F88CC59002009B6 /* RandomizedVector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RandomizedVector.h; sourceTree = "<group>"; };
 		1C18ED9A0F7BB51000100C21 /* CUDAVectorUtilities.cu */ = {isa = PBXFileReference; explicitFileType = sourcecode.c; fileEncoding = 4; name = CUDAVectorUtilities.cu; path = ../plugins/CUDAVectorUtilities.cu; sourceTree = "<group>"; };
 		1C18EDA60F7BC25D00100C21 /* CUDAFloatUtilities.cu */ = {isa = PBXFileReference; explicitFileType = sourcecode.c; fileEncoding = 4; name = CUDAFloatUtilities.cu; path = ../plugins/CUDAFloatUtilities.cu; sourceTree = "<group>"; };
 		1C18EDA90F7BC3B600100C21 /* steerForFleeKernel.cu */ = {isa = PBXFileReference; explicitFileType = sourcecode.c; fileEncoding = 4; name = steerForFleeKernel.cu; path = ../plugins/steerForFleeKernel.cu; sourceTree = "<group>"; };
@@ -242,6 +245,7 @@
 		32FFF52306E9CEA700E1D8A3 /* OpenSteer */ = {
 			isa = PBXGroup;
 			children = (
+				1C0FEF380F88CC59002009B6 /* RandomizedVector.h */,
 				32FFF52406E9CEA700E1D8A3 /* AbstractVehicle.h */,
 				32FFF52506E9CEA700E1D8A3 /* Annotation.h */,
 				32FFF52606E9CEA700E1D8A3 /* Camera.h */,
@@ -280,6 +284,7 @@
 				32FFF54C06E9CEBD00E1D8A3 /* SimpleVehicle.cpp */,
 				1CA56BDE0F824EF800819A74 /* SimpleVehicleMB.cpp */,
 				32FFF54E06E9CEBD00E1D8A3 /* Vec3.cpp */,
+				1C0FEF1C0F88C816002009B6 /* RandomizedVector.cpp */,
 			);
 			name = src;
 			path = ../src;
@@ -425,6 +430,7 @@
 				1CDFFCCE0F7FA7AF00A9159E /* MultiplePursuitCUDAStarter.cu in Sources */,
 				1C6473A80F821F92006F4046 /* MemoryBackend.cpp in Sources */,
 				1CA56BDF0F824EF800819A74 /* SimpleVehicleMB.cpp in Sources */,
+				1C0FEF1D0F88C816002009B6 /* RandomizedVector.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
