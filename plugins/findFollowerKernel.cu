@@ -7,9 +7,14 @@ __global__ void
 findFollowerKernel(VehicleData *vehicleData, float3 *seekVectors)
 {
     int id = (blockIdx.x * blockDim.x + threadIdx.x);
-    int follower = (id + 16) % (gridDim.x * blockDim.x);
+    int numOfAgents = gridDim.x * blockDim.x;
+    int numOfFields = 3 * numOfAgents;
+    int follower = id + 3 * 16;
     
-    seekVectors[id] = (*vehicleData).position[follower];
+    // coalesced memory access
+    (((float*)seekVectors)[id]) = (((float*)(*vehicleData).position)[follower%numOfFields]);
+    (((float*)seekVectors)[id+numOfAgents]) = (((float*)(*vehicleData).position)[(follower+numOfAgents)%numOfFields]);
+    (((float*)seekVectors)[id+2*numOfAgents]) = (((float*)(*vehicleData).position)[(follower+2*numOfAgents)%numOfFields]);
 }   
 
-#endif // _STEER_FOR_SEEK_KERNEL_H_
+#endif // _FIND_FOLLOWER_KERNEL_H_
