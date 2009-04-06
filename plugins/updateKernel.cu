@@ -9,10 +9,16 @@
 
 #define CHECK_BANK_CONFLICTS 1
 #if CHECK_BANK_CONFLICTS
+#define FV_F(i) (CUT_BANK_CHECKER(((float*)follow_velocity), i))
+#define V_F(i) (CUT_BANK_CHECKER(((float*)velocity), i))
+#define SA_F(i) (CUT_BANK_CHECKER(((float*)smooth_acceleration), i))
 #define FV(i) (CUT_BANK_CHECKER(follow_velocity, i))
 #define V(i) (CUT_BANK_CHECKER(velocity, i))
 #define SA(i) (CUT_BANK_CHECKER(smooth_acceleration, i))
 #else
+#define FV_F(i) ((float*)follow_velocity)[i]
+#define V_F(i) ((float*)velocity)[i]
+#define SA_F(i) ((float*)smooth_acceleration)[i]
 #define FV(i) follow_velocity[i]
 #define V(i) velocity[i]
 #define SA(i) smooth_acceleration[i]
@@ -23,6 +29,7 @@ updateKernel(VehicleData *vehicleData, float3 *steeringVectors, float elapsedTim
 {
     int id = (blockIdx.x * blockDim.x + threadIdx.x);
     //int numOfAgents = gridDim.x * blockDim.x;
+    int blockOffset = (blockDim.x * blockIdx.x * 3);
     
     // shared memory for follow_velocity
     __shared__ float3 follow_velocity[TPB];
@@ -32,12 +39,29 @@ updateKernel(VehicleData *vehicleData, float3 *steeringVectors, float elapsedTim
     
     // shared memory for smooth_acceleration
     __shared__ float3 smooth_acceleration[TPB];
-        
-    // slow global memory access
+    
+    // coalesced global memory access
     float speed = (*vehicleData).speed[id];
-    V(threadIdx.x) = float3Mul((*vehicleData).forward[id], speed);
-    FV(threadIdx.x) = steeringVectors[id];
-    SA(threadIdx.x) = (*vehicleData).smoothedAcceleration[id];
+    
+    // velocity
+    V_F(threadIdx.x) = ((float*)(*vehicleData).forward)[blockOffset + threadIdx.x];
+    V_F(threadIdx.x + blockDim.x) = ((float*)(*vehicleData).forward)[blockOffset + threadIdx.x + blockDim.x];
+    V_F(threadIdx.x + 2*blockDim.x) = ((float*)(*vehicleData).forward)[blockOffset + threadIdx.x + 2*blockDim.x];
+    
+    // follow_velocity
+    FV_F(threadIdx.x) = ((float*)steeringVectors)[blockOffset + threadIdx.x];
+    FV_F(threadIdx.x + blockDim.x) = ((float*)steeringVectors)[blockOffset + threadIdx.x + blockDim.x];
+    FV_F(threadIdx.x + 2*blockDim.x) = ((float*)steeringVectors)[blockOffset + threadIdx.x + 2*blockDim.x];
+    
+    // smoothed_acceleration
+    SA_F(threadIdx.x) = ((float*)(*vehicleData).smoothedAcceleration)[blockOffset + threadIdx.x];
+    SA_F(threadIdx.x + blockDim.x) = ((float*)(*vehicleData).smoothedAcceleration)[blockOffset + threadIdx.x + blockDim.x];
+    SA_F(threadIdx.x + 2*blockDim.x) = ((float*)(*vehicleData).smoothedAcceleration)[blockOffset + threadIdx.x + 2*blockDim.x];
+
+    __syncthreads();
+    
+    // multiply forward vector with speed
+    V(threadIdx.x) = float3Mul(V(threadIdx.x), speed);
     
     __syncthreads();
     
@@ -70,23 +94,66 @@ updateKernel(VehicleData *vehicleData, float3 *steeringVectors, float elapsedTim
     
     __syncthreads(); // position is re-written
     
-    (*vehicleData).position[id] = make_float3((*vehicleData).position[id].x + (V(threadIdx.x).x * elapsedTime),
-                                              (*vehicleData).position[id].y + (V(threadIdx.x).y * elapsedTime),
-                                              (*vehicleData).position[id].z + (V(threadIdx.x).z * elapsedTime));
+    // ***********************************************
+    // using follow_velocity to store position vector!
+    // ***********************************************
     
-    // regenerate local space
-    if (speed > 0)
-    {
-        float3 forwardVector = float3Div(V(threadIdx.x), speed);
-        float3 side = float3Cross(forwardVector, make_float3(0.f, 1.f, 0.f));
-        (*vehicleData).side[id] = float3Normalize(side);
-    }
+    // loading position data from global memory (coalesced)
+    FV_F(threadIdx.x) = ((float*)(*vehicleData).position)[blockOffset + threadIdx.x];
+    FV_F(threadIdx.x + blockDim.x) = ((float*)(*vehicleData).position)[blockOffset + threadIdx.x + blockDim.x];
+    FV_F(threadIdx.x + 2*blockDim.x) = ((float*)(*vehicleData).position)[blockOffset + threadIdx.x + 2*blockDim.x];
     
-    // copy data back to global memory
+    __syncthreads();
+    
+    FV(threadIdx.x) = make_float3(FV(threadIdx.x).x + (V(threadIdx.x).x * elapsedTime),
+                                  FV(threadIdx.x).y + (V(threadIdx.x).y * elapsedTime),
+                                  FV(threadIdx.x).z + (V(threadIdx.x).z * elapsedTime));
+    
+    __syncthreads();
+    
+    // writing position data back to global memory (coalesced)
+    ((float*)(*vehicleData).position)[blockOffset + threadIdx.x] = FV_F(threadIdx.x);
+    ((float*)(*vehicleData).position)[blockOffset + threadIdx.x + blockDim.x] = FV_F(threadIdx.x + blockDim.x);
+    ((float*)(*vehicleData).position)[blockOffset + threadIdx.x + 2*blockDim.x] = FV_F(threadIdx.x + 2*blockDim.x);
+    
+    __syncthreads();
+        
+    // copy speed back to global memory
     speed = float3Length(V(threadIdx.x));
     (*vehicleData).speed[id] = speed;
-    (*vehicleData).forward[id] = float3Div(V(threadIdx.x), speed);
-    (*vehicleData).smoothedAcceleration[id] = SA(threadIdx.x);
+    
+    // **********************************************
+    // using velocity vector to store forward vector!
+    // **********************************************
+    V(threadIdx.x) = float3Div(V(threadIdx.x), speed);
+    __syncthreads();
+    
+    // regenerate local space
+    // ******************************************
+    // using follow_velocity to store side vector
+    // ******************************************
+    
+//    if (speed > 0)
+//    {
+    FV(threadIdx.x) = float3Cross(V(threadIdx.x), make_float3(0.f, 1.f, 0.f));
+    __syncthreads();
+    FV(threadIdx.x) = float3Normalize(FV(threadIdx.x));
+    __syncthreads();    
+        // writing side vector back to global memory (coalesced)
+    ((float*)(*vehicleData).side)[blockOffset + threadIdx.x] = FV_F(threadIdx.x);
+    ((float*)(*vehicleData).side)[blockOffset + threadIdx.x + blockDim.x] = FV_F(threadIdx.x + blockDim.x);
+    ((float*)(*vehicleData).side)[blockOffset + threadIdx.x + 2*blockDim.x] = FV_F(threadIdx.x + 2*blockDim.x);
+//    }    
+    
+    // writing forward vector back to global memory (coalesced)
+    ((float*)(*vehicleData).forward)[blockOffset + threadIdx.x] = V_F(threadIdx.x);
+    ((float*)(*vehicleData).forward)[blockOffset + threadIdx.x + blockDim.x] = V_F(threadIdx.x + blockDim.x);
+    ((float*)(*vehicleData).forward)[blockOffset + threadIdx.x + 2*blockDim.x] = V_F(threadIdx.x + 2*blockDim.x);
+    
+    // writing smoothed_acceleration back to global memory (coalesced)
+    ((float*)(*vehicleData).smoothedAcceleration)[blockOffset + threadIdx.x] = SA_F(threadIdx.x);
+    ((float*)(*vehicleData).smoothedAcceleration)[blockOffset + threadIdx.x + blockDim.x] = SA_F(threadIdx.x + blockDim.x);
+    ((float*)(*vehicleData).smoothedAcceleration)[blockOffset + threadIdx.x + 2*blockDim.x] = SA_F(threadIdx.x + 2*blockDim.x);
 }
 
 #endif // _UPDATE_KERNEL_H_

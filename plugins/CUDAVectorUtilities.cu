@@ -150,25 +150,45 @@ float3BlendIn(float smoothRate, float3 newvalue, float3 smoothedAccu)
 __device__ float3
 float3Div(float3 vec, float div)
 {
-    return make_float3(vec.x / div, vec.y / div, vec.z / div);
+    vec.x /= div;
+    vec.y /= div;
+    vec.z /= div;
+    
+    return vec;
+//    return make_float3(vec.x / div, vec.y / div, vec.z / div);
 }
 
 __device__ float3
 float3Sub(float3 a, float3 b)
 {
-    return make_float3(a.x - b.x, a.y - b.y, a.z - b.z);
+    a.x -= b.x;
+    a.y -= b.y;
+    a.z -= b.z;
+    
+    return a;
+//    return make_float3(a.x - b.x, a.y - b.y, a.z - b.z);
 }
 
 __device__ float3
 float3Add(float3 a, float3 b)
 {
-    return make_float3(a.x + b.x, a.y + b.y, a.z + b.z);
+    a.x += b.x;
+    a.y += b.y;
+    a.z += b.z;
+    
+    return a;
+//    return make_float3(a.x + b.x, a.y + b.y, a.z + b.z);
 }
 
 __device__ float3
 float3Mul(float3 vec, float mul)
 {
-    return make_float3(vec.x * mul, vec.y * mul, vec.z * mul);
+    vec.x *= mul;
+    vec.y *= mul;
+    vec.z *= mul;
+    
+    return vec;
+//    return make_float3(vec.x * mul, vec.y * mul, vec.z * mul);
 }
 
 __device__ float3
