@@ -2,6 +2,6 @@
 #define _MULTIPLE_PURSUIT_CUDA_DEFINES_H_
 
 #define TPB 128 // Threads per Block
-#define NUM_OF_AGENTS 128
+#define NUM_OF_AGENTS 512
 
 #endif // _MULTIPLE_PURSUIT_CUDA_DEFINES_H_

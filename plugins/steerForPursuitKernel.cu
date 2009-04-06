@@ -9,13 +9,23 @@
 
 #define CHECK_BANK_CONFLICTS 0
 #if CHECK_BANK_CONFLICTS
+#define V_F(i) (CUT_BANK_CHECKER(((float*)velocity), i))
+#define F_F(i) (CUT_BANK_CHECKER(((float*)forward), i))
+#define P_F(i) (CUT_BANK_CHECKER(((float*)position), i))
+#define S_F(i) (CUT_BANK_CHECKER(((float*)steering), i))
 #define V(i) (CUT_BANK_CHECKER(velocity, i))
 #define F(i) (CUT_BANK_CHECKER(forward, i))
 #define P(i) (CUT_BANK_CHECKER(position, i))
+#define S(i) (CUT_BANK_CHECKER(steering, i))
 #else
+#define V_F(i) ((float*)velocity)[i]
+#define F_F(i) ((float*)forward)[i]
+#define P_F(i) ((float*)position)[i]
+#define S_F(i) ((float*)steering)[i]
 #define V(i) velocity[i]
 #define F(i) forward[i]
 #define P(i) position[i]
+#define S(i) steering[i]
 #endif
 
 // prototype
@@ -29,6 +39,7 @@ __global__ void
 steerForPursuitKernel(VehicleData *vehicleData, float3 wandererPosition, float3 wandererVelocity, float3 *steeringVectors, float maxPredictionTime)
 {
     int id = (blockIdx.x * blockDim.x + threadIdx.x);
+    int blockOffset = (blockDim.x * blockIdx.x * 3);
  
     // shared memory for velocity vector
     __shared__ float3 velocity[TPB];
@@ -40,16 +51,21 @@ steerForPursuitKernel(VehicleData *vehicleData, float3 wandererPosition, float3 
     __shared__ float3 position[TPB];
 
     
-    // copy velocity data from global memory to shared memory
+    // copy velocity data from global memory (coalesced)
     float speed = (*vehicleData).speed[id];
-    F(threadIdx.x) = (*vehicleData).forward[id];
-    __syncthreads();
+    
+    // copy forward vector from global memory (coalesced)
+    F_F(threadIdx.x) = ((float*)(*vehicleData).forward)[blockOffset + threadIdx.x];
+    F_F(threadIdx.x + blockDim.x) = ((float*)(*vehicleData).forward)[blockOffset + threadIdx.x + blockDim.x];
+    F_F(threadIdx.x + 2*blockDim.x) = ((float*)(*vehicleData).forward)[blockOffset + threadIdx.x + 2*blockDim.x];
+
+    // calculating velocity vector
     V(threadIdx.x) = float3Mul(F(threadIdx.x), speed);
     
-    //printf("V: (%f, %f, %f)\n", V(threadIdx.x).x, V(threadIdx.x).y, V(threadIdx.x).z);
-    
-    // copy position vector to shared memory
-    P(threadIdx.x) = (*vehicleData).position[id];
+    // copy position vector from global memory (coalesced)
+    P_F(threadIdx.x) = ((float*)(*vehicleData).position)[blockOffset + threadIdx.x];
+    P_F(threadIdx.x + blockDim.x) = ((float*)(*vehicleData).position)[blockOffset + threadIdx.x + blockDim.x];
+    P_F(threadIdx.x + 2*blockDim.x) = ((float*)(*vehicleData).position)[blockOffset + threadIdx.x + 2*blockDim.x];
     
     __syncthreads();
     
@@ -80,64 +96,6 @@ steerForPursuitKernel(VehicleData *vehicleData, float3 wandererPosition, float3 
     //printf("timeFactor is: %f\n", timeFactor);
     //Vec3 color;           // to be filled in below (xxx just for debugging)
     
-    // Break the pursuit into nine cases, the cross product of the
-    // quarry being [ahead, aside, or behind] us and heading
-    // [parallel, perpendicular, or anti-parallel] to us.
-//    switch (f)
-//    {
-//        case +1:
-//            switch (p)
-//        {
-//            case +1:          // ahead, parallel
-//                timeFactor = 4;
-//                color = gBlack;
-//                break;
-//            case 0:           // ahead, perpendicular
-//                timeFactor = 1.8f;
-//                color = gGray50;
-//                break;
-//            case -1:          // ahead, anti-parallel
-//                timeFactor = 0.85f;
-//                color = gWhite;
-//                break;
-//        }
-//            break;
-//        case 0:
-//            switch (p)
-//        {
-//            case +1:          // aside, parallel
-//                timeFactor = 1;
-//                color = gRed;
-//                break;
-//            case 0:           // aside, perpendicular
-//                timeFactor = 0.8f;
-//                color = gYellow;
-//                break;
-//            case -1:          // aside, anti-parallel
-//                timeFactor = 4;
-//                color = gGreen;
-//                break;
-//        }
-//            break;
-//        case -1:
-//            switch (p)
-//        {
-//            case +1:          // behind, parallel
-//                timeFactor = 0.5f;
-//                color= gCyan;
-//                break;
-//            case 0:           // behind, perpendicular
-//                timeFactor = 2;
-//                color= gBlue;
-//                break;
-//            case -1:          // behind, anti-parallel
-//                timeFactor = 2;
-//                color = gMagenta;
-//                break;
-//        }
-//            break;
-//    }
-    
     // estimated time until intercept of quarry
     float et = directTravelTime * timeFactor;
     
@@ -163,13 +121,21 @@ __device__ void
 steerForSeekKernelSingle(float3 position, float3 velocity, float3 seekVector, float3 *steeringVectors)
 {
     int id = (blockIdx.x * blockDim.x + threadIdx.x);
+    int blockOffset = (blockDim.x * blockIdx.x * 3);
 
     //printf("target: (%f, %f, %f)\n", seekVector.x, seekVector.y, seekVector.z);
     //printf("1: sv.x: %f, sv.y: %f\n", steeringVectors[id].x, steeringVectors[id].y);
     
-    steeringVectors[id].x = (seekVector.x - position.x) - velocity.x;
-    steeringVectors[id].y = (seekVector.y - position.y) - velocity.y;
-    steeringVectors[id].z = (seekVector.z - position.z) - velocity.z;
+    // shared memory for steering vectors
+    __shared__ float3 steering[TPB];
+    
+    S(threadIdx.x).x = (seekVector.x - position.x) - velocity.x;
+    S(threadIdx.x).y = (seekVector.y - position.y) - velocity.y;
+    S(threadIdx.x).z = (seekVector.z - position.z) - velocity.z;
+    
+    ((float*)steeringVectors)[blockOffset + threadIdx.x] = S_F(threadIdx.x);
+    ((float*)steeringVectors)[blockOffset + threadIdx.x + blockDim.x] = S_F(threadIdx.x + blockDim.x);
+    ((float*)steeringVectors)[blockOffset + threadIdx.x + 2*blockDim.x] = S_F(threadIdx.x + 2*blockDim.x);
     
     //printf("2: sv.x: %f, sv.y: %f\n", steeringVectors[id].x, steeringVectors[id].y);
 } 

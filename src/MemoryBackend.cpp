@@ -1,4 +1,5 @@
 #include "OpenSteer/MemoryBackend.h"
+#include <cuda_runtime.h>
 #include <iostream>
 #include <exception>
 
@@ -6,13 +7,19 @@ OpenSteer::MemoryBackend* OpenSteer::MemoryBackend::_instance = 0;
 int OpenSteer::MemoryBackend::_idCounter = 0;
 
 OpenSteer::MemoryBackend::MemoryBackend() {
-    _data = new VehicleData;
-    std::cout << "MemoryBackend initialized" << std::endl;
+    
+    cudaError_t retval = cudaMallocHost((void**)&_data, sizeof(VehicleData));
+    if (retval == cudaSuccess) {
+        std::cout << "MemoryBackend initialized" << std::endl;
+    } else {
+        std::cout << "MemoryBackend initialization failed!" << std::endl;
+    }
+
 }
 
 OpenSteer::MemoryBackend::~MemoryBackend() {
     std::cout << "MemoryBackend reset" << std::endl;
-    delete _data;
+    cudaFreeHost(_data);
     _instance = 0;
     _idCounter = 0;
 }

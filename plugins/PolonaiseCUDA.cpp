@@ -78,13 +78,6 @@ public:
     // per frame simulation update
     void update (const float currentTime, const float elapsedTime)
     {
-//          measurePathCurvature (elapsedTime);
-//        
-//        // running average of recent positions
-//        blendIntoAccumulator (elapsedTime * 0.06f, // QQQ
-//                              position (),
-//                              _smoothedPosition);
-        
         annotationVelocityAcceleration ();
         recordTrailVertex (currentTime, position());
     }
@@ -112,7 +105,7 @@ public:
     
     const char* name (void) {return "Polonaise CUDA";}
 
-    float selectionOrderSortKey (void) {return 0.00000002f;}
+    float selectionOrderSortKey (void) {return 0.0002f;}
     
     const static int numOfAgents = NUM_OF_AGENTS;
     VehicleData *vData;

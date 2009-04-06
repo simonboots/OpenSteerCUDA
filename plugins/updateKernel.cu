@@ -66,23 +66,23 @@ updateKernel(VehicleData *vehicleData, float3 *steeringVectors, float elapsedTim
     __syncthreads();
     
     // adjustRawSteeringForce
-    float3 adjustedForce;
+    float3 v; // v = adjustedForce
     
     float maxAdjustedSpeed = 0.2f * (*vehicleData).maxSpeed[id];
     
     if ((speed > maxAdjustedSpeed) || (FV(threadIdx.x).x == 0.f && FV(threadIdx.x).z == 0.f)) {
-        adjustedForce = FV(threadIdx.x);
+        v = FV(threadIdx.x);
     } else {
         float cosine = interpolate (__powf(speed / maxAdjustedSpeed, 20), 1.0f, -1.0f);
-        adjustedForce = limitMaxDeviationAngle(FV(threadIdx.x), cosine, float3Div(V(threadIdx.x), speed));
+        v = limitMaxDeviationAngle(FV(threadIdx.x), cosine, float3Div(V(threadIdx.x), speed));
     }
     
-    float3 clippedForce = float3TruncateLength(adjustedForce, (*vehicleData).maxForce[id]);
-    float3 new_acceleration = float3Div(clippedForce, (*vehicleData).mass[id]);
+    v = float3TruncateLength(v, (*vehicleData).maxForce[id]); // v = clippedForce
+    v = float3Div(v, (*vehicleData).mass[id]); // v = new_acceleration
     
     if (elapsedTime > 0) {
         float smoothRate = clip(9 * elapsedTime, 0.15f, 0.4f);
-        SA(threadIdx.x) = float3BlendIn(smoothRate, new_acceleration, SA(threadIdx.x));
+        SA(threadIdx.x) = float3BlendIn(smoothRate, v, SA(threadIdx.x));
     }
     
     __syncthreads();

@@ -31,8 +31,8 @@ void runPolonaiseKernel(VehicleData *h_vehicleData, int numOfAgents, float elaps
     dim3 threads(TPB,1,1);
     
     // prepare memory for steeringVectors
-    const unsigned int mem_size_steering = sizeof(float3) * numOfAgents;
     if (d_steeringVectors == NULL) {
+        const unsigned int mem_size_steering = sizeof(float3) * numOfAgents;
         cudaMalloc((void **) &d_steeringVectors, mem_size_steering);
     }
     
@@ -45,57 +45,57 @@ void runPolonaiseKernel(VehicleData *h_vehicleData, int numOfAgents, float elaps
     }
     
     // prepare steerForSeekKernel
-    const unsigned int mem_size_seek_vectors = sizeof(float3) * numOfAgents;
     if (d_seekVectors == NULL) {
+        const unsigned int mem_size_seek_vectors = sizeof(float3) * numOfAgents;
         cudaMalloc((void **) &d_seekVectors, mem_size_seek_vectors);
     }
     
     // create and start timer
-    unsigned int timer = 0;
-    CUT_SAFE_CALL(cutCreateTimer(&timer));
-    CUT_SAFE_CALL(cutStartTimer(timer));
+//    unsigned int timer = 0;
+//    CUT_SAFE_CALL(cutCreateTimer(&timer));
+//    CUT_SAFE_CALL(cutStartTimer(timer));
     
     // call findFollowerKernel
     findFollowerKernel<<<grid, threads>>>(d_vehicleData, d_seekVectors);
     CUT_CHECK_ERROR("Kernel execution failed");
     
     // stop and destroy timer
-    CUT_SAFE_CALL(cutStopTimer(timer));
-    printf("Raw processing time (findFollowerKernel): %f (ms) \n", cutGetTimerValue(timer));
-    CUT_SAFE_CALL(cutDeleteTimer(timer));
-    CUT_SAFE_CALL(cutCreateTimer(&timer));
-    CUT_SAFE_CALL(cutStartTimer(timer));
+//    CUT_SAFE_CALL(cutStopTimer(timer));
+//    printf("Raw processing time (findFollowerKernel): %f (ms) \n", cutGetTimerValue(timer));
+//    CUT_SAFE_CALL(cutDeleteTimer(timer));
+//    CUT_SAFE_CALL(cutCreateTimer(&timer));
+//    CUT_SAFE_CALL(cutStartTimer(timer));
 
     // call steerForSeekKernel
     steerForSeekKernel<<<grid, threads>>>(d_vehicleData, d_seekVectors, d_steeringVectors);
     CUT_CHECK_ERROR("Kernel execution failed");
             
     // stop and destroy timer
-    CUT_SAFE_CALL(cutStopTimer(timer));
-    printf("Raw processing time (steerForSeekKernel): %f (ms) \n", cutGetTimerValue(timer));
-    CUT_SAFE_CALL(cutDeleteTimer(timer));
-    CUT_SAFE_CALL(cutCreateTimer(&timer));
-    CUT_SAFE_CALL(cutStartTimer(timer));
+//    CUT_SAFE_CALL(cutStopTimer(timer));
+//    printf("Raw processing time (steerForSeekKernel): %f (ms) \n", cutGetTimerValue(timer));
+//    CUT_SAFE_CALL(cutDeleteTimer(timer));
+//    CUT_SAFE_CALL(cutCreateTimer(&timer));
+//    CUT_SAFE_CALL(cutStartTimer(timer));
 
     // call updateKernel
     updateKernel<<<grid, threads>>>(d_vehicleData, d_steeringVectors, elapsedTime);
     CUT_CHECK_ERROR("Kernel execution failed");
     
-    cudaThreadSynchronize();
+    //cudaThreadSynchronize();
     
     // stop and destroy timer
-    CUT_SAFE_CALL(cutStopTimer(timer));
-    printf("Raw processing time (updateKernel): %f (ms) \n", cutGetTimerValue(timer));
-    CUT_SAFE_CALL(cutDeleteTimer(timer));
-    CUT_SAFE_CALL(cutCreateTimer(&timer));
-    CUT_SAFE_CALL(cutStartTimer(timer));
+//    CUT_SAFE_CALL(cutStopTimer(timer));
+//    printf("Raw processing time (updateKernel): %f (ms) \n", cutGetTimerValue(timer));
+//    CUT_SAFE_CALL(cutDeleteTimer(timer));
+//    CUT_SAFE_CALL(cutCreateTimer(&timer));
+//    CUT_SAFE_CALL(cutStartTimer(timer));
     
     cudaMemcpy(h_vehicleData, d_vehicleData, mem_size_vehicle, cudaMemcpyDeviceToHost);
     
     // stop and destroy timer
-    CUT_SAFE_CALL(cutStopTimer(timer));
-    printf("Memcpy time: %f (ms) \n", cutGetTimerValue(timer));
-    CUT_SAFE_CALL(cutDeleteTimer(timer));    
+//    CUT_SAFE_CALL(cutStopTimer(timer));
+//    printf("Memcpy time: %f (ms) \n", cutGetTimerValue(timer));
+//    CUT_SAFE_CALL(cutDeleteTimer(timer));    
     
     
     //cudaFree(vehicleData);
