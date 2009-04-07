@@ -51,6 +51,9 @@ float3Mul(float3 vec, float mul);
 __device__ float3
 float3PredictFuturePosition(float3 position, float3 velocity, float predictionTime);
 
+__device__ float
+float3Distance(float3 a, float3 b);
+
 __device__ float3
 float3Interpolate(float alpha, float3 x0, float3 x1) {
     return make_float3(x0.x + ((x1.x - x0.x) * alpha),
@@ -195,6 +198,13 @@ __device__ float3
 float3PredictFuturePosition(float3 position, float3 velocity, float predictionTime)
 {
     return float3Add(position, float3Mul(velocity, predictionTime));
+}
+
+__device__ float
+float3Distance(float3 a, float3 b)
+{
+    a = float3Sub(a, b);
+    return float3Length(a);
 }
 
 #endif // _CUDA_VECTOR_UTILITIES_H_

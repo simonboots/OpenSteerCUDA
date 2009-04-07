@@ -76,7 +76,6 @@ steerForPursuitKernel(VehicleData *vehicleData, float3 wandererPosition, float3 
     
     float wandererSpeed = float3Length(wandererVelocity);
     float3 wandererForward = float3Div(wandererVelocity, wandererSpeed);
-
     
     // how parallel are the paths of "this" and the quarry
     // (1 means parallel, 0 is pependicular, -1 is anti-parallel)
@@ -85,7 +84,6 @@ steerForPursuitKernel(VehicleData *vehicleData, float3 wandererPosition, float3 
     // how "forward" is the direction to the quarry
     // (1 means dead ahead, 0 is directly to the side, -1 is straight back)
     float forwardness = float3Dot(F(threadIdx.x), unitOffset);
-    //printf("forwardness is: %f\n", forwardness);
 
     float directTravelTime = distance / speed;
     int f = intervalComparison (forwardness,  -0.707f, 0.707f);
@@ -93,7 +91,6 @@ steerForPursuitKernel(VehicleData *vehicleData, float3 wandererPosition, float3 
     
     float timeFactor = timeFactorTable[(f+1) + (p+1)*3]; // to be filled in below
     
-    //printf("timeFactor is: %f\n", timeFactor);
     //Vec3 color;           // to be filled in below (xxx just for debugging)
     
     // estimated time until intercept of quarry
@@ -103,10 +100,7 @@ steerForPursuitKernel(VehicleData *vehicleData, float3 wandererPosition, float3 
     float etl = (et > maxPredictionTime) ? maxPredictionTime : et;
     
     // estimated position of quarry at intercept
-    //printf("wandererPos: (%f, %f, %f)\n", wandererPosition.x, wandererPosition.y, wandererPosition.z);
-    //printf("wandererVel: (%f, %f, %f)\n", wandererVelocity.x, wandererVelocity.y, wandererVelocity.z);
     float3 target = float3PredictFuturePosition(wandererPosition, wandererVelocity, etl);
-    //printf("target: (%f, %f, %f)\n", target.x, target.y, target.z);
 
     
     // annotation
@@ -122,9 +116,6 @@ steerForSeekKernelSingle(float3 position, float3 velocity, float3 seekVector, fl
 {
     int id = (blockIdx.x * blockDim.x + threadIdx.x);
     int blockOffset = (blockDim.x * blockIdx.x * 3);
-
-    //printf("target: (%f, %f, %f)\n", seekVector.x, seekVector.y, seekVector.z);
-    //printf("1: sv.x: %f, sv.y: %f\n", steeringVectors[id].x, steeringVectors[id].y);
     
     // shared memory for steering vectors
     __shared__ float3 steering[TPB];
@@ -136,8 +127,6 @@ steerForSeekKernelSingle(float3 position, float3 velocity, float3 seekVector, fl
     ((float*)steeringVectors)[blockOffset + threadIdx.x] = S_F(threadIdx.x);
     ((float*)steeringVectors)[blockOffset + threadIdx.x + blockDim.x] = S_F(threadIdx.x + blockDim.x);
     ((float*)steeringVectors)[blockOffset + threadIdx.x + 2*blockDim.x] = S_F(threadIdx.x + 2*blockDim.x);
-    
-    //printf("2: sv.x: %f, sv.y: %f\n", steeringVectors[id].x, steeringVectors[id].y);
 } 
 
 #endif // _STEER_FOR_TARGET_SPEED_KERNEL_H_

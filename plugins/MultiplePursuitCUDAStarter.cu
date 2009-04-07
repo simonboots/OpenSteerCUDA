@@ -2,6 +2,7 @@
 #include <cutil.h>
 #include <stdio.h>
 #include "VehicleData.h"
+#include "RandomizedVector.h"
 #include "MultiplePursuitCUDADefines.h"
 
 __global__ __device__ void
@@ -12,7 +13,10 @@ updateKernel(VehicleData *vehicleData, float3 *steeringVectors, float elapsedTim
 
 static float3 *d_steeringVectors = NULL;
 static VehicleData *d_vehicleData = NULL;
-static int first_time = 0;
+static float *d_randomVectors = NULL;
+//static OpenSteer::RandomizedVector *randomizedVec = new OpenSteer::RandomizedVector(NUM_OF_AGENTS);
+//static unsigned int iterations = 0;
+static int first_time = 1;
 
 void runMultiplePursuitKernel(VehicleData *h_vehicleData, float3 wandererPosition, float3 wandererVelocity, float elapsedTime, int copy_vehicle_data)
 {
@@ -27,7 +31,7 @@ void runMultiplePursuitKernel(VehicleData *h_vehicleData, float3 wandererPositio
     cudaSetDevice(0);
     
     // copy time factor table
-    if (first_time == 0) {
+    if (first_time == 1) {
         cudaMemcpyToSymbol("timeFactorTable", h_timeFactorTable, sizeof(float) * 9, 0, cudaMemcpyHostToDevice);
     }
 
@@ -49,6 +53,17 @@ void runMultiplePursuitKernel(VehicleData *h_vehicleData, float3 wandererPositio
         
         cudaMemcpy(d_vehicleData, h_vehicleData, mem_size_vehicle, cudaMemcpyHostToDevice);
     }
+    
+    // copy random vector
+//    const unsigned int mem_size_random = sizeof(float) * randomizedVec->size();
+//    if (d_randomVectors == NULL) {
+//        cudaMalloc((void **) &d_randomVectors, mem_size_random);
+//    }
+    
+//    if (iterations % 20 == 0) {
+//        randomizedVec->renew();
+//        cudaMemcpy(d_randomVectors, randomizedVec->getVector(), mem_size_random, cudaMemcpyHostToDevice);
+//    }
         
     // create and start timer
 //    unsigned int timer = 0;
@@ -91,7 +106,7 @@ void runMultiplePursuitKernel(VehicleData *h_vehicleData, float3 wandererPositio
     
     //cudaFree(vehicleData);
     
-    first_time = 1;
+    first_time = 0;
 }
 
 void endMultiplePursuit(void)
