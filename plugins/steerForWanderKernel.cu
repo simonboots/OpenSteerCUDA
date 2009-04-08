@@ -77,7 +77,7 @@ steerForWander2DKernel(VehicleData *vehicleData, float *random, float dt, float3
     U(threadIdx.x) = U(threadIdx.x) * wanderUp;
     
     S(threadIdx.x).x = SI(threadIdx.x).x + U(threadIdx.x).x;
-    S(threadIdx.x).y = SI(threadIdx.x).y + U(threadIdx.x).y;
+    S(threadIdx.x).y = 0.f; // SI(threadIdx.x).y + U(threadIdx.x).y;
     S(threadIdx.x).z = SI(threadIdx.x).z + U(threadIdx.x).z;
     
     // copy steering vector back to global memory (coalesced)
