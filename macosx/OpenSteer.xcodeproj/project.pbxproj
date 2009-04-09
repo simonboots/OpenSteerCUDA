@@ -20,6 +20,9 @@
 		1CA02A130F8D188100D03331 /* WanderAround.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1CA02A120F8D188100D03331 /* WanderAround.cpp */; };
 		1CA56BDF0F824EF800819A74 /* SimpleVehicleMB.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1CA56BDE0F824EF800819A74 /* SimpleVehicleMB.cpp */; };
 		1CBD02870F728D4800DEE3E8 /* libcutil.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1CBD02860F728D4800DEE3E8 /* libcutil.a */; };
+		1CC8D5FC0F8DC64B006CEA94 /* WanderAroundCUDA.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1CC8D5FB0F8DC64B006CEA94 /* WanderAroundCUDA.cpp */; };
+		1CC8D61A0F8DD037006CEA94 /* WanderAroundCUDAStarter.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1CC8D6060F8DC8D9006CEA94 /* WanderAroundCUDAStarter.cu */; };
+		1CC8D61C0F8DD04B006CEA94 /* steerForWanderKernel.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1C18EDEA0F7BC6BF00100C21 /* steerForWanderKernel.cu */; };
 		1CC9C2190F70FD1400990434 /* Polonaise.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1CC9C2180F70FD1400990434 /* Polonaise.cpp */; };
 		1CCAD2CD0F6E81CA005A3712 /* libcuda.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1CCAD2CB0F6E81CA005A3712 /* libcuda.dylib */; };
 		1CCAD2CE0F6E81CA005A3712 /* libcudart.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1CCAD2CC0F6E81CA005A3712 /* libcudart.dylib */; };
@@ -95,6 +98,9 @@
 		1CBD023E0F72876D00DEE3E8 /* PolonaiseCUDAStarter.cu */ = {isa = PBXFileReference; explicitFileType = sourcecode.c; fileEncoding = 4; path = PolonaiseCUDAStarter.cu; sourceTree = "<group>"; };
 		1CBD023F0F7288A300DEE3E8 /* PolonaiseCUDAKernel_old.cu */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.c; fileEncoding = 4; path = PolonaiseCUDAKernel_old.cu; sourceTree = "<group>"; };
 		1CBD02860F728D4800DEE3E8 /* libcutil.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libcutil.a; path = CUDA/lib/libcutil.a; sourceTree = SYSTEM_DEVELOPER_DIR; };
+		1CC8D5FB0F8DC64B006CEA94 /* WanderAroundCUDA.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = WanderAroundCUDA.cpp; sourceTree = "<group>"; };
+		1CC8D6060F8DC8D9006CEA94 /* WanderAroundCUDAStarter.cu */ = {isa = PBXFileReference; explicitFileType = sourcecode.c; fileEncoding = 4; path = WanderAroundCUDAStarter.cu; sourceTree = "<group>"; };
+		1CC8D60A0F8DCD39006CEA94 /* WanderAroundCUDADefines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WanderAroundCUDADefines.h; sourceTree = "<group>"; };
 		1CC990830F8B5346009D50A4 /* resetOnCollisionKernel.cu */ = {isa = PBXFileReference; explicitFileType = sourcecode.c; fileEncoding = 4; name = resetOnCollisionKernel.cu; path = ../plugins/resetOnCollisionKernel.cu; sourceTree = "<group>"; };
 		1CC9C2180F70FD1400990434 /* Polonaise.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Polonaise.cpp; sourceTree = "<group>"; };
 		1CCAD2CB0F6E81CA005A3712 /* libcuda.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libcuda.dylib; path = /usr/local/cuda/lib/libcuda.dylib; sourceTree = "<absolute>"; };
@@ -311,6 +317,9 @@
 				1C0FEFCA0F88DDCD002009B6 /* PolonaiseCUDADefines.h */,
 				32FFF56B06E9CECE00E1D8A3 /* Soccer.cpp */,
 				1CA02A120F8D188100D03331 /* WanderAround.cpp */,
+				1CC8D5FB0F8DC64B006CEA94 /* WanderAroundCUDA.cpp */,
+				1CC8D60A0F8DCD39006CEA94 /* WanderAroundCUDADefines.h */,
+				1CC8D6060F8DC8D9006CEA94 /* WanderAroundCUDAStarter.cu */,
 			);
 			name = plugins;
 			path = ../plugins;
@@ -429,6 +438,9 @@
 				1C0FEFC30F88DC05002009B6 /* PolonaiseCUDAStarter.cu in Sources */,
 				1C0FF04D0F88F388002009B6 /* findFollowerKernel.cu in Sources */,
 				1CA02A130F8D188100D03331 /* WanderAround.cpp in Sources */,
+				1CC8D5FC0F8DC64B006CEA94 /* WanderAroundCUDA.cpp in Sources */,
+				1CC8D61A0F8DD037006CEA94 /* WanderAroundCUDAStarter.cu in Sources */,
+				1CC8D61C0F8DD04B006CEA94 /* steerForWanderKernel.cu in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

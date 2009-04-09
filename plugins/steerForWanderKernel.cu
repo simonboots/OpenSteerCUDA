@@ -2,7 +2,9 @@
 #define _STEER_FOR_WANDER_KERNEL_H_
 
 #include "VehicleData.h"
+#include "WanderAroundCUDADefines.h"
 #include "CUDAFloatUtilities.cu"
+#include "CUDAVectorUtilities.cu"
 
 #define CHECK_BANK_CONFLICTS 0
 #if CHECK_BANK_CONFLICTS
@@ -22,28 +24,13 @@
 #endif
 
 __device__ float
-scalarRandomWalk(float walkspeed, float min, float max, float random);
+scalarRandomWalk(float initial, float walkspeed, float min, float max, float random);
 
 __global__ __device__ void
-steerForWander2DKernel(VehicleData *vehicleData, float *random, float dt, float3 *steeringVectors)
+steerForWander2DKernel(VehicleData *vehicleData, float *random, float dt, float3 *steeringVectors, float2 *wanderData)
 {
-    //template<class Super>
-//    OpenSteer::Vec3
-//    OpenSteer::SteerLibraryMixin<Super>::
-//    steerForWander (float dt)
-//    {
-//        // random walk WanderSide and WanderUp between -1 and +1
-//        const float speed = 12 * dt; // maybe this (12) should be an argument?
-//        WanderSide = scalarRandomWalk (WanderSide, speed, -1, +1);
-//        WanderUp   = scalarRandomWalk (WanderUp,   speed, -1, +1);
-//        
-//        // return a pure lateral steering vector: (+/-Side) + (+/-Up)
-//        return (side() * WanderSide) + (up() * WanderUp);
-//    }
-    
-    
     int id = (blockIdx.x * blockDim.x + threadIdx.x);
-    int blockOffset2 = (blockDim.x * blockIdx.x * 2);
+    int blockOffset2 = (blockDim.x * blockIdx.x);
     int blockOffset3 = (blockDim.x * blockIdx.x * 3);
     
     // shared memory for random numbers
@@ -70,11 +57,14 @@ steerForWander2DKernel(VehicleData *vehicleData, float *random, float dt, float3
     
     float speed = 12 * dt;
     
-    float wanderSide = scalarRandomWalk(speed, -1, +1, random[id]);
-    float wanderUp = scalarRandomWalk(speed, -1, +1, random[id+blockOffset2]);
+    float wanderSide = scalarRandomWalk(wanderData[id].x, speed, -1, +1, random[id]);
+    float wanderUp = scalarRandomWalk(wanderData[id].y, speed, -1, +1, random[id+blockOffset2]);
     
-    SI(threadIdx.x) = SI(threadIdx.x) * wanderSide;
-    U(threadIdx.x) = U(threadIdx.x) * wanderUp;
+    wanderData[id].x = wanderSide;
+    wanderData[id].y = wanderUp;
+    
+    SI(threadIdx.x) = float3Mul(SI(threadIdx.x), wanderSide);
+    U(threadIdx.x) = float3Mul(U(threadIdx.x), wanderUp);
     
     S(threadIdx.x).x = SI(threadIdx.x).x + U(threadIdx.x).x;
     S(threadIdx.x).y = 0.f; // SI(threadIdx.x).y + U(threadIdx.x).y;
@@ -82,15 +72,15 @@ steerForWander2DKernel(VehicleData *vehicleData, float *random, float dt, float3
     
     // copy steering vector back to global memory (coalesced)
     
-    ((float*)steeringVectors)[blockOffset3 + threadIdx.x] = S(threadIdx.x);
-    ((float*)steeringVectors)[blockOffset3 + threadIdx.x + blockDim.x] = S(threadIdx.x + blockDim.x);
-    ((float*)steeringVectors)[blockOffset3 + threadIdx.x + 2*blockDim.x] = S(threadIdx.x + 2*blockDim.x);
+    ((float*)steeringVectors)[blockOffset3 + threadIdx.x] = S_F(threadIdx.x);
+    ((float*)steeringVectors)[blockOffset3 + threadIdx.x + blockDim.x] = S_F(threadIdx.x + blockDim.x);
+    ((float*)steeringVectors)[blockOffset3 + threadIdx.x + 2*blockDim.x] = S_F(threadIdx.x + 2*blockDim.x);
 }
 
 __device__ float
-scalarRandomWalk(float walkspeed, float min, float max, float random)
+scalarRandomWalk(float initial, float walkspeed, float min, float max, float random)
 {
-    float wander = (((random * 2) - 1) * walkspeed);
+    float wander = initial + (((random * 2) - 1) * walkspeed);
     return clip(wander, min, max);
 }
 

@@ -1,0 +1,7 @@
+#ifndef _WANDER_AROUND_CUDA_DEFINES_H_
+#define _WANDER_AROUND_CUDA_DEFINES_H_
+
+#define TPB 128 // Threads per Block
+#define NUM_OF_AGENTS 2048
+
+#endif // _WANDER_AROUND_CUDA_DEFINES_H_

@@ -28,9 +28,9 @@
 // ----------------------------------------------------------------------------
 //
 //
-// WanderAround: a WanderAround OpenSteerDemo PlugIn
+// WanderAroundCUDA: a WanderAroundCUDA OpenSteerDemo PlugIn
 //
-// 04-08-09 sst: created 
+// 04-09-09 sst: created 
 //
 //
 // ----------------------------------------------------------------------------
@@ -44,16 +44,19 @@
 
 using namespace OpenSteer;
 
+void runWanderAroundKernel(VehicleData *h_vehicleData, float elapsedTime);
+void endWanderAround(void);
+
 
 // ----------------------------------------------------------------------------
 
 
-class WanderAround : public SimpleVehicleMB
+class WanderAroundCUDA : public SimpleVehicleMB
     {
     public:
         
         // constructor
-        WanderAround () {
+        WanderAroundCUDA () {
             reset ();
         }
         
@@ -72,7 +75,7 @@ class WanderAround : public SimpleVehicleMB
         // per frame simulation update
         void update (const float currentTime, const float elapsedTime)
         {
-            applySteeringForce(steerForWander(elapsedTime).setYtoZero(), elapsedTime);
+            //applySteeringForce(steerForWander(elapsedTime).setYtoZero(), elapsedTime);
             annotationVelocityAcceleration ();
             recordTrailVertex (currentTime, position());
         }
@@ -90,23 +93,24 @@ class WanderAround : public SimpleVehicleMB
 // PlugIn for OpenSteerDemo
 
 
-class WanderAroundPlugIn : public PlugIn
+class WanderAroundCUDAPlugIn : public PlugIn
     {
     public:
         
-        const char* name (void) {return "WanderAround";}
+        const char* name (void) {return "WanderAround CUDA";}
         
-        float selectionOrderSortKey (void) {return 0.00001f;}
+        float selectionOrderSortKey (void) {return 0.000001f;}
         
         const static int numOfAgents = 2048;
+        VehicleData *vData;
         
         // be more "nice" to avoid a compiler warning
-        virtual ~WanderAroundPlugIn() {}
+        virtual ~WanderAroundCUDAPlugIn() {}
         
         void open (void)
         {
             for (int i = 0; i<numOfAgents; i++) {
-                theVehicles.push_back(new WanderAround());
+                theVehicles.push_back(new WanderAroundCUDA());
             }
             gWanderAround = theVehicles.front();
             OpenSteerDemo::selectedVehicle = gWanderAround;
@@ -117,10 +121,17 @@ class WanderAroundPlugIn : public PlugIn
                                                OpenSteerDemo::camera2dElevation,
                                                10);
             OpenSteerDemo::camera.fixedPosition.set (40, 40, 40);
+            
+            if (vData == NULL) {
+                MemoryBackend *mb = MemoryBackend::instance();
+                vData = mb->getVehicleData();
+            }
         }
         
         void update (const float currentTime, const float elapsedTime)
         {
+            runWanderAroundKernel(vData, elapsedTime);
+            
             for (iterator iter = theVehicles.begin(); iter != theVehicles.end(); iter++) {
                 (*iter)->update(currentTime, elapsedTime);
             }
@@ -131,14 +142,7 @@ class WanderAroundPlugIn : public PlugIn
             for (iterator iter = theVehicles.begin(); iter != theVehicles.end(); iter++) {
                 (*iter)->draw();
             }
-            
-            // textual annotation (following the test vehicle's screen position)
-            //std::ostringstream annote;
-            //annote << std::setprecision (2) << std::setiosflags (std::ios::fixed);
-            //annote << "      speed: " << gPolonaise->speed() << std::ends;
-            //draw2dTextAt3dLocation (annote, gPolonaise->position(), gRed);
-            draw2dTextAt3dLocation (*"start", Vec3::zero, gGreen);
-            
+
             // update camera, tracking test vehicle
             OpenSteerDemo::updateCamera (currentTime, elapsedTime, *gWanderAround);
             
@@ -151,6 +155,8 @@ class WanderAroundPlugIn : public PlugIn
             theVehicles.clear ();
             delete (gWanderAround);
             gWanderAround = NULL;
+            //endWanderAround();
+            delete vData;
             
             // reset MemoryBackend of SimpleVehicleMB
             SimpleVehicleMB::resetBackend();
@@ -165,13 +171,13 @@ class WanderAroundPlugIn : public PlugIn
         
         const AVGroup& allVehicles (void) {return (const AVGroup&) theVehicles;}
         
-        WanderAround* gWanderAround;
-        std::vector<WanderAround*> theVehicles; // for allVehicles
-        typedef std::vector<WanderAround*>::const_iterator iterator;
+        WanderAroundCUDA* gWanderAround;
+        std::vector<WanderAroundCUDA*> theVehicles; // for allVehicles
+        typedef std::vector<WanderAroundCUDA*>::const_iterator iterator;
     };
 
 
-WanderAroundPlugIn gWanderAroundPlugIn;
+WanderAroundCUDAPlugIn gWanderAroundCUDAPlugIn;
 
 
 
