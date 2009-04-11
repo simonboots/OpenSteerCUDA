@@ -82,7 +82,6 @@ steerToAvoidObstacles(VehicleData* vehicleData, float3 *steeringVectors)
     }
     
     steeringVectors[id] = avoidance;
-    
 }
 
 #endif // _STEER_TO_AVOID_OBSTACLES_

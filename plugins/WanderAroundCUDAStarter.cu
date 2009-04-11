@@ -5,16 +5,17 @@
 #include "ObstacleData.h"
 #include "RandomizedVector.h"
 #include "WanderAroundCUDADefines.h"
+#include "CUDAKernelOptions.cu"
 
-__global__ __device__ void
-steerForWander2DKernel(VehicleData *vehicleData, float *random, float dt, float3 *steeringVectors, float wanderFactor, float2 *wanderData);
-
-__global__ void
-updateKernel(VehicleData *vehicleData, float3 *steeringVectors, float elapsedTime);
 
 __global__ void
 steerToAvoidObstacles(VehicleData* vehicleData, float3 *steeringVectors);
 
+__global__ __device__ void
+steerForWander2DKernel(VehicleData *vehicleData, float *random, float dt, float3 *steeringVectors, float2 *wanderData, float blendFactor, kernel_options options);
+
+__global__ void
+updateKernel(VehicleData *vehicleData, float3 *steeringVectors, float elapsedTime);
 
 using namespace OpenSteer;
 using namespace std;
@@ -80,7 +81,7 @@ void runWanderAroundKernel(VehicleData *h_vehicleData, ObstacleData *h_obstacleD
     steerToAvoidObstacles<<<grid, threads>>>(d_vehicleData, d_steeringVectors);
     
     // start wander kernel
-    steerForWander2DKernel<<<grid, threads>>>(d_vehicleData, d_randomNumbers, elapsedTime, d_steeringVectors, 0.7f, d_wanderData);
+    steerForWander2DKernel<<<grid, threads>>>(d_vehicleData, d_randomNumbers, elapsedTime, d_steeringVectors, d_wanderData, 1.f, IGNORE_UNLESS_ZERO);
     //CUT_CHECK_ERROR("kernel execution failed!");
     
     // start update kernel
