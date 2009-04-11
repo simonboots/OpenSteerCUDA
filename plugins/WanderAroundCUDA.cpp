@@ -39,13 +39,26 @@
 #include <iomanip>
 #include <sstream>
 #include "OpenSteer/SimpleVehicleMB.h"
+#include "ObstacleData.h"
 #include "OpenSteer/OpenSteerDemo.h"
+#include "WanderAroundCUDADefines.h"
 
+#define testOneObstacleOverlap(radius, center)               \
+{                                                            \
+    float d = Vec3::distance (c, center);                    \
+    float clearance = d - (r + (radius));                    \
+    if (minClearance > clearance) minClearance = clearance;  \
+}
 
 using namespace OpenSteer;
 
-void runWanderAroundKernel(VehicleData *h_vehicleData, float elapsedTime);
+void runWanderAroundKernel(VehicleData *h_vehicleData, ObstacleData *h_obstacleData, float elapsedTime);
 void endWanderAround(void);
+
+typedef std::vector<SphericalObstacle*> SOG;  // spherical obstacle group
+typedef SOG::const_iterator SOI;              // spherical obstacle iterator
+
+const float gMaxStartRadius = 40;
 
 
 // ----------------------------------------------------------------------------
@@ -66,7 +79,7 @@ class WanderAroundCUDA : public SimpleVehicleMB
             SimpleVehicleMB::reset (); // reset the vehicle 
             setSpeed (1.5f);         // speed along Forward direction.
             setMaxForce (10.f);      // steering force is clipped to this magnitude
-            setMaxSpeed (5);         // velocity is clipped to this magnitude
+            setMaxSpeed (1.5);         // velocity is clipped to this magnitude
             setPosition ( RandomUnitVectorOnXZPlane() * 5);        // randomize initial position
             randomizeHeadingOnXZPlane();
             clearTrailHistory ();    // prevent long streaks due to teleportation 
@@ -103,6 +116,7 @@ class WanderAroundCUDAPlugIn : public PlugIn
         
         const static int numOfAgents = 2048;
         VehicleData *vData;
+        unsigned int obstacleCount;
         
         // be more "nice" to avoid a compiler warning
         virtual ~WanderAroundCUDAPlugIn() {}
@@ -126,11 +140,28 @@ class WanderAroundCUDAPlugIn : public PlugIn
                 MemoryBackend *mb = MemoryBackend::instance();
                 vData = mb->getVehicleData();
             }
+            
+            obstacleCount = 0;
+            
+            for (int i = 0; i < NUM_OF_OBSTACLES; i++) addOneObstacle();
         }
         
         void update (const float currentTime, const float elapsedTime)
         {
-            runWanderAroundKernel(vData, elapsedTime);
+            // prepare obstacle data
+            static bool first_time = 1;
+            ObstacleData *obstacles = NULL;
+            if (first_time == 1) {
+                obstacles = new ObstacleData[NUM_OF_OBSTACLES];
+                for (int i = 0; i < NUM_OF_OBSTACLES; i++) {
+                    obstacles[i].center = make_float3(allObstacles.at(i)->center.x,
+                                                      allObstacles.at(i)->center.y,
+                                                      allObstacles.at(i)->center.z);
+                    obstacles[i].radius = allObstacles.at(i)->radius;
+                }
+            }
+            
+            runWanderAroundKernel(vData, obstacles, elapsedTime);
             
             for (iterator iter = theVehicles.begin(); iter != theVehicles.end(); iter++) {
                 (*iter)->update(currentTime, elapsedTime);
@@ -148,7 +179,47 @@ class WanderAroundCUDAPlugIn : public PlugIn
             
             // draw "ground plane"
             OpenSteerDemo::gridUtility (gWanderAround->position());
+
+            drawObstacles();
         }
+        
+        void drawObstacles (void)
+        {
+            const Vec3 color (0.8f, 0.6f, 0.4f);
+            const SOG& allSO = allObstacles;
+            for (SOI so = allSO.begin(); so != allSO.end(); so++)
+            {
+                drawXZCircle ((**so).radius, (**so).center, color, 40);
+            }
+        }
+        
+        void addOneObstacle (void)
+        {
+            
+            // pick a random center and radius,
+            // loop until no overlap with other obstacles and the home base
+            float r;
+            Vec3 c;
+            float minClearance;
+            const float requiredClearance = gWanderAround->radius() * 4; // 2 x diameter
+            do
+            {
+                r = frandom2 (1.5, 4);
+                c = randomVectorOnUnitRadiusXZDisk () * gMaxStartRadius * 1.1f;
+                minClearance = FLT_MAX;
+                
+                for (SOI so = allObstacles.begin(); so != allObstacles.end(); so++)
+                {
+                    testOneObstacleOverlap ((**so).radius, (**so).center);
+                }
+            }
+            while (minClearance < requiredClearance);
+            
+            // add new non-overlapping obstacle to registry
+            allObstacles.push_back (new SphericalObstacle (r, c));
+            obstacleCount++;
+        }
+        
         
         void close (void)
         {
@@ -173,6 +244,7 @@ class WanderAroundCUDAPlugIn : public PlugIn
         
         WanderAroundCUDA* gWanderAround;
         std::vector<WanderAroundCUDA*> theVehicles; // for allVehicles
+        SOG allObstacles;
         typedef std::vector<WanderAroundCUDA*>::const_iterator iterator;
     };
 

@@ -1,12 +1,13 @@
 #ifndef _STEER_FOR_WANDER_KERNEL_H_
 #define _STEER_FOR_WANDER_KERNEL_H_
 
+#include <cutil.h>
 #include "VehicleData.h"
 #include "WanderAroundCUDADefines.h"
 #include "CUDAFloatUtilities.cu"
 #include "CUDAVectorUtilities.cu"
 
-#define CHECK_BANK_CONFLICTS 0
+#define CHECK_BANK_CONFLICTS 1
 #if CHECK_BANK_CONFLICTS
 #define S_F(i) (CUT_BANK_CHECKER(((float*)steering), i))
 #define S(i) (CUT_BANK_CHECKER(steering, i))
@@ -27,7 +28,7 @@ __device__ float
 scalarRandomWalk(float initial, float walkspeed, float min, float max, float random);
 
 __global__ __device__ void
-steerForWander2DKernel(VehicleData *vehicleData, float *random, float dt, float3 *steeringVectors, float2 *wanderData)
+steerForWander2DKernel(VehicleData *vehicleData, float *random, float dt, float3 *steeringVectors, float wanderFactor, float2 *wanderData)
 {
     int id = (blockIdx.x * blockDim.x + threadIdx.x);
     int blockOffset2 = (blockDim.x * blockIdx.x);
@@ -70,9 +71,16 @@ steerForWander2DKernel(VehicleData *vehicleData, float *random, float dt, float3
     S(threadIdx.x).y = 0.f; // SI(threadIdx.x).y + U(threadIdx.x).y;
     S(threadIdx.x).z = SI(threadIdx.x).z + U(threadIdx.x).z;
     
+    // mix in wander behavior
+    if (steeringVectors[id].x == 0.f && steeringVectors[id].z == 0.f) {
+        
+    } else {
+        S(threadIdx.x) = float3BlendIn(wanderFactor, S(threadIdx.x), steeringVectors[id]);
+    }
+
+
     // copy steering vector back to global memory (coalesced)
-    
-    ((float*)steeringVectors)[blockOffset3 + threadIdx.x] = S_F(threadIdx.x);
+    ((float*)steeringVectors)[blockOffset3 + threadIdx.x] =  S_F(threadIdx.x);
     ((float*)steeringVectors)[blockOffset3 + threadIdx.x + blockDim.x] = S_F(threadIdx.x + blockDim.x);
     ((float*)steeringVectors)[blockOffset3 + threadIdx.x + 2*blockDim.x] = S_F(threadIdx.x + 2*blockDim.x);
 }

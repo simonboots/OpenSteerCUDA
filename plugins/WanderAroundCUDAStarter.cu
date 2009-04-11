@@ -1,16 +1,23 @@
 #include <cuda_runtime.h>
 #include <cutil.h>
+#include <iostream>
 #include "VehicleData.h"
+#include "ObstacleData.h"
 #include "RandomizedVector.h"
 #include "WanderAroundCUDADefines.h"
 
 __global__ __device__ void
-steerForWander2DKernel(VehicleData *vehicleData, float *random, float dt, float3 *steeringVectors, float2 *wanderData);
+steerForWander2DKernel(VehicleData *vehicleData, float *random, float dt, float3 *steeringVectors, float wanderFactor, float2 *wanderData);
 
 __global__ void
 updateKernel(VehicleData *vehicleData, float3 *steeringVectors, float elapsedTime);
 
+__global__ void
+steerToAvoidObstacles(VehicleData* vehicleData, float3 *steeringVectors);
+
+
 using namespace OpenSteer;
+using namespace std;
 
 
 // device memory objects
@@ -18,11 +25,12 @@ static VehicleData* d_vehicleData = NULL;
 static float3* d_steeringVectors = NULL;
 static float* d_randomNumbers = NULL;
 static float2* d_wanderData = NULL;
+static int first_time = 1;
 
 // host memory objects
 static RandomizedVector* rVec = new RandomizedVector(2*NUM_OF_AGENTS);
 
-void runWanderAroundKernel(VehicleData *h_vehicleData, float elapsedTime)
+void runWanderAroundKernel(VehicleData *h_vehicleData, ObstacleData *h_obstacleData, float elapsedTime)
 {
     // init GPU
     int gpu_count;
@@ -55,29 +63,33 @@ void runWanderAroundKernel(VehicleData *h_vehicleData, float elapsedTime)
     
     const unsigned int mem_size_wander = NUM_OF_AGENTS * sizeof(float2);
     if (d_wanderData == NULL) {
-        // create host copy with initial values;
-//        float2* initialWanderData = (float2*)malloc(float2 * NUM_OF_AGENTS);
-//        for (int i = 0; i < NUM_OF_AGENTS; i++) {
-//            cu
-//        }
         cudaMalloc((void **)&d_wanderData, mem_size_wander);
         cudaMemset(d_wanderData, 0, mem_size_wander);
-        
+    }
+    
+    // copy constant data if first iteration
+    if (first_time == 1) {
+        cudaMemcpyToSymbol("obstacles", h_obstacleData, sizeof(ObstacleData) * NUM_OF_OBSTACLES, 0, cudaMemcpyHostToDevice);
     }
     
     // renew random numbers
     rVec->renew();
     cudaMemcpy(d_randomNumbers, rVec->getVector(), mem_size_random, cudaMemcpyHostToDevice);
     
+    // start avoidObstacle kernel
+    steerToAvoidObstacles<<<grid, threads>>>(d_vehicleData, d_steeringVectors);
+    
     // start wander kernel
-    steerForWander2DKernel<<<grid, threads>>>(d_vehicleData, d_randomNumbers, elapsedTime, d_steeringVectors, d_wanderData);
-    CUT_CHECK_ERROR("kernel execution failed!");
+    steerForWander2DKernel<<<grid, threads>>>(d_vehicleData, d_randomNumbers, elapsedTime, d_steeringVectors, 0.7f, d_wanderData);
+    //CUT_CHECK_ERROR("kernel execution failed!");
     
     // start update kernel
     updateKernel<<<grid, threads>>>(d_vehicleData, d_steeringVectors, elapsedTime);
-    CUT_CHECK_ERROR("kernel execution failed!");
+    //CUT_CHECK_ERROR("kernel execution failed!");
     
     cudaMemcpy(h_vehicleData, d_vehicleData, mem_size_vehicle, cudaMemcpyDeviceToHost);
+    
+    first_time = 0;
 }
 
 void endWanderAround(void)

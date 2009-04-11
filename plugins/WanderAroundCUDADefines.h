@@ -3,5 +3,6 @@
 
 #define TPB 128 // Threads per Block
 #define NUM_OF_AGENTS 2048
+#define NUM_OF_OBSTACLES 100
 
 #endif // _WANDER_AROUND_CUDA_DEFINES_H_

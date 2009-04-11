@@ -15,6 +15,7 @@
 		1C18EDA70F7BC2FD00100C21 /* CUDAFloatUtilities.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1C18EDA60F7BC25D00100C21 /* CUDAFloatUtilities.cu */; };
 		1C18EE1D0F7BF24A00100C21 /* MultiplePursuitCUDA.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1C18EE1C0F7BF24A00100C21 /* MultiplePursuitCUDA.cpp */; };
 		1C18EE6D0F7C039A00100C21 /* steerForPursuitKernel.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1C18EE6C0F7C037F00100C21 /* steerForPursuitKernel.cu */; };
+		1C45011C0F8E404C00804B2F /* steerToAvoidObstacles.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1C45007A0F8E06E900804B2F /* steerToAvoidObstacles.cu */; };
 		1C6473A80F821F92006F4046 /* MemoryBackend.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1C6473A70F821F92006F4046 /* MemoryBackend.cpp */; };
 		1C8DA56C0F768139006231F5 /* updateKernel.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1C8DA5670F767783006231F5 /* updateKernel.cu */; };
 		1CA02A130F8D188100D03331 /* WanderAround.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1CA02A120F8D188100D03331 /* WanderAround.cpp */; };
@@ -86,6 +87,8 @@
 		1C18EE1C0F7BF24A00100C21 /* MultiplePursuitCUDA.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MultiplePursuitCUDA.cpp; sourceTree = "<group>"; };
 		1C18EE640F7C031300100C21 /* MultiplePursuitCUDAStarter.cu */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 4; path = MultiplePursuitCUDAStarter.cu; sourceTree = "<group>"; };
 		1C18EE6C0F7C037F00100C21 /* steerForPursuitKernel.cu */ = {isa = PBXFileReference; explicitFileType = sourcecode.c; fileEncoding = 4; name = steerForPursuitKernel.cu; path = ../plugins/steerForPursuitKernel.cu; sourceTree = "<group>"; };
+		1C45007A0F8E06E900804B2F /* steerToAvoidObstacles.cu */ = {isa = PBXFileReference; explicitFileType = sourcecode.c; fileEncoding = 4; name = steerToAvoidObstacles.cu; path = ../plugins/steerToAvoidObstacles.cu; sourceTree = "<group>"; };
+		1C4500920F8E0EA000804B2F /* ObstacleData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObstacleData.h; sourceTree = "<group>"; };
 		1C5B66280F8392EE00F4AD6D /* MultiplePursuitCUDADefines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MultiplePursuitCUDADefines.h; sourceTree = "<group>"; };
 		1C6473A60F821F92006F4046 /* MemoryBackend.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MemoryBackend.h; sourceTree = "<group>"; };
 		1C6473A70F821F92006F4046 /* MemoryBackend.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MemoryBackend.cpp; sourceTree = "<group>"; };
@@ -197,6 +200,7 @@
 				1C18EDEA0F7BC6BF00100C21 /* steerForWanderKernel.cu */,
 				1C18EE130F7BE14200100C21 /* steerForTargetSpeedKernel.cu */,
 				1C18EE6C0F7C037F00100C21 /* steerForPursuitKernel.cu */,
+				1C45007A0F8E06E900804B2F /* steerToAvoidObstacles.cu */,
 				1C0FF03C0F88E5A5002009B6 /* findFollowerKernel.cu */,
 				1CC990830F8B5346009D50A4 /* resetOnCollisionKernel.cu */,
 			);
@@ -272,6 +276,7 @@
 				32FFF53306E9CEA700E1D8A3 /* Vec3.h */,
 				1C6473A60F821F92006F4046 /* MemoryBackend.h */,
 				1CA56B4B0F82266200819A74 /* VehicleData.h */,
+				1C4500920F8E0EA000804B2F /* ObstacleData.h */,
 			);
 			path = OpenSteer;
 			sourceTree = "<group>";
@@ -356,6 +361,7 @@
 				8D1107290486CEB800E47090 /* Resources */,
 				8D11072C0486CEB800E47090 /* Sources */,
 				8D11072E0486CEB800E47090 /* Frameworks */,
+				1C4500110F8DF70C00804B2F /* Workaround for defect CUDA library */,
 			);
 			buildRules = (
 				1CCAD2BB0F6E7D03005A3712 /* PBXBuildRule */,
@@ -400,6 +406,24 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		1C4500110F8DF70C00804B2F /* Workaround for defect CUDA library */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"$(BUILT_PRODUCTS_DIR)/OpenSteerDemo.app",
+			);
+			name = "Workaround for defect CUDA library";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "install_name_tool -change /Volumes/Builds/nv/build/rel/gpu_drv/r180/r180_00/drivers/gpgpu/bin/i386_Darwin_release/libcuda.dylib @rpath/libcuda.dylib $BUILT_PRODUCTS_DIR/OpenSteerDemo.app/Contents/MacOS/OpenSteerDemo";
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		8D11072C0486CEB800E47090 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -441,6 +465,7 @@
 				1CC8D5FC0F8DC64B006CEA94 /* WanderAroundCUDA.cpp in Sources */,
 				1CC8D61A0F8DD037006CEA94 /* WanderAroundCUDAStarter.cu in Sources */,
 				1CC8D61C0F8DD04B006CEA94 /* steerForWanderKernel.cu in Sources */,
+				1C45011C0F8E404C00804B2F /* steerToAvoidObstacles.cu in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
