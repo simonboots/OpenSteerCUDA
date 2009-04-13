@@ -29,6 +29,7 @@
 		1CCAD2CE0F6E81CA005A3712 /* libcudart.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1CCAD2CC0F6E81CA005A3712 /* libcudart.dylib */; };
 		1CCE694C0F7A3C5800DB4AA8 /* steerForSeekKernel.cu in Resources */ = {isa = PBXBuildFile; fileRef = 1CCE694B0F7A3C4800DB4AA8 /* steerForSeekKernel.cu */; };
 		1CCE69670F7A43B600DB4AA8 /* steerForSeekKernel.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1CCE694B0F7A3C4800DB4AA8 /* steerForSeekKernel.cu */; };
+		1CD457360F9350A3008D29D5 /* CUDAPathwayUtilities.cu in Resources */ = {isa = PBXBuildFile; fileRef = 1CD457350F9350A3008D29D5 /* CUDAPathwayUtilities.cu */; };
 		1CDFFCCE0F7FA7AF00A9159E /* MultiplePursuitCUDAStarter.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1C18EE640F7C031300100C21 /* MultiplePursuitCUDAStarter.cu */; };
 		1CE2B0710F90D092002F3089 /* CUDAKernelOptions.cu in Resources */ = {isa = PBXBuildFile; fileRef = 1CE2B0700F90D092002F3089 /* CUDAKernelOptions.cu */; };
 		32FFF49306E90A9F00E1D8A3 /* GLUT.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 32FFF49106E90A9F00E1D8A3 /* GLUT.framework */; };
@@ -110,6 +111,8 @@
 		1CCAD2CB0F6E81CA005A3712 /* libcuda.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libcuda.dylib; path = /usr/local/cuda/lib/libcuda.dylib; sourceTree = "<absolute>"; };
 		1CCAD2CC0F6E81CA005A3712 /* libcudart.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libcudart.dylib; path = /usr/local/cuda/lib/libcudart.dylib; sourceTree = "<absolute>"; };
 		1CCE694B0F7A3C4800DB4AA8 /* steerForSeekKernel.cu */ = {isa = PBXFileReference; explicitFileType = sourcecode.c; fileEncoding = 4; name = steerForSeekKernel.cu; path = ../plugins/steerForSeekKernel.cu; sourceTree = "<group>"; };
+		1CD457350F9350A3008D29D5 /* CUDAPathwayUtilities.cu */ = {isa = PBXFileReference; explicitFileType = sourcecode.c; fileEncoding = 4; name = CUDAPathwayUtilities.cu; path = ../plugins/CUDAPathwayUtilities.cu; sourceTree = SOURCE_ROOT; };
+		1CD4EAF80F934EC000F5D923 /* PathwayData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PathwayData.h; sourceTree = "<group>"; };
 		1CE2B0700F90D092002F3089 /* CUDAKernelOptions.cu */ = {isa = PBXFileReference; explicitFileType = sourcecode.c; fileEncoding = 4; name = CUDAKernelOptions.cu; path = ../plugins/CUDAKernelOptions.cu; sourceTree = "<group>"; };
 		29B97319FDCFA39411CA2CEA /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/MainMenu.nib; sourceTree = "<group>"; };
 		3248EFBB06F0A6380069A576 /* README_CVS_WITH_XCODE.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README_CVS_WITH_XCODE.txt; sourceTree = "<group>"; };
@@ -189,6 +192,7 @@
 				1C18ED9F0F7BB72F00100C21 /* Kernels */,
 				1C18ED9A0F7BB51000100C21 /* CUDAVectorUtilities.cu */,
 				1C18EDA60F7BC25D00100C21 /* CUDAFloatUtilities.cu */,
+				1CD457350F9350A3008D29D5 /* CUDAPathwayUtilities.cu */,
 				1CE2B0700F90D092002F3089 /* CUDAKernelOptions.cu */,
 			);
 			name = "CUDA Device Code";
@@ -280,6 +284,7 @@
 				1C6473A60F821F92006F4046 /* MemoryBackend.h */,
 				1CA56B4B0F82266200819A74 /* VehicleData.h */,
 				1C4500920F8E0EA000804B2F /* ObstacleData.h */,
+				1CD4EAF80F934EC000F5D923 /* PathwayData.h */,
 			);
 			path = OpenSteer;
 			sourceTree = "<group>";
@@ -405,6 +410,7 @@
 				84AD12AE070E221100559513 /* OpenSteerDemo.h in Resources */,
 				1CCE694C0F7A3C5800DB4AA8 /* steerForSeekKernel.cu in Resources */,
 				1CE2B0710F90D092002F3089 /* CUDAKernelOptions.cu in Resources */,
+				1CD457360F9350A3008D29D5 /* CUDAPathwayUtilities.cu in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
