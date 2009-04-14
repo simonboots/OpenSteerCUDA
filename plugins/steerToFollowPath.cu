@@ -36,7 +36,7 @@
 __constant__ PathwayData pathway;
 
 __device__ void
-steerForSeekKernelSingle(float3 position, float3 velocity, float3 seekVector, float3 *steeringVectors);
+steerForSeekKernelSingle(float3 position, float3 velocity, float3 seekVector, float3 *steeringVectors, int ignore);
 
 __global__ void
 steerToFollowPathKernel(VehicleData *vehicleData, float3 *steeringVectors, int *direction, float predictionTime)
@@ -98,19 +98,20 @@ steerToFollowPathKernel(VehicleData *vehicleData, float3 *steeringVectors, int *
     // no steering is required if (a) our future position is inside
     // the path tube and (b) we are facing in the correct direction
     if ((outside < 0) && rightway) {
-        steeringVectors[id] = make_float3(0, 0, 0);
+  //      steeringVectors[id] = make_float3(0, 0, 0);
+        steerForSeekKernelSingle(P(threadIdx.x), V(threadIdx.x), make_float3(0, 0, 0), steeringVectors, 1);
     //    return;
     } else {
         // otherwise we need to steer towards a target point obtained
         // by adding pathDistanceOffset to our current path position
         float targetPathDistance = nowPathDistance + pathDistanceOffset;
         float3 target = mapPathDistanceToPoint(pathway.points, pathway.numElements, pathway.isCyclic, targetPathDistance);
-        steerForSeekKernelSingle(P(threadIdx.x), V(threadIdx.x), target, steeringVectors);
+        steerForSeekKernelSingle(P(threadIdx.x), V(threadIdx.x), target, steeringVectors, 0);
     }
 }
 
 __device__ void
-steerForSeekKernelSingle(float3 position, float3 velocity, float3 seekVector, float3 *steeringVectors)
+steerForSeekKernelSingle(float3 position, float3 velocity, float3 seekVector, float3 *steeringVectors, int ignore)
 {
     int id = (blockIdx.x * blockDim.x + threadIdx.x);
     int blockOffset = (blockDim.x * blockIdx.x * 3);
@@ -118,9 +119,15 @@ steerForSeekKernelSingle(float3 position, float3 velocity, float3 seekVector, fl
     // shared memory for steering vectors
     __shared__ float3 steering[TPB];
     
-    S(threadIdx.x).x = (seekVector.x - position.x) - velocity.x;
-    S(threadIdx.x).y = (seekVector.y - position.y) - velocity.y;
-    S(threadIdx.x).z = (seekVector.z - position.z) - velocity.z;
+    if (ignore != 1) {
+        S(threadIdx.x).x = (seekVector.x - position.x) - velocity.x;
+        S(threadIdx.x).y = (seekVector.y - position.y) - velocity.y;
+        S(threadIdx.x).z = (seekVector.z - position.z) - velocity.z;        
+    } else {
+        S(threadIdx.x).x = seekVector.x;
+        S(threadIdx.x).y = seekVector.y;
+        S(threadIdx.x).z = seekVector.z;
+    }
     
     __syncthreads();
     

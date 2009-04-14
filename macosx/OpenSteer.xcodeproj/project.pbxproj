@@ -68,7 +68,7 @@
 			outputFiles = (
 				"$(DERIVED_FILES_DIR)/$(INPUT_FILE_BASE).o",
 			);
-			script = "/usr/local/cuda/bin/nvcc -g --device-emulation -c ${INPUT_FILE_PATH} -o ${DERIVED_FILES_DIR}/${INPUT_FILE_BASE}.o -DNVCC -I/usr/local/cuda/include/ -I/Developer/CUDA/common/inc -I${INPUT_FILE_DIR}/../include/OpenSteer/ --ptxas-options=-v";
+			script = "if [ ${CONFIGURATION} == \"Development\" ]; then\n\tFLAGS=\"-g --device-emulation\"\nelse\n\tFLAGS=\"-O3\"\nfi\n\n/usr/local/cuda/bin/nvcc $FLAGS -c ${INPUT_FILE_PATH} -o ${DERIVED_FILES_DIR}/${INPUT_FILE_BASE}.o -DNVCC -I/usr/local/cuda/include/ -I/Developer/CUDA/common/inc -I${INPUT_FILE_DIR}/../include/OpenSteer/ --ptxas-options=-v";
 		};
 /* End PBXBuildRule section */
 
