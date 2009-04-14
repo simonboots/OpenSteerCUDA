@@ -7,7 +7,7 @@
 #include "CUDAFloatUtilities.cu"
 #include "CUDAVectorUtilities.cu"
 #include "CUDAPathwayUtilities.cu"
-//#include "FollowPath CUDADefines.h"
+#include "FollowPathCUDADefines.h"
 
 #define CHECK_BANK_CONFLICTS 0
 #if CHECK_BANK_CONFLICTS
@@ -19,6 +19,7 @@
 #define F(i) (CUT_BANK_CHECKER(forward, i))
 #define P(i) (CUT_BANK_CHECKER(position, i))
 #define S(i) (CUT_BANK_CHECKER(steering, i))
+#define SP(i) (CUT_BANK_CHECKER(speed, i))
 #else
 #define V_F(i) ((float*)velocity)[i]
 #define F_F(i) ((float*)forward)[i]
@@ -28,6 +29,7 @@
 #define F(i) forward[i]
 #define P(i) position[i]
 #define S(i) steering[i]
+#define SP(i) speed[i]
 #endif
 
 // Pathway data
@@ -37,20 +39,48 @@ __device__ void
 steerForSeekKernelSingle(float3 position, float3 velocity, float3 seekVector, float3 *steeringVectors);
 
 __global__ void
-steerToFollowPathKernel(VehicleData* vehicleData, float3* steeringVectors, int* direction, float predictionTime)
-{
+steerToFollowPathKernel(VehicleData *vehicleData, float3 *steeringVectors, int *direction, float predictionTime)
+{    
     int id = (blockIdx.x * blockDim.x + threadIdx.x);
+    int blockOffset = (blockDim.x * blockIdx.x * 3);
+    
+    // shared memory for velocity vector
+    __shared__ float3 velocity[TPB];
+    
+    // shared memory for position vector
+    __shared__ float3 position[TPB];
+    
+    // shared memory for speed
+    __shared__ float speed[TPB];
+    
+    // copy speed data from global memory (coalesced)
+    SP(threadIdx.x) = (*vehicleData).speed[id];
+    __syncthreads();
+    
+    // copy velocity data from global memory (coalesced)
+    V_F(threadIdx.x) = ((float*)(*vehicleData).forward)[blockOffset + threadIdx.x];
+    V_F(threadIdx.x + blockDim.x) = ((float*)(*vehicleData).forward)[blockOffset + threadIdx.x + blockDim.x];
+    V_F(threadIdx.x + 2*blockDim.x) = ((float*)(*vehicleData).forward)[blockOffset + threadIdx.x + 2*blockDim.x];
+    __syncthreads();
+    V(threadIdx.x) = float3Mul(V(threadIdx.x), SP(threadIdx.x));
+    
+    // copy position data from global memory (coalesced)
+    P_F(threadIdx.x) = ((float*)(*vehicleData).position)[blockOffset + threadIdx.x];
+    P_F(threadIdx.x + blockDim.x) = ((float*)(*vehicleData).position)[blockOffset + threadIdx.x + blockDim.x];
+    P_F(threadIdx.x + 2*blockDim.x) = ((float*)(*vehicleData).position)[blockOffset + threadIdx.x + 2*blockDim.x];
+    
+    __syncthreads();
     
     // our goal will be offset from our path distance by this amount
-    float pathDistanceOffset = direction[id] * predictionTime * (*vehicleData).speed[id];
+    float pathDistanceOffset = direction[id] * predictionTime * SP(threadIdx.x);
     
     // predict our future position
-    float3 futurePosition = float3PredictFuturePosition((*vehicleData).position[id], (*vehicleData).velocity[id], predictionTime);
+    float3 futurePosition = float3PredictFuturePosition(P(threadIdx.x), V(threadIdx.x), predictionTime);
 
     // measure distance along path of our current and predicted positions
-    float nowPathDistance = mapPointToPathDistance(pathway.points, pathway.numElements, (*vehicleData).position[id]);
+    float nowPathDistance = mapPointToPathDistance(pathway.points, pathway.numElements, P(threadIdx.x));
     float futurePathDistance = mapPointToPathDistance(pathway.points, pathway.numElements, futurePosition);
-    
+           
     // are we facing in the correction direction?
     int rightway = ((pathDistanceOffset > 0) ?
                     (nowPathDistance < futurePathDistance) :
@@ -69,13 +99,13 @@ steerToFollowPathKernel(VehicleData* vehicleData, float3* steeringVectors, int* 
     // the path tube and (b) we are facing in the correct direction
     if ((outside < 0) && rightway) {
         steeringVectors[id] = make_float3(0, 0, 0);
-        return;
+    //    return;
     } else {
         // otherwise we need to steer towards a target point obtained
         // by adding pathDistanceOffset to our current path position
         float targetPathDistance = nowPathDistance + pathDistanceOffset;
         float3 target = mapPathDistanceToPoint(pathway.points, pathway.numElements, pathway.isCyclic, targetPathDistance);
-        steerForSeekKernelSingle((*vehicleData).position[id], (*vehicleData).velocity[id], target, steeringVectors);
+        steerForSeekKernelSingle(P(threadIdx.x), V(threadIdx.x), target, steeringVectors);
     }
 }
 
@@ -92,6 +122,9 @@ steerForSeekKernelSingle(float3 position, float3 velocity, float3 seekVector, fl
     S(threadIdx.x).y = (seekVector.y - position.y) - velocity.y;
     S(threadIdx.x).z = (seekVector.z - position.z) - velocity.z;
     
+    __syncthreads();
+    
+    // writing back to global memory (coalesced)
     ((float*)steeringVectors)[blockOffset + threadIdx.x] = S_F(threadIdx.x);
     ((float*)steeringVectors)[blockOffset + threadIdx.x + blockDim.x] = S_F(threadIdx.x + blockDim.x);
     ((float*)steeringVectors)[blockOffset + threadIdx.x + 2*blockDim.x] = S_F(threadIdx.x + 2*blockDim.x);

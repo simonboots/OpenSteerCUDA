@@ -261,7 +261,7 @@ public:
     
     const char* name (void) {return "Boids";}
 
-    float selectionOrderSortKey (void) {return 0.03f;}
+    float selectionOrderSortKey (void) {return 306.f;}
 
     virtual ~BoidsPlugIn() {} // be more "nice" to avoid a compiler warning
 

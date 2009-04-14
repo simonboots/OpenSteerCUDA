@@ -92,7 +92,7 @@ public:
     
     const char* name (void) {return "One Turning Away";}
 
-    float selectionOrderSortKey (void) {return 0.06f;}
+    float selectionOrderSortKey (void) {return 302.f;}
 
     // be more "nice" to avoid a compiler warning
     virtual ~OneTurningPlugIn() {}

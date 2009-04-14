@@ -140,7 +140,7 @@ public:
 
     const char* name (void) {return "Low Speed Turn";}
 
-    float selectionOrderSortKey (void) {return 0.05f;}
+    float selectionOrderSortKey (void) {return 300.f;}
 
     // be more "nice" to avoid a compiler warning
     virtual ~LowSpeedTurnPlugIn() {}

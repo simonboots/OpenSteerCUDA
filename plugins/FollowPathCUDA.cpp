@@ -28,9 +28,9 @@
 // ----------------------------------------------------------------------------
 //
 //
-// FollowPath: a FollowPath OpenSteerDemo PlugIn
+// FollowPathCUDA: a FollowPathCUDA OpenSteerDemo PlugIn
 //
-// 04-13-09 sst: created 
+// 04-14-09 sst: created 
 //
 //
 // ----------------------------------------------------------------------------
@@ -38,9 +38,17 @@
 
 #include <iomanip>
 #include <sstream>
+#include <iostream>
 #include "OpenSteer/SimpleVehicleMB.h"
 #include "OpenSteer/OpenSteerDemo.h"
 #include "OpenSteer/Pathway.h"
+#include "OpenSteer/PathwayData.h"
+#include "OpenSteer/PathwayDataFunc.h"
+#include "OpenSteer/VehicleData.h"
+#include "FollowPathCUDADefines.h"
+
+void runFollowPathKernel(VehicleData *h_vehicleData, PathwayData *h_pathwayData, int *h_directions, float elapsedTime);
+void endFollowPath(void);
 
 
 using namespace OpenSteer;
@@ -48,19 +56,19 @@ using namespace OpenSteer;
 
 // ----------------------------------------------------------------------------
 
-PolylinePathway* getTestPathForFollowPath (void);
-PolylinePathway* gTestPathForFollowPath = NULL;
-Vec3 gEndpoint0ForFollowPath;
-Vec3 gEndpoint1ForFollowPath;
+PolylinePathway* getTestPathForFollowPathCUDA (void);
+PolylinePathway* gTestPathForFollowPathCUDA = NULL;
+Vec3 gEndpoint0ForFollowPathCUDA;
+Vec3 gEndpoint1ForFollowPathCUDA;
 
 // ----------------------------------------------------------------------------
 
-class FollowPath : public SimpleVehicleMB
+class FollowPathCUDA : public SimpleVehicleMB
     {
     public:
         
         // constructor
-        FollowPath () {
+        FollowPathCUDA () {
             reset ();
         }
         
@@ -72,19 +80,21 @@ class FollowPath : public SimpleVehicleMB
             setMaxForce (10.f);      // steering force is clipped to this magnitude
             setMaxSpeed (5);         // velocity is clipped to this magnitude
             setPosition ( RandomUnitVectorOnXZPlane() * 5);        // randomize initial position
+            
             randomizeHeadingOnXZPlane();
+            
             clearTrailHistory ();    // prevent long streaks due to teleportation 
             pathDirection = (frandom01() > 0.5) ? -1 : +1;
-            path = getTestPathForFollowPath();
+            path = getTestPathForFollowPathCUDA();
         }
         
         // per frame simulation update
         void update (const float currentTime, const float elapsedTime)
         {
-            applySteeringForce(steerToFollowPath(pathDirection, 3.f, *path), elapsedTime);
+            //applySteeringForce(steerToFollowPath(pathDirection, 3.f, *path), elapsedTime);
             
-            if (Vec3::distance(position(), gEndpoint0ForFollowPath) < path->radius) pathDirection = 1;
-            if (Vec3::distance(position(), gEndpoint1ForFollowPath) < path->radius) pathDirection = -1;
+            //if (Vec3::distance(position(), gEndpoint0ForFollowPathCUDA) < path->radius) pathDirection = 1;
+            //if (Vec3::distance(position(), gEndpoint1ForFollowPathCUDA) < path->radius) pathDirection = -1;
             //applySteeringForce(steerForWander(elapsedTime).setYtoZero(), elapsedTime);
             annotationVelocityAcceleration ();
             recordTrailVertex (currentTime, position());
@@ -106,37 +116,51 @@ class FollowPath : public SimpleVehicleMB
 // PlugIn for OpenSteerDemo
 
 
-class FollowPathPlugIn : public PlugIn
+class FollowPathCUDAPlugIn : public PlugIn
     {
     public:
         
-        const char* name (void) {return "FollowPath";}
+        const char* name (void) {return "FollowPathCUDA";}
         
-        float selectionOrderSortKey (void) {return 1.f;}
+        float selectionOrderSortKey (void) {return 0.5f;}
         
-        const static int numOfAgents = 1;
+        const static int numOfAgents = NUM_OF_AGENTS;
+        
+        VehicleData *vData;
+        PathwayData *pwd;
+        int *directions;
         
         // be more "nice" to avoid a compiler warning
-        virtual ~FollowPathPlugIn() {}
+        virtual ~FollowPathCUDAPlugIn() {}
         
         void open (void)
         {
+            directions = new int[numOfAgents];
+            
             for (int i = 0; i<numOfAgents; i++) {
-                theVehicles.push_back(new FollowPath());
+                theVehicles.push_back(new FollowPathCUDA());
+                directions[i] = (theVehicles.back())->pathDirection;
             }
-            gFollowPath = theVehicles.front();
-            OpenSteerDemo::selectedVehicle = gFollowPath;
+            gFollowPathCUDA = theVehicles.front();
+            OpenSteerDemo::selectedVehicle = gFollowPathCUDA;
             
             // initialize camera
-            OpenSteerDemo::init2dCamera (*gFollowPath);
+            OpenSteerDemo::init2dCamera (*gFollowPathCUDA);
             OpenSteerDemo::camera.setPosition (10,
                                                OpenSteerDemo::camera2dElevation,
                                                10);
             OpenSteerDemo::camera.fixedPosition.set (40, 40, 40);
+            pwd = transformPathway(*(getTestPathForFollowPathCUDA()));
         }
         
         void update (const float currentTime, const float elapsedTime)
         {
+            
+            MemoryBackend *mb = MemoryBackend::instance();
+            vData = mb->getVehicleData();
+            
+            runFollowPathKernel(vData, pwd, directions, elapsedTime);
+            
             for (iterator iter = theVehicles.begin(); iter != theVehicles.end(); iter++) {
                 (*iter)->update(currentTime, elapsedTime);
             }
@@ -154,28 +178,30 @@ class FollowPathPlugIn : public PlugIn
             //annote << "      speed: " << gPolonaise->speed() << std::ends;
             //draw2dTextAt3dLocation (annote, gPolonaise->position(), gRed);
             draw2dTextAt3dLocation (*"start", Vec3::zero, gGreen);
-         
+            
             drawPath();
             // update camera, tracking test vehicle
-            OpenSteerDemo::updateCamera (currentTime, elapsedTime, *gFollowPath);
+            OpenSteerDemo::updateCamera (currentTime, elapsedTime, *gFollowPathCUDA);
             
             // draw "ground plane"
-            OpenSteerDemo::gridUtility (gFollowPath->position());
+            OpenSteerDemo::gridUtility (gFollowPathCUDA->position());
         }
         
         void drawPath (void)
         {
             // draw a line along each segment of path
-            const PolylinePathway& path = *getTestPathForFollowPath ();
+            const PolylinePathway& path = *getTestPathForFollowPathCUDA ();
             for (int i = 0; i < path.pointCount; i++)
                 if (i > 0) drawLine (path.points[i], path.points[i-1], gRed);
         }
         
         void close (void)
         {
+            delete pwd;
             theVehicles.clear ();
-            delete (gFollowPath);
-            gFollowPath = NULL;
+            delete (gFollowPathCUDA);
+            gFollowPathCUDA = NULL;
+            endFollowPath();
             
             // reset MemoryBackend of SimpleVehicleMB
             SimpleVehicleMB::resetBackend();
@@ -190,13 +216,13 @@ class FollowPathPlugIn : public PlugIn
         
         const AVGroup& allVehicles (void) {return (const AVGroup&) theVehicles;}
         
-        FollowPath* gFollowPath;
-        std::vector<FollowPath*> theVehicles; // for allVehicles
-        typedef std::vector<FollowPath*>::const_iterator iterator;
+        FollowPathCUDA* gFollowPathCUDA;
+        std::vector<FollowPathCUDA*> theVehicles; // for allVehicles
+        typedef std::vector<FollowPathCUDA*>::const_iterator iterator;
     };
 
 
-FollowPathPlugIn gFollowPathPlugIn;
+FollowPathCUDAPlugIn gFollowPathCUDAPlugIn;
 
 
 // ----------------------------------------------------------------------------
@@ -221,11 +247,11 @@ FollowPathPlugIn gFollowPathPlugIn;
 //
 
 
-PolylinePathway* getTestPathForFollowPath (void)
+PolylinePathway* getTestPathForFollowPathCUDA (void)
 {
-    if (gTestPathForFollowPath == NULL)
+    if (gTestPathForFollowPathCUDA == NULL)
     {
-        const float pathRadius = 2;
+        const float pathRadius = 2.;
         
         const int pathPointCount = 7;
         const float size = 30;
@@ -242,22 +268,22 @@ PolylinePathway* getTestPathForFollowPath (void)
             Vec3 (h,             0,  h+top),      // 5 f
         Vec3 (h+gap,         0,  h+top/2)};   // 6 g
         
-//        gObstacle1.center = interpolate (0.2f, pathPoints[0], pathPoints[1]);
-//        gObstacle2.center = interpolate (0.5f, pathPoints[2], pathPoints[3]);
-//        gObstacle1.radius = 3;
-//        gObstacle2.radius = 5;
-//        gObstacles.push_back (&gObstacle1);
-//        gObstacles.push_back (&gObstacle2);
-//        
-        gEndpoint0ForFollowPath = pathPoints[0];
-        gEndpoint1ForFollowPath = pathPoints[pathPointCount-1];
+        //        gObstacle1.center = interpolate (0.2f, pathPoints[0], pathPoints[1]);
+        //        gObstacle2.center = interpolate (0.5f, pathPoints[2], pathPoints[3]);
+        //        gObstacle1.radius = 3;
+        //        gObstacle2.radius = 5;
+        //        gObstacles.push_back (&gObstacle1);
+        //        gObstacles.push_back (&gObstacle2);
+        //        
+        gEndpoint0ForFollowPathCUDA = pathPoints[0];
+        gEndpoint1ForFollowPathCUDA = pathPoints[pathPointCount-1];
         
-        gTestPathForFollowPath = new PolylinePathway (pathPointCount,
-                                         pathPoints,
-                                         pathRadius,
-                                         false);
+        gTestPathForFollowPathCUDA = new PolylinePathway (pathPointCount,
+                                                      pathPoints,
+                                                      pathRadius,
+                                                      false);
     }
-    return gTestPathForFollowPath;
+    return gTestPathForFollowPathCUDA;
 }
 
 

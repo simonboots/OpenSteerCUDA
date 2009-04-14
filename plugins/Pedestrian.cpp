@@ -431,7 +431,7 @@ public:
 
     const char* name (void) {return "Pedestrians";}
 
-    float selectionOrderSortKey (void) {return 0.02f;}
+    float selectionOrderSortKey (void) {return 303.f;}
 
     virtual ~PedestrianPlugIn() {}// be more "nice" to avoid a compiler warning
 

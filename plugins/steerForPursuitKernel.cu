@@ -58,7 +58,8 @@ steerForPursuitKernel(VehicleData *vehicleData, float3 wandererPosition, float3 
     F_F(threadIdx.x) = ((float*)(*vehicleData).forward)[blockOffset + threadIdx.x];
     F_F(threadIdx.x + blockDim.x) = ((float*)(*vehicleData).forward)[blockOffset + threadIdx.x + blockDim.x];
     F_F(threadIdx.x + 2*blockDim.x) = ((float*)(*vehicleData).forward)[blockOffset + threadIdx.x + 2*blockDim.x];
-
+    __syncthreads();
+    
     // calculating velocity vector
     V(threadIdx.x) = float3Mul(F(threadIdx.x), speed);
     

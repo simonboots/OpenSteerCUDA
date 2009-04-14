@@ -3,6 +3,7 @@
 
 #include "CUDAFloatUtilities.cu"
 #include "CUDAVectorUtilities.cu"
+#include <stdio.h>
 
 // Given an arbitrary point ("A"), returns the nearest point ("P") on
 // this path.  Also returns, via output arguments, the path tangent at
@@ -112,7 +113,8 @@ mapPointToPathDistance(float3 *points, int numOfPoints, float3 point)
     
     for (i = 1; i < numOfPoints; i++) {
         float segmentProjection;
-        d = pointToSegmentDistance(point, points[i-1], points[i], &make_float3(0, 0, 0), &segmentProjection); // ??
+        float3 nearestPointOnSegment;
+        d = pointToSegmentDistance(point, points[i-1], points[i], &nearestPointOnSegment, &segmentProjection);
         
         if (d < minDistance) {
             minDistance = d;
@@ -152,7 +154,7 @@ pointToSegmentDistance(float3 point, float3 ep0, float3 ep1, float3 *nearestPoin
     
     // find the projection of "local" onto "segmentNormal"
     float3 segmentNormal = getSegmentNormal(ep0, ep1);
-    
+
     *segmentProjection = float3Dot(segmentNormal, local);
     
     // handle boundary cases: when projection is not on segment, the
@@ -192,7 +194,7 @@ getTotalPathLength(float3 *points, int numOfPoints)
 __device__ float3
 getSegmentNormal(float3 p0, float3 p1)
 {
-    float3 normal = float3Sub(p0, p1);
+    float3 normal = float3Sub(p1, p0);
     return float3Div(normal, float3Length(normal));
 }
 

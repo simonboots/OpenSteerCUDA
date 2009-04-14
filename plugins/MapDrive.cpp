@@ -2243,7 +2243,7 @@ public:
 
     const char* name (void) {return "Driving through map based obstacles";}
 
-    float selectionOrderSortKey (void) {return 0.07f;}
+    float selectionOrderSortKey (void) {return 301.f;}
 
     // be more "nice" to avoid a compiler warning
     virtual ~MapDrivePlugIn() {}

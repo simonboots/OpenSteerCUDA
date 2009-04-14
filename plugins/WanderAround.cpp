@@ -96,7 +96,7 @@ class WanderAroundPlugIn : public PlugIn
         
         const char* name (void) {return "WanderAround";}
         
-        float selectionOrderSortKey (void) {return 0.00001f;}
+        float selectionOrderSortKey (void) {return 4.f;}
         
         const static int numOfAgents = 2048;
         

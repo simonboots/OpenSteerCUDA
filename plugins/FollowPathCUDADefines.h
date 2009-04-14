@@ -1,0 +1,7 @@
+#ifndef _FOLLOW_PATH_CUDA_DEFINES_H_
+#define _FOLLOW_PATH_CUDA_DEFINES_H_
+
+#define TPB 10
+#define NUM_OF_AGENTS 10
+
+#endif // _FOLLOW_PATH_CUDA_DEFINES_H_

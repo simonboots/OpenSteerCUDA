@@ -109,7 +109,7 @@ public:
     
     const char* name (void) {return "Polonaise";}
 
-    float selectionOrderSortKey (void) {return 0.001f;}
+    float selectionOrderSortKey (void) {return 3.f;}
     
     const static int numOfAgents = 2048;
 

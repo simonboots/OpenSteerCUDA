@@ -243,7 +243,7 @@ public:
     
     const char* name (void) {return "Michael's Simple Soccer";}
 
-    // float selectionOrderSortKey (void) {return 0.06f;}
+    float selectionOrderSortKey (void) {return 304.f;}
 
     // bool requestInitialSelection() { return true;}
 

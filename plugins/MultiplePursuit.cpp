@@ -167,7 +167,7 @@ public:
 
     const char* name (void) {return "Multiple Pursuit";}
 
-    float selectionOrderSortKey (void) {return 0.000015f;}
+    float selectionOrderSortKey (void) {return 2.f;}
 
     virtual ~MpPlugIn() {} // be more "nice" to avoid a compiler warning
 

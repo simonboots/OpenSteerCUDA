@@ -26,7 +26,7 @@ static VehicleData* d_vehicleData = NULL;
 static float3* d_steeringVectors = NULL;
 static float* d_randomNumbers = NULL;
 static float2* d_wanderData = NULL;
-static int first_time = 1;
+static int first_run = 1;
 
 // host memory objects
 static RandomizedVector* rVec = new RandomizedVector(2*NUM_OF_AGENTS);
@@ -68,8 +68,8 @@ void runWanderAroundKernel(VehicleData *h_vehicleData, ObstacleData *h_obstacleD
         cudaMemset(d_wanderData, 0, mem_size_wander);
     }
     
-    // copy constant data if first iteration
-    if (first_time == 1) {
+    // first run initializations
+    if (first_run == 1) {
         cudaMemcpyToSymbol("obstacles", h_obstacleData, sizeof(ObstacleData) * NUM_OF_OBSTACLES, 0, cudaMemcpyHostToDevice);
     }
     
@@ -90,7 +90,7 @@ void runWanderAroundKernel(VehicleData *h_vehicleData, ObstacleData *h_obstacleD
     
     cudaMemcpy(h_vehicleData, d_vehicleData, mem_size_vehicle, cudaMemcpyDeviceToHost);
     
-    first_time = 0;
+    first_run = 0;
 }
 
 void endWanderAround(void)
