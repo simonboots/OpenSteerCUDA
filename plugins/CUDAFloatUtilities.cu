@@ -10,9 +10,6 @@ clip(float x, float min, float max);
 __device__ int
 intervalComparison (float x, float lowerBound, float upperBound);
 
-//__device__ float
-//frandom01();
-
 __device__ float
 interpolate(float alpha, float x0, float x1)
 {
@@ -41,11 +38,5 @@ intervalComparison (float x, float lowerBound, float upperBound)
     if (x > upperBound) return +1;
     return 0;
 }
-
-//__device__ float
-//frandom01()
-//{
-//    return (((float) rand()) / ((float) RAND_MAX));
-//}
 
 #endif // _CUDA_FLOAT_UTILITIES_H_

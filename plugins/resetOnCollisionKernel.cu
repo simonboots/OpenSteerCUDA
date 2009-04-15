@@ -2,6 +2,7 @@
 #define _RESET_ON_COLLISION_KERNEL_H_
 
 #include "VehicleData.h"
+#include "CUDAKernelOptions.cu"
 
 #define CHECK_BANK_CONFLICTS 0
 #if CHECK_BANK_CONFLICTS

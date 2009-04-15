@@ -1,11 +1,11 @@
 #ifndef _STEER_FOR_EVASION_KERNEL_H_
 #define _STEER_FOR_EVASION_KERNEL_H_
 
+#include <stdio.h>
 #include <cutil.h>
 #include "CUDAVectorUtilities.cu"
 #include "VehicleData.h"
-#include "MultiplePursuitCUDADefines.h"
-#include <stdio.h>
+#include "CUDAKernelOptions.cu"
 
 #define CHECK_BANK_CONFLICTS 0
 #if CHECK_BANK_CONFLICTS

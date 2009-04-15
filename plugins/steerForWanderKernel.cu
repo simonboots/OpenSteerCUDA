@@ -3,7 +3,6 @@
 
 #include <cutil.h>
 #include "VehicleData.h"
-#include "WanderAroundCUDADefines.h"
 #include "CUDAFloatUtilities.cu"
 #include "CUDAVectorUtilities.cu"
 #include "CUDAKernelOptions.cu"
@@ -82,6 +81,8 @@ steerForWander2DKernel(VehicleData *vehicleData, float *random, float dt, float3
     } else {
             S(threadIdx.x) = float3BlendIn(blendFactor, S(threadIdx.x), steeringVectors[id]);
     }
+    
+    __syncthreads();
 
 
     // copy steering vector back to global memory (coalesced)

@@ -1,11 +1,10 @@
 #ifndef _UPDATE_KERNEL_H_
 #define _UPDATE_KERNEL_H_
 
+#include <cutil.h>
 #include "VehicleData.h"
 #include "CUDAVectorUtilities.cu"
-#include "MultiplePursuitCUDADefines.h"
-#include <stdio.h>
-#include <cutil.h>
+#include "CUDAKernelOptions.cu"
 
 #define CHECK_BANK_CONFLICTS 1
 #if CHECK_BANK_CONFLICTS

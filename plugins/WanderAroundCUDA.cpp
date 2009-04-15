@@ -41,7 +41,7 @@
 #include "OpenSteer/SimpleVehicleMB.h"
 #include "ObstacleData.h"
 #include "OpenSteer/OpenSteerDemo.h"
-#include "WanderAroundCUDADefines.h"
+#include "CUDAKernelOptions.cu"
 
 #define testOneObstacleOverlap(radius, center)               \
 {                                                            \
@@ -52,7 +52,7 @@
 
 using namespace OpenSteer;
 
-void runWanderAroundKernel(VehicleData *h_vehicleData, ObstacleData *h_obstacleData, float elapsedTime);
+void runWanderAroundKernel(VehicleData *h_vehicleData, int numOfVehicles, ObstacleData *h_obstacleData, int numOfObstacles, float elapsedTime);
 void endWanderAround(void);
 
 typedef std::vector<SphericalObstacle*> SOG;  // spherical obstacle group
@@ -69,7 +69,7 @@ class WanderAroundCUDA : public SimpleVehicleMB
     public:
         
         // constructor
-        WanderAroundCUDA () {
+            WanderAroundCUDA () {
             reset ();
         }
         
@@ -112,11 +112,13 @@ class WanderAroundCUDAPlugIn : public PlugIn
         
         const char* name (void) {return "WanderAround CUDA";}
         
-        float selectionOrderSortKey (void) {return 0.1f;}
+        float selectionOrderSortKey (void) {return 4.5f;}
         
         const static int numOfAgents = 2048;
+        const static int numOfObstacles = 100;
         VehicleData *vData;
         unsigned int obstacleCount;
+        bool first_time;
         
         // be more "nice" to avoid a compiler warning
         virtual ~WanderAroundCUDAPlugIn() {}
@@ -126,6 +128,8 @@ class WanderAroundCUDAPlugIn : public PlugIn
             for (int i = 0; i<numOfAgents; i++) {
                 theVehicles.push_back(new WanderAroundCUDA());
             }
+            
+            first_time = true;
             gWanderAround = theVehicles.front();
             OpenSteerDemo::selectedVehicle = gWanderAround;
             
@@ -136,36 +140,42 @@ class WanderAroundCUDAPlugIn : public PlugIn
                                                10);
             OpenSteerDemo::camera.fixedPosition.set (40, 40, 40);
             
-            if (vData == NULL) {
-                MemoryBackend *mb = MemoryBackend::instance();
-                vData = mb->getVehicleData();
-            }
+
+            MemoryBackend *mb = MemoryBackend::instance();
+            vData = mb->getVehicleData();
             
             obstacleCount = 0;
             
-            for (int i = 0; i < NUM_OF_OBSTACLES; i++) addOneObstacle();
+            for (int i = 0; i < numOfObstacles; i++) addOneObstacle();
         }
         
         void update (const float currentTime, const float elapsedTime)
         {
             // prepare obstacle data
-            static bool first_time = 1;
-            ObstacleData *obstacles = NULL;
-            if (first_time == 1) {
-                obstacles = new ObstacleData[NUM_OF_OBSTACLES];
-                for (int i = 0; i < NUM_OF_OBSTACLES; i++) {
+            static ObstacleData *obstacles = NULL;
+            if (first_time == true) {
+                obstacles = new ObstacleData[numOfObstacles];
+                for (int i = 0; i < numOfObstacles; i++) {
                     obstacles[i].center = make_float3(allObstacles.at(i)->center.x,
                                                       allObstacles.at(i)->center.y,
                                                       allObstacles.at(i)->center.z);
                     obstacles[i].radius = allObstacles.at(i)->radius;
                 }
+
             }
             
-            runWanderAroundKernel(vData, obstacles, elapsedTime);
+            runWanderAroundKernel(vData, numOfAgents, obstacles, numOfObstacles, elapsedTime);
+            
+            if (obstacles != NULL) {
+                delete[] obstacles;
+                obstacles = NULL;
+            }
             
             for (iterator iter = theVehicles.begin(); iter != theVehicles.end(); iter++) {
                 (*iter)->update(currentTime, elapsedTime);
             }
+            
+            first_time = false;
         }
         
         void redraw (const float currentTime, const float elapsedTime)
@@ -226,8 +236,9 @@ class WanderAroundCUDAPlugIn : public PlugIn
             theVehicles.clear ();
             delete (gWanderAround);
             gWanderAround = NULL;
-            //endWanderAround();
-            delete vData;
+            endWanderAround();
+            allObstacles.clear();
+            //obstacleCount = 0;
             
             // reset MemoryBackend of SimpleVehicleMB
             SimpleVehicleMB::resetBackend();

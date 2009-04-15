@@ -19,6 +19,8 @@
 		1C6473A80F821F92006F4046 /* MemoryBackend.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1C6473A70F821F92006F4046 /* MemoryBackend.cpp */; };
 		1C6A83E80F94A0E900A2D253 /* FollowPathCUDAStarter.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1C9C36E50F948A4100F4A359 /* FollowPathCUDAStarter.cu */; };
 		1C6A888E0F95F6F100A2D253 /* steerForEvasionKernel.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1C6A88860F95EE6900A2D253 /* steerForEvasionKernel.cu */; };
+		1C6A89DA0F96182D00A2D253 /* steerForFleeKernel.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1C18EDA90F7BC3B600100C21 /* steerForFleeKernel.cu */; };
+		1C6A89EB0F96267F00A2D253 /* steerForTargetSpeedKernel.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1C18EE130F7BE14200100C21 /* steerForTargetSpeedKernel.cu */; };
 		1C8DA56C0F768139006231F5 /* updateKernel.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1C8DA5670F767783006231F5 /* updateKernel.cu */; };
 		1C9C36A20F94872900F4A359 /* FollowPathCUDA.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1C9C36A10F94872900F4A359 /* FollowPathCUDA.cpp */; };
 		1C9C36EB0F948BD500F4A359 /* PathwayDataFunc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1C9C36EA0F948BD500F4A359 /* PathwayDataFunc.cpp */; };
@@ -78,7 +80,6 @@
 		1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
 		1C0FEF1C0F88C816002009B6 /* RandomizedVector.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RandomizedVector.cpp; sourceTree = "<group>"; };
 		1C0FEF380F88CC59002009B6 /* RandomizedVector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RandomizedVector.h; sourceTree = "<group>"; };
-		1C0FEFCA0F88DDCD002009B6 /* PolonaiseCUDADefines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PolonaiseCUDADefines.h; sourceTree = "<group>"; };
 		1C0FF03C0F88E5A5002009B6 /* findFollowerKernel.cu */ = {isa = PBXFileReference; explicitFileType = sourcecode.c; fileEncoding = 4; name = findFollowerKernel.cu; path = ../plugins/findFollowerKernel.cu; sourceTree = "<group>"; };
 		1C18ED9A0F7BB51000100C21 /* CUDAVectorUtilities.cu */ = {isa = PBXFileReference; explicitFileType = sourcecode.c; fileEncoding = 4; name = CUDAVectorUtilities.cu; path = ../plugins/CUDAVectorUtilities.cu; sourceTree = "<group>"; };
 		1C18EDA60F7BC25D00100C21 /* CUDAFloatUtilities.cu */ = {isa = PBXFileReference; explicitFileType = sourcecode.c; fileEncoding = 4; name = CUDAFloatUtilities.cu; path = ../plugins/CUDAFloatUtilities.cu; sourceTree = "<group>"; };
@@ -90,7 +91,6 @@
 		1C18EE6C0F7C037F00100C21 /* steerForPursuitKernel.cu */ = {isa = PBXFileReference; explicitFileType = sourcecode.c; fileEncoding = 4; name = steerForPursuitKernel.cu; path = ../plugins/steerForPursuitKernel.cu; sourceTree = "<group>"; };
 		1C45007A0F8E06E900804B2F /* steerToAvoidObstacles.cu */ = {isa = PBXFileReference; explicitFileType = sourcecode.c; fileEncoding = 4; name = steerToAvoidObstacles.cu; path = ../plugins/steerToAvoidObstacles.cu; sourceTree = "<group>"; };
 		1C4500920F8E0EA000804B2F /* ObstacleData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObstacleData.h; sourceTree = "<group>"; };
-		1C5B66280F8392EE00F4AD6D /* MultiplePursuitCUDADefines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MultiplePursuitCUDADefines.h; sourceTree = "<group>"; };
 		1C6473A60F821F92006F4046 /* MemoryBackend.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MemoryBackend.h; sourceTree = "<group>"; };
 		1C6473A70F821F92006F4046 /* MemoryBackend.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MemoryBackend.cpp; sourceTree = "<group>"; };
 		1C6A87C10F95D92500A2D253 /* steerToStayOnPath.cu */ = {isa = PBXFileReference; explicitFileType = sourcecode.c; fileEncoding = 4; name = steerToStayOnPath.cu; path = ../plugins/steerToStayOnPath.cu; sourceTree = "<group>"; };
@@ -100,7 +100,6 @@
 		1C9C36E50F948A4100F4A359 /* FollowPathCUDAStarter.cu */ = {isa = PBXFileReference; explicitFileType = sourcecode.c; fileEncoding = 4; path = FollowPathCUDAStarter.cu; sourceTree = "<group>"; };
 		1C9C36E90F948BD500F4A359 /* PathwayDataFunc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PathwayDataFunc.h; sourceTree = "<group>"; };
 		1C9C36EA0F948BD500F4A359 /* PathwayDataFunc.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PathwayDataFunc.cpp; sourceTree = "<group>"; };
-		1C9C372F0F94949A00F4A359 /* FollowPathCUDADefines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FollowPathCUDADefines.h; sourceTree = "<group>"; };
 		1CA02A120F8D188100D03331 /* WanderAround.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = WanderAround.cpp; sourceTree = "<group>"; };
 		1CA56B4B0F82266200819A74 /* VehicleData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VehicleData.h; sourceTree = "<group>"; };
 		1CA56BDD0F824EF800819A74 /* SimpleVehicleMB.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SimpleVehicleMB.h; sourceTree = "<group>"; };
@@ -110,7 +109,6 @@
 		1CBD02860F728D4800DEE3E8 /* libcutil.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libcutil.a; path = CUDA/lib/libcutil.a; sourceTree = SYSTEM_DEVELOPER_DIR; };
 		1CC8D5FB0F8DC64B006CEA94 /* WanderAroundCUDA.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = WanderAroundCUDA.cpp; sourceTree = "<group>"; };
 		1CC8D6060F8DC8D9006CEA94 /* WanderAroundCUDAStarter.cu */ = {isa = PBXFileReference; explicitFileType = sourcecode.c; fileEncoding = 4; path = WanderAroundCUDAStarter.cu; sourceTree = "<group>"; };
-		1CC8D60A0F8DCD39006CEA94 /* WanderAroundCUDADefines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WanderAroundCUDADefines.h; sourceTree = "<group>"; };
 		1CC990830F8B5346009D50A4 /* resetOnCollisionKernel.cu */ = {isa = PBXFileReference; explicitFileType = sourcecode.c; fileEncoding = 4; name = resetOnCollisionKernel.cu; path = ../plugins/resetOnCollisionKernel.cu; sourceTree = "<group>"; };
 		1CC9C2180F70FD1400990434 /* Polonaise.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Polonaise.cpp; sourceTree = "<group>"; };
 		1CCAD2CB0F6E81CA005A3712 /* libcuda.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libcuda.dylib; path = /usr/local/cuda/lib/libcuda.dylib; sourceTree = "<absolute>"; };
@@ -330,23 +328,19 @@
 				1CD457470F936E62008D29D5 /* FollowPath.cpp */,
 				1C9C36A10F94872900F4A359 /* FollowPathCUDA.cpp */,
 				1C9C36E50F948A4100F4A359 /* FollowPathCUDAStarter.cu */,
-				1C9C372F0F94949A00F4A359 /* FollowPathCUDADefines.h */,
 				32FFF56606E9CECE00E1D8A3 /* LowSpeedTurn.cpp */,
 				32FFF56706E9CECE00E1D8A3 /* MapDrive.cpp */,
 				32FFF56806E9CECE00E1D8A3 /* MultiplePursuit.cpp */,
 				1C18EE1C0F7BF24A00100C21 /* MultiplePursuitCUDA.cpp */,
 				1C18EE640F7C031300100C21 /* MultiplePursuitCUDAStarter.cu */,
-				1C5B66280F8392EE00F4AD6D /* MultiplePursuitCUDADefines.h */,
 				32FFF56906E9CECE00E1D8A3 /* OneTurning.cpp */,
 				32FFF56A06E9CECE00E1D8A3 /* Pedestrian.cpp */,
 				1CC9C2180F70FD1400990434 /* Polonaise.cpp */,
 				1CBD02080F72795400DEE3E8 /* PolonaiseCUDA.cpp */,
 				1CBD023E0F72876D00DEE3E8 /* PolonaiseCUDAStarter.cu */,
-				1C0FEFCA0F88DDCD002009B6 /* PolonaiseCUDADefines.h */,
 				32FFF56B06E9CECE00E1D8A3 /* Soccer.cpp */,
 				1CA02A120F8D188100D03331 /* WanderAround.cpp */,
 				1CC8D5FB0F8DC64B006CEA94 /* WanderAroundCUDA.cpp */,
-				1CC8D60A0F8DCD39006CEA94 /* WanderAroundCUDADefines.h */,
 				1CC8D6060F8DC8D9006CEA94 /* WanderAroundCUDAStarter.cu */,
 			);
 			name = plugins;
@@ -490,6 +484,8 @@
 				1C9C37310F94950E00F4A359 /* steerToFollowPath.cu in Sources */,
 				1C6A83E80F94A0E900A2D253 /* FollowPathCUDAStarter.cu in Sources */,
 				1C6A888E0F95F6F100A2D253 /* steerForEvasionKernel.cu in Sources */,
+				1C6A89DA0F96182D00A2D253 /* steerForFleeKernel.cu in Sources */,
+				1C6A89EB0F96267F00A2D253 /* steerForTargetSpeedKernel.cu in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -19,7 +19,10 @@ OpenSteer::MemoryBackend::MemoryBackend() {
 
 OpenSteer::MemoryBackend::~MemoryBackend() {
     std::cout << "MemoryBackend reset" << std::endl;
-    cudaFreeHost(_data);
+    if (_data != 0) {
+        cudaFreeHost(_data);
+    }
+    _data = 0;
     _instance = 0;
     _idCounter = 0;
 }
@@ -28,7 +31,7 @@ int OpenSteer::MemoryBackend::getNextID(void) {
     if ((_idCounter + 1) > MAX_VEHICLE) {
         throw std::exception();
     }
-    std::cout << "new ID: " << _idCounter << std::endl;
+    //std::cout << "new ID: " << _idCounter << std::endl;
     return _idCounter++;
 }
 

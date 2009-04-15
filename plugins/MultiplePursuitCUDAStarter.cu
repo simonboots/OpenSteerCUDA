@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include "VehicleData.h"
 #include "RandomizedVector.h"
-#include "MultiplePursuitCUDADefines.h"
+#include "CUDAKernelOptions.cu"
 
 __global__ __device__ void
 steerForPursuitKernel(VehicleData *vehicleData, float3 wandererPosition, float3 wandererVelocity, float3 *steeringVectors, float maxPredictionTime);
@@ -13,12 +13,9 @@ updateKernel(VehicleData *vehicleData, float3 *steeringVectors, float elapsedTim
 
 static float3 *d_steeringVectors = NULL;
 static VehicleData *d_vehicleData = NULL;
-static float *d_randomVectors = NULL;
-//static OpenSteer::RandomizedVector *randomizedVec = new OpenSteer::RandomizedVector(NUM_OF_AGENTS);
-//static unsigned int iterations = 0;
 static int first_time = 1;
 
-void runMultiplePursuitKernel(VehicleData *h_vehicleData, float3 wandererPosition, float3 wandererVelocity, float elapsedTime, int copy_vehicle_data)
+void runMultiplePursuitKernel(VehicleData *h_vehicleData, int numOfVehicles, float3 wandererPosition, float3 wandererVelocity, float elapsedTime, int copy_vehicle_data)
 {
     const float h_timeFactorTable[9] = {2.f, 4.f, 0.85f, 2.f, 0.8f, 1.8f, 0.5f, 1.f, 4.f};
     
@@ -35,11 +32,11 @@ void runMultiplePursuitKernel(VehicleData *h_vehicleData, float3 wandererPositio
         cudaMemcpyToSymbol("timeFactorTable", h_timeFactorTable, sizeof(float) * 9, 0, cudaMemcpyHostToDevice);
     }
 
-    dim3 grid(NUM_OF_AGENTS/TPB,1,1);
+    dim3 grid(numOfVehicles/TPB,1,1);
     dim3 threads(TPB,1,1);
         
     // prepare memory for steeringVectors
-    const unsigned int mem_size_steering = sizeof(float3) * NUM_OF_AGENTS;
+    const unsigned int mem_size_steering = sizeof(float3) * numOfVehicles;
     if (d_steeringVectors == NULL) {
         cudaMalloc((void **) &d_steeringVectors, mem_size_steering);
     }
@@ -53,18 +50,7 @@ void runMultiplePursuitKernel(VehicleData *h_vehicleData, float3 wandererPositio
         
         cudaMemcpy(d_vehicleData, h_vehicleData, mem_size_vehicle, cudaMemcpyHostToDevice);
     }
-    
-    // copy random vector
-//    const unsigned int mem_size_random = sizeof(float) * randomizedVec->size();
-//    if (d_randomVectors == NULL) {
-//        cudaMalloc((void **) &d_randomVectors, mem_size_random);
-//    }
-    
-//    if (iterations % 20 == 0) {
-//        randomizedVec->renew();
-//        cudaMemcpy(d_randomVectors, randomizedVec->getVector(), mem_size_random, cudaMemcpyHostToDevice);
-//    }
-        
+            
     // create and start timer
 //    unsigned int timer = 0;
 //    CUT_SAFE_CALL(cutCreateTimer(&timer));

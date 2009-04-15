@@ -6,7 +6,7 @@
 #include "ObstacleData.h"
 #include "CUDAFloatUtilities.cu"
 #include "CUDAVectorUtilities.cu"
-#include "WanderAroundCUDADefines.h"
+#include "CUDAKernelOptions.cu"
 
 #define CHECK_BANK_CONFLICTS 0
 #if CHECK_BANK_CONFLICTS
@@ -41,8 +41,8 @@
 
 
 // Obstacle Data
-__constant__ ObstacleData obstacles[NUM_OF_OBSTACLES];
-__constant__ int numOfObstacles;
+__constant__ ObstacleData d_obstacles[MAX_OBSTACLES];
+__constant__ int d_numOfObstacles;
 
 __global__ void
 steerToAvoidObstacles(VehicleData* vehicleData, float3 *steeringVectors)
@@ -52,9 +52,6 @@ steerToAvoidObstacles(VehicleData* vehicleData, float3 *steeringVectors)
     
     // shared memory for avoidance vector
     __shared__ float3 avoidance[TPB];
-    
-    // shared memory for local center
-    //__shared__ float3 localcenter[TPB];
     
     A(threadIdx.x) = make_float3(0, 0, 0);
     
@@ -67,32 +64,28 @@ steerToAvoidObstacles(VehicleData* vehicleData, float3 *steeringVectors)
     int i = 0;
     
     // Find nearest obstacle
-    for (; i < numOfObstacles; i++) {
+    for (; i < d_numOfObstacles; i++) {
         // find next intersection with sphere
         float b, c, d, p, q, s;
         float intersectionDistance = 0.f;
         
-        float3 lc;
+        float3 lc; // seems to be a lot faster if lc is local and not in shmem
         
         // find local center
         // -----------------
-        
-//        LC(threadIdx.x).x = obstacles[i].center.x - (*vehicleData).position[id].x;
-//        LC(threadIdx.x).y = obstacles[i].center.y - (*vehicleData).position[id].y;
-//        LC(threadIdx.x).z = obstacles[i].center.z - (*vehicleData).position[id].z;
 
-        lc.x = obstacles[i].center.x - (*vehicleData).position[id].x;
-        lc.y = obstacles[i].center.y - (*vehicleData).position[id].y;
-        lc.z = obstacles[i].center.z - (*vehicleData).position[id].z;
+        lc.x = d_obstacles[i].center.x - (*vehicleData).position[id].x;
+        lc.y = d_obstacles[i].center.y - (*vehicleData).position[id].y;
+        lc.z = d_obstacles[i].center.z - (*vehicleData).position[id].z;
         
         
         lc = make_float3(float3Dot(lc, (*vehicleData).side[id]),
-                                      float3Dot(lc, (*vehicleData).up[id]),
-                                      float3Dot(lc, (*vehicleData).forward[id]));
+                         float3Dot(lc, (*vehicleData).up[id]),
+                         float3Dot(lc, (*vehicleData).forward[id]));
         
         // compute line-sphere intersection parameters
         b = -2*lc.z;
-        c = lc.x*lc.x + lc.y*lc.y + lc.z*lc.z - (obstacles[i].radius + (*vehicleData).radius[id])*(obstacles[i].radius + (*vehicleData).radius[id]);
+        c = lc.x*lc.x + lc.y*lc.y + lc.z*lc.z - (d_obstacles[i].radius + (*vehicleData).radius[id])*(d_obstacles[i].radius + (*vehicleData).radius[id]);
         d = (b * b) - (4 * c);
         
         // path does not intersect sphere
@@ -120,7 +113,7 @@ steerToAvoidObstacles(VehicleData* vehicleData, float3 *steeringVectors)
     }
     
     if (intersectionFound == 1 && nearestIntersectionDistance < minDistanceToCollision) {
-        float3 offset = float3Sub((*vehicleData).position[id], obstacles[nearestIntersectionID].center);
+        float3 offset = float3Sub((*vehicleData).position[id], d_obstacles[nearestIntersectionID].center);
         A(threadIdx.x) = float3PerpendicularComponent(offset, (*vehicleData).forward[id]);
         A(threadIdx.x) = float3Normalize(A(threadIdx.x));
         A(threadIdx.x) = float3Mul(A(threadIdx.x), (*vehicleData).maxForce[id]);

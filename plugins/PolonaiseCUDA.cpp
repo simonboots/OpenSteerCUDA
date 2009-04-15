@@ -41,7 +41,6 @@
 #include "OpenSteer/SimpleVehicleMB.h"
 #include "OpenSteer/OpenSteerDemo.h"
 #include "VehicleData.h"
-#include "PolonaiseCUDADefines.h"
 
 
 void runPolonaiseKernel(VehicleData *h_vehicleData, int numOfAgents, float elapsedTime);
@@ -107,7 +106,7 @@ public:
 
     float selectionOrderSortKey (void) {return 3.5f;}
     
-    const static int numOfAgents = NUM_OF_AGENTS;
+    const static int numOfAgents = 2048;
     VehicleData *vData;
 
     // be more "nice" to avoid a compiler warning

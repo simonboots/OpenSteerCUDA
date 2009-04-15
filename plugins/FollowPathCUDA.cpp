@@ -45,9 +45,8 @@
 #include "OpenSteer/PathwayData.h"
 #include "OpenSteer/PathwayDataFunc.h"
 #include "OpenSteer/VehicleData.h"
-#include "FollowPathCUDADefines.h"
 
-void runFollowPathKernel(VehicleData *h_vehicleData, PathwayData *h_pathwayData, int *h_directions, float elapsedTime);
+void runFollowPathKernel(VehicleData *h_vehicleData, int numOfVehicles, PathwayData *h_pathwayData, int *h_directions, float elapsedTime);
 void endFollowPath(void);
 
 
@@ -122,9 +121,9 @@ class FollowPathCUDAPlugIn : public PlugIn
         
         const char* name (void) {return "FollowPathCUDA";}
         
-        float selectionOrderSortKey (void) {return 0.5f;}
+        float selectionOrderSortKey (void) {return 1.5f;}
         
-        const static int numOfAgents = NUM_OF_AGENTS;
+        const static int numOfAgents = 2048;
         
         VehicleData *vData;
         PathwayData *pwd;
@@ -159,7 +158,7 @@ class FollowPathCUDAPlugIn : public PlugIn
             MemoryBackend *mb = MemoryBackend::instance();
             vData = mb->getVehicleData();
             
-            runFollowPathKernel(vData, pwd, directions, elapsedTime);
+            runFollowPathKernel(vData, numOfAgents, pwd, directions, elapsedTime);
             
             for (iterator iter = theVehicles.begin(); iter != theVehicles.end(); iter++) {
                 (*iter)->update(currentTime, elapsedTime);

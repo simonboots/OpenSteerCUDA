@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include "VehicleData.h"
 #include "PathwayData.h"
-#include "FollowPathCUDADefines.h"
+#include "CUDAKernelOptions.cu"
 
 __global__ void
 steerToFollowPathKernel(VehicleData *vehicleData, float3 *steeringVectors, int *direction, float predictionTime);
@@ -21,7 +21,7 @@ static int *d_directions = NULL;
 
 static int first_run = 1;
 
-void runFollowPathKernel(VehicleData *h_vehicleData, PathwayData *h_pathwayData, int *h_directions, float elapsedTime)
+void runFollowPathKernel(VehicleData *h_vehicleData, int numOfVehicles, PathwayData *h_pathwayData, int *h_directions, float elapsedTime)
 {
     // init GPU
     int gpu_count;
@@ -32,7 +32,7 @@ void runFollowPathKernel(VehicleData *h_vehicleData, PathwayData *h_pathwayData,
     
     cudaSetDevice(0);
     
-    dim3 grid(NUM_OF_AGENTS/TPB,1,1);
+    dim3 grid(numOfVehicles/TPB,1,1);
     dim3 threads(TPB, 1, 1);
     
     // allocate device memory
@@ -43,12 +43,12 @@ void runFollowPathKernel(VehicleData *h_vehicleData, PathwayData *h_pathwayData,
     }
     
     if (d_steeringVectors == NULL) {
-        const unsigned int mem_size_steering = sizeof(float3) * NUM_OF_AGENTS;
+        const unsigned int mem_size_steering = sizeof(float3) * numOfVehicles;
         cudaMalloc((void **)&d_steeringVectors, mem_size_steering);
     }
     
     if (d_directions == NULL) {
-        const unsigned int mem_size_directions = sizeof(int) * NUM_OF_AGENTS;
+        const unsigned int mem_size_directions = sizeof(int) * numOfVehicles;
         cudaMalloc((void **)&d_directions, mem_size_directions);
         cudaMemcpy(d_directions, h_directions, mem_size_directions, cudaMemcpyHostToDevice);
     }

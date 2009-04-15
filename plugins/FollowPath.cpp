@@ -114,7 +114,7 @@ class FollowPathPlugIn : public PlugIn
         
         float selectionOrderSortKey (void) {return 1.f;}
         
-        const static int numOfAgents = 4096;
+        const static int numOfAgents = 2048;
         
         // be more "nice" to avoid a compiler warning
         virtual ~FollowPathPlugIn() {}

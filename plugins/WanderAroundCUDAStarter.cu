@@ -4,7 +4,6 @@
 #include "VehicleData.h"
 #include "ObstacleData.h"
 #include "RandomizedVector.h"
-#include "WanderAroundCUDADefines.h"
 #include "CUDAKernelOptions.cu"
 
 
@@ -29,9 +28,9 @@ static float2* d_wanderData = NULL;
 static int first_run = 1;
 
 // host memory objects
-static RandomizedVector* rVec = new RandomizedVector(2*NUM_OF_AGENTS);
+static RandomizedVector* rVec = NULL;
 
-void runWanderAroundKernel(VehicleData *h_vehicleData, ObstacleData *h_obstacleData, float elapsedTime)
+void runWanderAroundKernel(VehicleData *h_vehicleData, int numOfVehicles, ObstacleData *h_obstacleData, int numOfObstacles, float elapsedTime)
 {
     // init GPU
     int gpu_count;
@@ -42,7 +41,7 @@ void runWanderAroundKernel(VehicleData *h_vehicleData, ObstacleData *h_obstacleD
     
     cudaSetDevice(0);
     
-    dim3 grid(NUM_OF_AGENTS/TPB,1,1);
+    dim3 grid(numOfVehicles/TPB,1,1);
     dim3 threads(TPB,1,1);
     
     // allocate device memory
@@ -53,8 +52,12 @@ void runWanderAroundKernel(VehicleData *h_vehicleData, ObstacleData *h_obstacleD
     }
     
     if (d_steeringVectors == NULL) {
-        const unsigned int mem_size_steering = sizeof(float3) * NUM_OF_AGENTS;
+        const unsigned int mem_size_steering = sizeof(float3) * numOfVehicles;
         cudaMalloc((void **)&d_steeringVectors, mem_size_steering);
+    }
+    
+    if (first_run == 1) {
+        rVec = new RandomizedVector(2*numOfVehicles);
     }
     
     const unsigned int mem_size_random = rVec->size() * sizeof(float);
@@ -62,7 +65,7 @@ void runWanderAroundKernel(VehicleData *h_vehicleData, ObstacleData *h_obstacleD
         cudaMalloc((void **)&d_randomNumbers, mem_size_random);
     }
     
-    const unsigned int mem_size_wander = NUM_OF_AGENTS * sizeof(float2);
+    const unsigned int mem_size_wander = numOfVehicles * sizeof(float2);
     if (d_wanderData == NULL) {
         cudaMalloc((void **)&d_wanderData, mem_size_wander);
         cudaMemset(d_wanderData, 0, mem_size_wander);
@@ -70,9 +73,8 @@ void runWanderAroundKernel(VehicleData *h_vehicleData, ObstacleData *h_obstacleD
     
     // first run initializations
     if (first_run == 1) {
-        int h_numOfObstacles = NUM_OF_OBSTACLES;
-        cudaMemcpyToSymbol("obstacles", h_obstacleData, sizeof(ObstacleData) * h_numOfObstacles, 0, cudaMemcpyHostToDevice);
-        cudaMemcpyToSymbol("numOfObstacles", &h_numOfObstacles, sizeof(int), 0, cudaMemcpyHostToDevice);
+        cudaMemcpyToSymbol("d_obstacles", h_obstacleData, sizeof(ObstacleData) * numOfObstacles, 0, cudaMemcpyHostToDevice);
+        cudaMemcpyToSymbol("d_numOfObstacles", &numOfObstacles, sizeof(int), 0, cudaMemcpyHostToDevice);
     }
     
     // renew random numbers
@@ -100,8 +102,15 @@ void endWanderAround(void)
     cudaFree(d_vehicleData);
     cudaFree(d_steeringVectors);
     cudaFree(d_randomNumbers);
-    
+    cudaFree(d_wanderData);
+
     d_vehicleData = NULL;
     d_steeringVectors = NULL;
     d_randomNumbers = NULL;
+    d_wanderData = NULL;
+    
+    delete rVec;
+    rVec = NULL;
+    
+    first_run = 1;
 }

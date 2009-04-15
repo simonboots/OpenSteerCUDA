@@ -7,7 +7,7 @@
 #include "CUDAFloatUtilities.cu"
 #include "CUDAVectorUtilities.cu"
 #include "CUDAPathwayUtilities.cu"
-#include "FollowPathCUDADefines.h"
+#include "CUDAKernelOptions.cu"
 
 #define CHECK_BANK_CONFLICTS 0
 #if CHECK_BANK_CONFLICTS

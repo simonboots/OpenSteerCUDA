@@ -2,7 +2,7 @@
 #include <cutil.h>
 #include <stdio.h>
 #include "VehicleData.h"
-#include "PolonaiseCUDADefines.h"
+#include "CUDAKernelOptions.cu"
 
 __global__ void
 steerForSeekKernel(VehicleData *vehicleData, float3 *seekVectors, float3 *steeringVectors);

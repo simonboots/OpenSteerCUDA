@@ -40,9 +40,8 @@
 #include "OpenSteer/SimpleVehicleMB.h"
 #include "OpenSteer/OpenSteerDemo.h"
 #include "VehicleData.h"
-#include "MultiplePursuitCUDADefines.h"
 
-void runMultiplePursuitKernel(VehicleData *h_vehicleData, float3 wandererPosition, float3 wandererVelocity, float elapsedTime, int copy_vehicle_data);
+void runMultiplePursuitKernel(VehicleData *h_vehicleData, int numOfVehicles, float3 wandererPosition, float3 wandererVelocity, float elapsedTime, int copy_vehicle_data);
 void endMultiplePursuit(void);
 
 using namespace OpenSteer;
@@ -210,6 +209,7 @@ class MpPlugInCUDA : public PlugIn
         float selectionOrderSortKey (void) {return 2.5f;}
         
         VehicleData *vData;
+        int pursuerCount;
         
         virtual ~MpPlugInCUDA() {} // be more "nice" to avoid a compiler warning
         
@@ -220,7 +220,7 @@ class MpPlugInCUDA : public PlugIn
             //allMP.push_back (wanderer);
             
             // create the specified number of pursuers, save pointers to them
-            const int pursuerCount = NUM_OF_AGENTS;
+            pursuerCount = 2048;
             for (int i = 0; i < pursuerCount; i++)
                 allMP.push_back (new MpPursuerCUDA (wanderer));
             pBegin = allMP.begin();  // iterator pointing to first pursuer
@@ -244,6 +244,7 @@ class MpPlugInCUDA : public PlugIn
             vData = mb->getVehicleData();
             
             runMultiplePursuitKernel(vData,
+                                     pursuerCount,
                                      make_float3(wanderer->position().x, wanderer->position().y, wanderer->position().z),
                                      make_float3(wanderer->velocity().x, wanderer->velocity().y, wanderer->velocity().z),
                                      elapsedTime,
