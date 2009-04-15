@@ -125,6 +125,8 @@ steerForSeekKernelSingle(float3 position, float3 velocity, float3 seekVector, fl
     S(threadIdx.x).y = (seekVector.y - position.y) - velocity.y;
     S(threadIdx.x).z = (seekVector.z - position.z) - velocity.z;
     
+    __syncthreads();
+    
     ((float*)steeringVectors)[blockOffset + threadIdx.x] = S_F(threadIdx.x);
     ((float*)steeringVectors)[blockOffset + threadIdx.x + blockDim.x] = S_F(threadIdx.x + blockDim.x);
     ((float*)steeringVectors)[blockOffset + threadIdx.x + 2*blockDim.x] = S_F(threadIdx.x + 2*blockDim.x);
