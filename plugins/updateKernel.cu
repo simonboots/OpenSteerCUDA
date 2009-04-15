@@ -89,6 +89,8 @@ updateKernel(VehicleData *vehicleData, float3 *steeringVectors, float elapsedTim
     V(threadIdx.x).x += SA(threadIdx.x).x * elapsedTime;
     V(threadIdx.x).z += SA(threadIdx.x).z * elapsedTime;
     
+    __syncthreads();
+    
     V(threadIdx.x) = float3TruncateLength(V(threadIdx.x), (*vehicleData).maxSpeed[id]);
     
     __syncthreads(); // position is re-written

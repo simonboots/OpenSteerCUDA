@@ -55,7 +55,6 @@ steerToFollowPathKernel(VehicleData *vehicleData, float3 *steeringVectors, int *
     
     // copy speed data from global memory (coalesced)
     SP(threadIdx.x) = (*vehicleData).speed[id];
-    __syncthreads();
     
     // copy velocity data from global memory (coalesced)
     V_F(threadIdx.x) = ((float*)(*vehicleData).forward)[blockOffset + threadIdx.x];
@@ -95,19 +94,25 @@ steerToFollowPathKernel(VehicleData *vehicleData, float3 *steeringVectors, int *
     float outside;
     float3 onPath = mapPointToPath(pathway.points, pathway.numElements, pathway.radius, futurePosition, &tangent, &outside);
     
+    // check if end of path reached and turn direction
+    if (float3Distance(P(threadIdx.x), pathway.points[0]) < pathway.radius) direction[id] = 1;
+    if (float3Distance(P(threadIdx.x), pathway.points[pathway.numElements - 1]) < pathway.radius) direction[id] = -1;
+    
     // no steering is required if (a) our future position is inside
     // the path tube and (b) we are facing in the correct direction
+    float3 target;
+    int ignore;
     if ((outside < 0) && rightway) {
-  //      steeringVectors[id] = make_float3(0, 0, 0);
-        steerForSeekKernelSingle(P(threadIdx.x), V(threadIdx.x), make_float3(0, 0, 0), steeringVectors, 1);
-    //    return;
+        target = make_float3(0, 0, 0);
+        ignore = 1;
     } else {
         // otherwise we need to steer towards a target point obtained
         // by adding pathDistanceOffset to our current path position
         float targetPathDistance = nowPathDistance + pathDistanceOffset;
-        float3 target = mapPathDistanceToPoint(pathway.points, pathway.numElements, pathway.isCyclic, targetPathDistance);
-        steerForSeekKernelSingle(P(threadIdx.x), V(threadIdx.x), target, steeringVectors, 0);
+        target = mapPathDistanceToPoint(pathway.points, pathway.numElements, pathway.isCyclic, targetPathDistance);
+        ignore = 0;
     }
+    steerForSeekKernelSingle(P(threadIdx.x), V(threadIdx.x), target, steeringVectors, ignore);
 }
 
 __device__ void
@@ -121,7 +126,7 @@ steerForSeekKernelSingle(float3 position, float3 velocity, float3 seekVector, fl
     
     if (ignore != 1) {
         S(threadIdx.x).x = (seekVector.x - position.x) - velocity.x;
-        S(threadIdx.x).y = (seekVector.y - position.y) - velocity.y;
+        S(threadIdx.x).y = 0.f;//(seekVector.y - position.y) - velocity.y;
         S(threadIdx.x).z = (seekVector.z - position.z) - velocity.z;        
     } else {
         S(threadIdx.x).x = seekVector.x;
