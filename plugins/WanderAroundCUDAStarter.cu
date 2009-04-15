@@ -70,7 +70,9 @@ void runWanderAroundKernel(VehicleData *h_vehicleData, ObstacleData *h_obstacleD
     
     // first run initializations
     if (first_run == 1) {
-        cudaMemcpyToSymbol("obstacles", h_obstacleData, sizeof(ObstacleData) * NUM_OF_OBSTACLES, 0, cudaMemcpyHostToDevice);
+        int h_numOfObstacles = NUM_OF_OBSTACLES;
+        cudaMemcpyToSymbol("obstacles", h_obstacleData, sizeof(ObstacleData) * h_numOfObstacles, 0, cudaMemcpyHostToDevice);
+        cudaMemcpyToSymbol("numOfObstacles", &h_numOfObstacles, sizeof(int), 0, cudaMemcpyHostToDevice);
     }
     
     // renew random numbers
