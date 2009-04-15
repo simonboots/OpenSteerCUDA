@@ -57,7 +57,7 @@ void runPolonaiseKernel(VehicleData *h_vehicleData, int numOfAgents, float elaps
     
     // call findFollowerKernel
     findFollowerKernel<<<grid, threads>>>(d_vehicleData, d_seekVectors);
-    CUT_CHECK_ERROR("Kernel execution failed");
+    //CUT_CHECK_ERROR("Kernel execution failed");
     
     // stop and destroy timer
 //    CUT_SAFE_CALL(cutStopTimer(timer));
@@ -68,7 +68,7 @@ void runPolonaiseKernel(VehicleData *h_vehicleData, int numOfAgents, float elaps
 
     // call steerForSeekKernel
     steerForSeekKernel<<<grid, threads>>>(d_vehicleData, d_seekVectors, d_steeringVectors);
-    CUT_CHECK_ERROR("Kernel execution failed");
+    //CUT_CHECK_ERROR("Kernel execution failed");
             
     // stop and destroy timer
 //    CUT_SAFE_CALL(cutStopTimer(timer));
@@ -79,7 +79,7 @@ void runPolonaiseKernel(VehicleData *h_vehicleData, int numOfAgents, float elaps
 
     // call updateKernel
     updateKernel<<<grid, threads>>>(d_vehicleData, d_steeringVectors, elapsedTime);
-    CUT_CHECK_ERROR("Kernel execution failed");
+    //CUT_CHECK_ERROR("Kernel execution failed");
     
     //cudaThreadSynchronize();
     

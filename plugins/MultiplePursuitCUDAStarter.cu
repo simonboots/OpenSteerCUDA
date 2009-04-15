@@ -72,7 +72,7 @@ void runMultiplePursuitKernel(VehicleData *h_vehicleData, float3 wandererPositio
     
     // call steerForSeekKernel
     steerForPursuitKernel<<<grid, threads>>>(d_vehicleData, wandererPosition, wandererVelocity, d_steeringVectors, 20.f);
-    CUT_CHECK_ERROR("Kernel execution failed");
+    //CUT_CHECK_ERROR("Kernel execution failed");
     
     // stop and destroy timer
 //    CUT_SAFE_CALL(cutStopTimer(timer));
@@ -85,7 +85,7 @@ void runMultiplePursuitKernel(VehicleData *h_vehicleData, float3 wandererPositio
     
     // call updateKernel
     updateKernel<<<grid, threads>>>(d_vehicleData, d_steeringVectors, elapsedTime);
-    CUT_CHECK_ERROR("Kernel execution failed");
+    //CUT_CHECK_ERROR("Kernel execution failed");
     
     cudaThreadSynchronize();
     

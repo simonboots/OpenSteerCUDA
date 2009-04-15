@@ -18,6 +18,7 @@
 		1C45011C0F8E404C00804B2F /* steerToAvoidObstacles.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1C45007A0F8E06E900804B2F /* steerToAvoidObstacles.cu */; };
 		1C6473A80F821F92006F4046 /* MemoryBackend.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1C6473A70F821F92006F4046 /* MemoryBackend.cpp */; };
 		1C6A83E80F94A0E900A2D253 /* FollowPathCUDAStarter.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1C9C36E50F948A4100F4A359 /* FollowPathCUDAStarter.cu */; };
+		1C6A888E0F95F6F100A2D253 /* steerForEvasionKernel.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1C6A88860F95EE6900A2D253 /* steerForEvasionKernel.cu */; };
 		1C8DA56C0F768139006231F5 /* updateKernel.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1C8DA5670F767783006231F5 /* updateKernel.cu */; };
 		1C9C36A20F94872900F4A359 /* FollowPathCUDA.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1C9C36A10F94872900F4A359 /* FollowPathCUDA.cpp */; };
 		1C9C36EB0F948BD500F4A359 /* PathwayDataFunc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1C9C36EA0F948BD500F4A359 /* PathwayDataFunc.cpp */; };
@@ -93,6 +94,7 @@
 		1C6473A60F821F92006F4046 /* MemoryBackend.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MemoryBackend.h; sourceTree = "<group>"; };
 		1C6473A70F821F92006F4046 /* MemoryBackend.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MemoryBackend.cpp; sourceTree = "<group>"; };
 		1C6A87C10F95D92500A2D253 /* steerToStayOnPath.cu */ = {isa = PBXFileReference; explicitFileType = sourcecode.c; fileEncoding = 4; name = steerToStayOnPath.cu; path = ../plugins/steerToStayOnPath.cu; sourceTree = "<group>"; };
+		1C6A88860F95EE6900A2D253 /* steerForEvasionKernel.cu */ = {isa = PBXFileReference; explicitFileType = sourcecode.c; fileEncoding = 4; name = steerForEvasionKernel.cu; path = ../plugins/steerForEvasionKernel.cu; sourceTree = "<group>"; };
 		1C8DA5670F767783006231F5 /* updateKernel.cu */ = {isa = PBXFileReference; explicitFileType = sourcecode.c; fileEncoding = 4; name = updateKernel.cu; path = ../plugins/updateKernel.cu; sourceTree = "<group>"; };
 		1C9C36A10F94872900F4A359 /* FollowPathCUDA.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FollowPathCUDA.cpp; sourceTree = "<group>"; };
 		1C9C36E50F948A4100F4A359 /* FollowPathCUDAStarter.cu */ = {isa = PBXFileReference; explicitFileType = sourcecode.c; fileEncoding = 4; path = FollowPathCUDAStarter.cu; sourceTree = "<group>"; };
@@ -218,6 +220,7 @@
 				1C6A87C10F95D92500A2D253 /* steerToStayOnPath.cu */,
 				1C0FF03C0F88E5A5002009B6 /* findFollowerKernel.cu */,
 				1CC990830F8B5346009D50A4 /* resetOnCollisionKernel.cu */,
+				1C6A88860F95EE6900A2D253 /* steerForEvasionKernel.cu */,
 			);
 			name = Kernels;
 			sourceTree = "<group>";
@@ -488,6 +491,7 @@
 				1C9C36EB0F948BD500F4A359 /* PathwayDataFunc.cpp in Sources */,
 				1C9C37310F94950E00F4A359 /* steerToFollowPath.cu in Sources */,
 				1C6A83E80F94A0E900A2D253 /* FollowPathCUDAStarter.cu in Sources */,
+				1C6A888E0F95F6F100A2D253 /* steerForEvasionKernel.cu in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
