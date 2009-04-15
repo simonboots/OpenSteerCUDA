@@ -2,6 +2,6 @@
 #define _FOLLOW_PATH_CUDA_DEFINES_H_
 
 #define TPB 128
-#define NUM_OF_AGENTS 1024
+#define NUM_OF_AGENTS 4096
 
 #endif // _FOLLOW_PATH_CUDA_DEFINES_H_
