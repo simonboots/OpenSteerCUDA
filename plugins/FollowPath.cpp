@@ -45,6 +45,8 @@
 
 using namespace OpenSteer;
 
+typedef std::vector<SphericalObstacle*> SOG;  // spherical obstacle group
+typedef SOG::const_iterator SOI;              // spherical obstacle iteraor
 
 // ----------------------------------------------------------------------------
 
@@ -60,7 +62,8 @@ class FollowPath : public SimpleVehicleMB
     public:
         
         // constructor
-        FollowPath () {
+        FollowPath (SOG* obstacles) {
+            allObstacles = obstacles;
             reset ();
         }
         
@@ -81,7 +84,15 @@ class FollowPath : public SimpleVehicleMB
         // per frame simulation update
         void update (const float currentTime, const float elapsedTime)
         {
-            applySteeringForce(steerToFollowPath(pathDirection, 3.f, *path), elapsedTime);
+            Vec3 steering = steerToAvoidObstacles(5.f, (ObstacleGroup&) *allObstacles);
+            
+            bool avoiding = (steering != Vec3::zero);
+            
+            if (! avoiding) {
+                steering = steerToFollowPath(pathDirection, 5.f, *path);
+            }
+            
+            applySteeringForce(steering, elapsedTime);
             
             if (Vec3::distance(position(), gEndpoint0ForFollowPath) < path->radius) pathDirection = 1;
             if (Vec3::distance(position(), gEndpoint1ForFollowPath) < path->radius) pathDirection = -1;
@@ -98,6 +109,7 @@ class FollowPath : public SimpleVehicleMB
         }
         
         PolylinePathway* path;
+        SOG *allObstacles;
         int pathDirection;
     };
 
@@ -115,14 +127,18 @@ class FollowPathPlugIn : public PlugIn
         float selectionOrderSortKey (void) {return 1.f;}
         
         const static int numOfAgents = 2048;
+        const static int numOfObstacles = 2;
         
         // be more "nice" to avoid a compiler warning
         virtual ~FollowPathPlugIn() {}
         
         void open (void)
         {
+            allObstacles.push_back(new SphericalObstacle(3.f, Vec3(0.5, 0, 30.5)));
+            allObstacles.push_back(new SphericalObstacle(8.f, Vec3(51.5, 0, 15.5)));
+            
             for (int i = 0; i<numOfAgents; i++) {
-                theVehicles.push_back(new FollowPath());
+                theVehicles.push_back(new FollowPath(&allObstacles));
             }
             gFollowPath = theVehicles.front();
             OpenSteerDemo::selectedVehicle = gFollowPath;
@@ -133,6 +149,8 @@ class FollowPathPlugIn : public PlugIn
                                                OpenSteerDemo::camera2dElevation,
                                                10);
             OpenSteerDemo::camera.fixedPosition.set (40, 40, 40);
+            
+
         }
         
         void update (const float currentTime, const float elapsedTime)
@@ -161,6 +179,18 @@ class FollowPathPlugIn : public PlugIn
             
             // draw "ground plane"
             OpenSteerDemo::gridUtility (gFollowPath->position());
+            
+            drawObstacles();
+        }
+        
+        void drawObstacles (void)
+        {
+            const Vec3 color (0.8f, 0.6f, 0.4f);
+            const SOG& allSO = allObstacles;
+            for (SOI so = allSO.begin(); so != allSO.end(); so++)
+            {
+                drawXZCircle ((**so).radius, (**so).center, color, 40);
+            }
         }
         
         void drawPath (void)
@@ -192,6 +222,7 @@ class FollowPathPlugIn : public PlugIn
         
         FollowPath* gFollowPath;
         std::vector<FollowPath*> theVehicles; // for allVehicles
+        SOG allObstacles;
         typedef std::vector<FollowPath*>::const_iterator iterator;
     };
 

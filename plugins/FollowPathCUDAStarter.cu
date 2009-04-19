@@ -3,11 +3,14 @@
 #include <stdio.h>
 #include "VehicleData.h"
 #include "PathwayData.h"
+#include "ObstacleData.h"
 #include "CUDAKernelOptions.cu"
 
-__global__ void
-steerToFollowPathKernel(VehicleData *vehicleData, float3 *steeringVectors, int *direction, float predictionTime);
 
+__global__ void
+steerToAvoidObstacles(VehicleData* vehicleData, float3 *steeringVectors);
+__global__ void
+steerToFollowPathKernel(VehicleData *vehicleData, float3 *steeringVectors, int *direction, float predictionTime, float blendFactor, kernel_options options);
 __global__ void
 steerToStayOnPathKernel(VehicleData *vehicleData, float3 *steeringVectors, float predictionTime);
 
@@ -21,7 +24,7 @@ static int *d_directions = NULL;
 
 static int first_run = 1;
 
-void runFollowPathKernel(VehicleData *h_vehicleData, int numOfVehicles, PathwayData *h_pathwayData, int *h_directions, float elapsedTime)
+void runFollowPathKernel(VehicleData *h_vehicleData, int numOfVehicles, PathwayData *h_pathwayData, int *h_directions, ObstacleData *h_obstacleData, int numOfObstacles, float elapsedTime)
 {
     // init GPU
     int gpu_count;
@@ -57,10 +60,15 @@ void runFollowPathKernel(VehicleData *h_vehicleData, int numOfVehicles, PathwayD
     if (first_run == 1) {
         cudaMemcpyToSymbol("pathway", h_pathwayData, sizeof(PathwayData), 0, cudaMemcpyHostToDevice);
         //CUT_CHECK_ERROR("cudaMemcpyToSymbol failed");
+        cudaMemcpyToSymbol("d_obstacles", h_obstacleData, sizeof(ObstacleData) * numOfObstacles, 0, cudaMemcpyHostToDevice);
+        cudaMemcpyToSymbol("d_numOfObstacles", &numOfObstacles, sizeof(int), 0, cudaMemcpyHostToDevice);
     }
     
+    // start avoidObstacle kernel
+    steerToAvoidObstacles<<<grid, threads>>>(d_vehicleData, d_steeringVectors);
+    
     // start followPath kernel
-    steerToFollowPathKernel<<<grid, threads>>>(d_vehicleData, d_steeringVectors, d_directions, 3.f);
+    steerToFollowPathKernel<<<grid, threads>>>(d_vehicleData, d_steeringVectors, d_directions, 3.f, 1.f, IGNORE_UNLESS_ZERO);
     //steerToStayOnPathKernel<<<grid, threads>>>(d_vehicleData, d_steeringVectors, 3.f);
     //CUT_CHECK_ERROR("steerToFollowPathKernel execution failed");
     

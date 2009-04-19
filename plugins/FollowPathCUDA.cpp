@@ -40,18 +40,23 @@
 #include <sstream>
 #include <iostream>
 #include "OpenSteer/SimpleVehicleMB.h"
+#include "OpenSteer/Obstacle.h"
 #include "OpenSteer/OpenSteerDemo.h"
 #include "OpenSteer/Pathway.h"
 #include "OpenSteer/PathwayData.h"
 #include "OpenSteer/PathwayDataFunc.h"
 #include "OpenSteer/VehicleData.h"
+#include "OpenSteer/ObstacleData.h"
 
-void runFollowPathKernel(VehicleData *h_vehicleData, int numOfVehicles, PathwayData *h_pathwayData, int *h_directions, float elapsedTime);
+void runFollowPathKernel(VehicleData *h_vehicleData, int numOfVehicles, PathwayData *h_pathwayData, int *h_directions, ObstacleData *h_obstacleData, int numOfObstacles, float elapsedTime);
 void endFollowPath(void);
+
 
 
 using namespace OpenSteer;
 
+typedef std::vector<SphericalObstacle*> SOG;  // spherical obstacle group
+typedef SOG::const_iterator SOI;              // spherical obstacle iterator
 
 // ----------------------------------------------------------------------------
 
@@ -119,15 +124,17 @@ class FollowPathCUDAPlugIn : public PlugIn
     {
     public:
         
-        const char* name (void) {return "FollowPathCUDA";}
+        const char* name (void) {return "FollowPath CUDA";}
         
         float selectionOrderSortKey (void) {return 1.5f;}
         
         const static int numOfAgents = 2048;
+        const static int numOfObstacles = 2;
         
         VehicleData *vData;
         PathwayData *pwd;
         int *directions;
+        int first_time;
         
         // be more "nice" to avoid a compiler warning
         virtual ~FollowPathCUDAPlugIn() {}
@@ -150,19 +157,38 @@ class FollowPathCUDAPlugIn : public PlugIn
                                                10);
             OpenSteerDemo::camera.fixedPosition.set (40, 40, 40);
             pwd = transformPathway(*(getTestPathForFollowPathCUDA()));
+            
+            allObstacles.push_back(new SphericalObstacle(3.f, Vec3(0.5, 0, 30.5)));
+            allObstacles.push_back(new SphericalObstacle(8.f, Vec3(51.5, 0, 15.5)));
+            
+            first_time = 1;
         }
         
         void update (const float currentTime, const float elapsedTime)
         {
+            // prepare obstacle data
+            static ObstacleData *obstacles = NULL;
+            if (first_time == true) {
+                obstacles = new ObstacleData[numOfObstacles];
+                for (int i = 0; i < numOfObstacles; i++) {
+                    obstacles[i].center = make_float3(allObstacles.at(i)->center.x,
+                                                      allObstacles.at(i)->center.y,
+                                                      allObstacles.at(i)->center.z);
+                    obstacles[i].radius = allObstacles.at(i)->radius;
+                }
+                
+            }
             
             MemoryBackend *mb = MemoryBackend::instance();
             vData = mb->getVehicleData();
             
-            runFollowPathKernel(vData, numOfAgents, pwd, directions, elapsedTime);
+            runFollowPathKernel(vData, numOfAgents, pwd, directions, obstacles, numOfObstacles, elapsedTime);
             
             for (iterator iter = theVehicles.begin(); iter != theVehicles.end(); iter++) {
                 (*iter)->update(currentTime, elapsedTime);
             }
+            
+            first_time = 0;
         }
         
         void redraw (const float currentTime, const float elapsedTime)
@@ -184,6 +210,18 @@ class FollowPathCUDAPlugIn : public PlugIn
             
             // draw "ground plane"
             OpenSteerDemo::gridUtility (gFollowPathCUDA->position());
+            
+            drawObstacles();
+        }
+        
+        void drawObstacles (void)
+        {
+            const Vec3 color (0.8f, 0.6f, 0.4f);
+            const SOG& allSO = allObstacles;
+            for (SOI so = allSO.begin(); so != allSO.end(); so++)
+            {
+                drawXZCircle ((**so).radius, (**so).center, color, 40);
+            }
         }
         
         void drawPath (void)
@@ -217,6 +255,7 @@ class FollowPathCUDAPlugIn : public PlugIn
         
         FollowPathCUDA* gFollowPathCUDA;
         std::vector<FollowPathCUDA*> theVehicles; // for allVehicles
+        SOG allObstacles;
         typedef std::vector<FollowPathCUDA*>::const_iterator iterator;
     };
 

@@ -59,7 +59,7 @@ steerToAvoidObstacles(VehicleData* vehicleData, float3 *steeringVectors)
     int nearestIntersectionID = 0;
     float nearestIntersectionDistance = MAXFLOAT;
     
-    float minDistanceToCollision = (*vehicleData).speed[id] * 10.f;
+    float minDistanceToCollision = (*vehicleData).speed[id] * 5.f;
     
     int i = 0;
     

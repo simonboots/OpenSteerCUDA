@@ -36,10 +36,10 @@
 __constant__ PathwayData pathway;
 
 __device__ void
-steerForSeekKernelSingle(float3 position, float3 velocity, float3 seekVector, float3 *steeringVectors, int ignore);
+steerForSeekKernelSingle(float3 position, float3 velocity, float3 seekVector, float3 *steeringVectors, int ignore, float blendFactor, kernel_options options);
 
 __global__ void
-steerToFollowPathKernel(VehicleData *vehicleData, float3 *steeringVectors, int *direction, float predictionTime)
+steerToFollowPathKernel(VehicleData *vehicleData, float3 *steeringVectors, int *direction, float predictionTime, float blendFactor, kernel_options options)
 {    
     int id = (blockIdx.x * blockDim.x + threadIdx.x);
     int blockOffset = (blockDim.x * blockIdx.x * 3);
@@ -112,11 +112,11 @@ steerToFollowPathKernel(VehicleData *vehicleData, float3 *steeringVectors, int *
         target = mapPathDistanceToPoint(pathway.points, pathway.numElements, pathway.isCyclic, targetPathDistance);
         ignore = 0;
     }
-    steerForSeekKernelSingle(P(threadIdx.x), V(threadIdx.x), target, steeringVectors, ignore);
+    steerForSeekKernelSingle(P(threadIdx.x), V(threadIdx.x), target, steeringVectors, ignore, blendFactor, options);
 }
 
 __device__ void
-steerForSeekKernelSingle(float3 position, float3 velocity, float3 seekVector, float3 *steeringVectors, int ignore)
+steerForSeekKernelSingle(float3 position, float3 velocity, float3 seekVector, float3 *steeringVectors, int ignore, float blendFactor, kernel_options options)
 {
     int id = (blockIdx.x * blockDim.x + threadIdx.x);
     int blockOffset = (blockDim.x * blockIdx.x * 3);
@@ -132,6 +132,19 @@ steerForSeekKernelSingle(float3 position, float3 velocity, float3 seekVector, fl
         S(threadIdx.x).x = seekVector.x;
         S(threadIdx.x).y = seekVector.y;
         S(threadIdx.x).z = seekVector.z;
+    }
+    
+    __syncthreads();
+    
+    // mix in wander behavior
+    if (options & IGNORE_UNLESS_ZERO == IGNORE_UNLESS_ZERO
+        && steeringVectors[id].x != 0.f
+        && steeringVectors[id].z != 0.f)
+    {
+        S(threadIdx.x) = steeringVectors[id];
+        
+    } else {
+        S(threadIdx.x) = float3BlendIn(blendFactor, S(threadIdx.x), steeringVectors[id]);
     }
     
     __syncthreads();
