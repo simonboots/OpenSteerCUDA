@@ -12,7 +12,7 @@ OpenSteer::MemoryBackend::MemoryBackend() {
     if (retval == cudaSuccess) {
         std::cout << "MemoryBackend initialized" << std::endl;
     } else {
-        std::cout << "MemoryBackend initialization failed!" << std::endl;
+        std::cout << "MemoryBackend initialization failed: " << cudaGetErrorString(retval) << std::endl;
     }
 
 }
