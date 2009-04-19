@@ -79,16 +79,23 @@ steerToStayOnPathKernel(VehicleData *vehicleData, float3 *steeringVectors, float
     float outside;
     float3 onPath = mapPointToPath(pathway.points, pathway.numElements, pathway.radius, futurePosition, &tangent, &outside);
     
+    float3 target;
+    int ignore;
+    
     if (outside < 0) {
         // our predicted future position was in the path,
         // return zero steering.
-        steerForSeekKernelSingle(P(threadIdx.x), V(threadIdx.x), make_float3(0, 0, 0), steeringVectors, 1);
+        target = make_float3(0, 0, 0);
+        ignore = 1;
     } else {
         // our predicted future position was outside the path, need to
         // steer towards it.  Use onPath projection of futurePosition
         // as seek target
-        steerForSeekKernelSingle(P(threadIdx.x), V(threadIdx.x), onPath, steeringVectors, 0);
+        target = onPath;
+        ignore = 0;
     }
+    
+    steerForSeekKernelSingle(P(threadIdx.x), V(threadIdx.x), target, steeringVectors, ignore);
 }
 
 __device__ void
