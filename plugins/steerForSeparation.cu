@@ -75,6 +75,7 @@ steerForSeparationKernel(VehicleData *vehicleData, float3 *steeringVectors, floa
     // mix in wander behavior
     if (options & IGNORE_UNLESS_ZERO == IGNORE_UNLESS_ZERO
         && steeringVectors[id].x != 0.f
+        && steeringVectors[id].y != 0.f
         && steeringVectors[id].z != 0.f)
     {
         S(threadIdx.x) = steeringVectors[id];
