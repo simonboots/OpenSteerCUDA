@@ -84,6 +84,34 @@ addNeighbor(NeighborData neighbor, float radius, VehicleData *vehicleData, int v
     }
 }
 
-
+__device__ int
+inNeighborhood(float3 myPosition, float3 myForward, float3 otherPosition, float minDistance, float maxDistance, float cosMaxAngle)
+{
+    float3 offset = float3Sub(otherPosition, myPosition);
+    float distance = float3Length(offset);
+    
+    // definitely in neighborhood if inside minDistance sphere
+    if (distance < minDistance)
+    {
+        return 1; // true
+    }
+    else
+    {
+        // definitely not in neighborhood if outside maxDistance sphere
+        if (distance > maxDistance)
+        {
+            return 0; // false
+        }
+        else
+        {
+            // otherwise, test angular offset from forward axis
+            float3 unitOffset = float3Div(offset, distance);
+            float forwardness = float3Dot(myForward, unitOffset);
+            return forwardness > cosMaxAngle;
+        }
+    }
+    
+    return retval;
+}
 
 #endif // _CUDA_NEIGHBOR_UTILITIES_H_

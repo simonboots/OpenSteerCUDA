@@ -40,7 +40,8 @@ findNeighborsKernel(VehicleData* vehicleData, int* indices, int* agents, Neighbo
 
                 int i = startID;
                 for (; i < endID; i++) {
-                    addNeighbor(neighbours[id], radius, vehicleData, agents[i], id);
+                    if (agents[i] != id)
+                        addNeighbor(neighbours[id], radius, vehicleData, agents[i], id);
                 }
             }
         }
