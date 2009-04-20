@@ -110,8 +110,6 @@ inNeighborhood(float3 myPosition, float3 myForward, float3 otherPosition, float 
             return forwardness > cosMaxAngle;
         }
     }
-    
-    return retval;
 }
 
 #endif // _CUDA_NEIGHBOR_UTILITIES_H_
