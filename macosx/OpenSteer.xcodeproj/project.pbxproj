@@ -17,6 +17,8 @@
 		1C18EE6D0F7C039A00100C21 /* steerForPursuitKernel.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1C18EE6C0F7C037F00100C21 /* steerForPursuitKernel.cu */; };
 		1C1B66140F9DD2FD002C5E0C /* steerForAlignment.cu in Resources */ = {isa = PBXBuildFile; fileRef = 1C1B66130F9DD2FD002C5E0C /* steerForAlignment.cu */; };
 		1C1B66180F9DD4CC002C5E0C /* steerForCohesion.cu in Resources */ = {isa = PBXBuildFile; fileRef = 1C1B66170F9DD4CC002C5E0C /* steerForCohesion.cu */; };
+		1C1B66DA0F9DEBD4002C5E0C /* Boids.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 32FFF56406E9CECE00E1D8A3 /* Boids.cpp */; };
+		1C1B66E60F9DEC13002C5E0C /* BoidsCUDA.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1C1B66E50F9DEC13002C5E0C /* BoidsCUDA.cpp */; };
 		1C2995270F9B3DEB0018FD5C /* steerToFollowPath.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1CD457670F937A00008D29D5 /* steerToFollowPath.cu */; };
 		1C45011C0F8E404C00804B2F /* steerToAvoidObstacles.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1C45007A0F8E06E900804B2F /* steerToAvoidObstacles.cu */; };
 		1C6473A80F821F92006F4046 /* MemoryBackend.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1C6473A70F821F92006F4046 /* MemoryBackend.cpp */; };
@@ -97,6 +99,8 @@
 		1C18EE6C0F7C037F00100C21 /* steerForPursuitKernel.cu */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 4; name = steerForPursuitKernel.cu; path = ../plugins/steerForPursuitKernel.cu; sourceTree = "<group>"; };
 		1C1B66130F9DD2FD002C5E0C /* steerForAlignment.cu */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 4; name = steerForAlignment.cu; path = ../plugins/steerForAlignment.cu; sourceTree = SOURCE_ROOT; };
 		1C1B66170F9DD4CC002C5E0C /* steerForCohesion.cu */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 4; name = steerForCohesion.cu; path = ../plugins/steerForCohesion.cu; sourceTree = SOURCE_ROOT; };
+		1C1B661B0F9DDC2D002C5E0C /* Flocking.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Flocking.cpp; sourceTree = "<group>"; };
+		1C1B66E50F9DEC13002C5E0C /* BoidsCUDA.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BoidsCUDA.cpp; sourceTree = "<group>"; };
 		1C45007A0F8E06E900804B2F /* steerToAvoidObstacles.cu */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 4; name = steerToAvoidObstacles.cu; path = ../plugins/steerToAvoidObstacles.cu; sourceTree = "<group>"; };
 		1C4500920F8E0EA000804B2F /* ObstacleData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObstacleData.h; sourceTree = "<group>"; };
 		1C6473A60F821F92006F4046 /* MemoryBackend.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MemoryBackend.h; sourceTree = "<group>"; };
@@ -346,7 +350,9 @@
 			isa = PBXGroup;
 			children = (
 				32FFF56406E9CECE00E1D8A3 /* Boids.cpp */,
+				1C1B66E50F9DEC13002C5E0C /* BoidsCUDA.cpp */,
 				32FFF56506E9CECE00E1D8A3 /* CaptureTheFlag.cpp */,
+				1C1B661B0F9DDC2D002C5E0C /* Flocking.cpp */,
 				1CD457470F936E62008D29D5 /* FollowPath.cpp */,
 				1C9C36A10F94872900F4A359 /* FollowPathCUDA.cpp */,
 				1C9C36E50F948A4100F4A359 /* FollowPathCUDAStarter.cu */,
@@ -514,6 +520,8 @@
 				1C2995270F9B3DEB0018FD5C /* steerToFollowPath.cu in Sources */,
 				1CD0583C0F9C6A4100320687 /* Grid.cpp in Sources */,
 				1C9119460F9CB68100941CFC /* CUDANeighborUtilities.cu in Sources */,
+				1C1B66DA0F9DEBD4002C5E0C /* Boids.cpp in Sources */,
+				1C1B66E60F9DEC13002C5E0C /* BoidsCUDA.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
