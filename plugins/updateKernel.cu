@@ -4,6 +4,7 @@
 #include <cutil.h>
 #include "VehicleData.h"
 #include "CUDAVectorUtilities.cu"
+#include "CUDANeighborUtilities.cu"
 #include "CUDAKernelOptions.cu"
 
 #define CHECK_BANK_CONFLICTS 1
@@ -116,6 +117,13 @@ updateKernel(VehicleData *vehicleData, float3 *steeringVectors, float elapsedTim
                                   FV(threadIdx.x).z + (V(threadIdx.x).z * elapsedTime));
     
     __syncthreads();
+    
+    // handle spherical wrap around
+    if (options & SPHERICAL_WRAP_AROUND == SPHERICAL_WRAP_AROUND) {
+        FV(threadIdx.x) = sphericalWrapAround(FV(threadIdx.x), make_float3(0.f, 0.f, 0.f));
+        __syncthreads();
+    }
+
     
     // writing position data back to global memory (coalesced)
     ((float*)(*vehicleData).position)[blockOffset + threadIdx.x] = FV_F(threadIdx.x);

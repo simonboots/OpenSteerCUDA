@@ -112,4 +112,16 @@ inNeighborhood(float3 myPosition, float3 myForward, float3 otherPosition, float 
     }
 }
 
+__device__ float3
+sphericalWrapAround (float3 myPosition, float3 center)
+{
+    float3 offset = float3Sub(myPosition, center);
+    float r = float3Length(offset);
+    if (r > WORLD_SIZE/2)
+        return float3Add(myPosition, float3Mul(float3Div(offset, r), WORLD_SIZE * -1));      \
+        //return *this + ((offset/r) * radius * -2);
+    else
+        return myPosition;
+}
+
 #endif // _CUDA_NEIGHBOR_UTILITIES_H_
