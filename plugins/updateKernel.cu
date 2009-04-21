@@ -24,7 +24,7 @@
 #endif
 
 __global__ void
-updateKernel(VehicleData *vehicleData, float3 *steeringVectors, float elapsedTime)
+updateKernel(VehicleData *vehicleData, float3 *steeringVectors, float elapsedTime) //, kernel_options options)
 {
     int id = (blockIdx.x * blockDim.x + threadIdx.x);
     //int numOfAgents = gridDim.x * blockDim.x;
@@ -86,6 +86,11 @@ updateKernel(VehicleData *vehicleData, float3 *steeringVectors, float elapsedTim
     
     __syncthreads();
     
+    // writing smoothed_acceleration back to global memory (coalesced)
+    ((float*)(*vehicleData).smoothedAcceleration)[blockOffset + threadIdx.x] = SA_F(threadIdx.x);
+    ((float*)(*vehicleData).smoothedAcceleration)[blockOffset + threadIdx.x + blockDim.x] = SA_F(threadIdx.x + blockDim.x);
+    ((float*)(*vehicleData).smoothedAcceleration)[blockOffset + threadIdx.x + 2*blockDim.x] = SA_F(threadIdx.x + 2*blockDim.x);
+    
     V(threadIdx.x).x += SA(threadIdx.x).x * elapsedTime;
     V(threadIdx.x).z += SA(threadIdx.x).z * elapsedTime;
     
@@ -129,32 +134,45 @@ updateKernel(VehicleData *vehicleData, float3 *steeringVectors, float elapsedTim
     V(threadIdx.x) = float3Div(V(threadIdx.x), speed);
     __syncthreads();
     
+    // ******************************************************
+    // using smoothed_acceleration vector to store up vector!
+    // ******************************************************
+    
+    // loading position data from global memory (coalesced)
+    SA_F(threadIdx.x) = ((float*)(*vehicleData).up)[blockOffset + threadIdx.x];
+    SA_F(threadIdx.x + blockDim.x) = ((float*)(*vehicleData).up)[blockOffset + threadIdx.x + blockDim.x];
+    SA_F(threadIdx.x + 2*blockDim.x) = ((float*)(*vehicleData).up)[blockOffset + threadIdx.x + 2*blockDim.x];
+    
+    __syncthreads();
+    
     // regenerate local space
     // ******************************************
     // using follow_velocity to store side vector
     // ******************************************
     
-//    if (speed > 0)
-//    {
-    FV(threadIdx.x) = float3Cross(V(threadIdx.x), make_float3(0.f, 1.f, 0.f));
+    // setUnitSideFromForwardAndUp()
+    FV(threadIdx.x) = float3Normalize(float3Cross(V(threadIdx.x), SA(threadIdx.x)));
     __syncthreads();
-    FV(threadIdx.x) = float3Normalize(FV(threadIdx.x));
-    __syncthreads();    
-        // writing side vector back to global memory (coalesced)
+    
+    // new up vector
+    SA(threadIdx.x) = float3Cross(FV(threadIdx.x), V(threadIdx.x));
+    __syncthreads();
+
+    // writing up vector back to global memory (coalesced)
+    ((float*)(*vehicleData).up)[blockOffset + threadIdx.x] = SA_F(threadIdx.x);
+    ((float*)(*vehicleData).up)[blockOffset + threadIdx.x + blockDim.x] = SA_F(threadIdx.x + blockDim.x);
+    ((float*)(*vehicleData).up)[blockOffset + threadIdx.x + 2*blockDim.x] = SA_F(threadIdx.x + 2*blockDim.x);    
+    
+    // writing side vector back to global memory (coalesced)
     ((float*)(*vehicleData).side)[blockOffset + threadIdx.x] = FV_F(threadIdx.x);
     ((float*)(*vehicleData).side)[blockOffset + threadIdx.x + blockDim.x] = FV_F(threadIdx.x + blockDim.x);
     ((float*)(*vehicleData).side)[blockOffset + threadIdx.x + 2*blockDim.x] = FV_F(threadIdx.x + 2*blockDim.x);
-//    }    
     
     // writing forward vector back to global memory (coalesced)
     ((float*)(*vehicleData).forward)[blockOffset + threadIdx.x] = V_F(threadIdx.x);
     ((float*)(*vehicleData).forward)[blockOffset + threadIdx.x + blockDim.x] = V_F(threadIdx.x + blockDim.x);
     ((float*)(*vehicleData).forward)[blockOffset + threadIdx.x + 2*blockDim.x] = V_F(threadIdx.x + 2*blockDim.x);
     
-    // writing smoothed_acceleration back to global memory (coalesced)
-    ((float*)(*vehicleData).smoothedAcceleration)[blockOffset + threadIdx.x] = SA_F(threadIdx.x);
-    ((float*)(*vehicleData).smoothedAcceleration)[blockOffset + threadIdx.x + blockDim.x] = SA_F(threadIdx.x + blockDim.x);
-    ((float*)(*vehicleData).smoothedAcceleration)[blockOffset + threadIdx.x + 2*blockDim.x] = SA_F(threadIdx.x + 2*blockDim.x);
 }
 
 #endif // _UPDATE_KERNEL_CU_
