@@ -1,5 +1,5 @@
-#ifndef _FIND_FOLLOWER_KERNEL_H_
-#define _FIND_FOLLOWER_KERNEL_H_
+#ifndef _FIND_FOLLOWER_KERNEL_CU_
+#define _FIND_FOLLOWER_KERNEL_CU_
 
 #include "VehicleData.h"
 
@@ -17,4 +17,4 @@ findFollowerKernel(VehicleData *vehicleData, float3 *seekVectors)
     (((float*)seekVectors)[id+2*numOfAgents]) = (((float*)(*vehicleData).position)[(follower+2*numOfAgents)%numOfFields]);
 }   
 
-#endif // _FIND_FOLLOWER_KERNEL_H_
+#endif // _FIND_FOLLOWER_KERNEL_CU_

@@ -1,5 +1,5 @@
-#ifndef _FIND_NEIGHBORS_KERNEL_H_
-#define _FIND_NEIGHBORS_KERNEL_H_
+#ifndef _FIND_NEIGHBORS_KERNEL_CU_
+#define _FIND_NEIGHBORS_KERNEL_CU_
 
 #include "VehicleData.h"
 #include "NeighborData.h"
@@ -48,4 +48,4 @@ findNeighborsKernel(VehicleData* vehicleData, int* indices, int* agents, Neighbo
     }
 }
 
-#endif // _FIND_NEIGHBORS_KERNEL_H_
+#endif // _FIND_NEIGHBORS_KERNEL_CU_

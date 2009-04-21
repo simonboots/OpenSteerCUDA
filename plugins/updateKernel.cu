@@ -1,5 +1,5 @@
-#ifndef _UPDATE_KERNEL_H_
-#define _UPDATE_KERNEL_H_
+#ifndef _UPDATE_KERNEL_CU_
+#define _UPDATE_KERNEL_CU_
 
 #include <cutil.h>
 #include "VehicleData.h"
@@ -157,4 +157,4 @@ updateKernel(VehicleData *vehicleData, float3 *steeringVectors, float elapsedTim
     ((float*)(*vehicleData).smoothedAcceleration)[blockOffset + threadIdx.x + 2*blockDim.x] = SA_F(threadIdx.x + 2*blockDim.x);
 }
 
-#endif // _UPDATE_KERNEL_H_
+#endif // _UPDATE_KERNEL_CU_

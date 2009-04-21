@@ -1,5 +1,5 @@
-#ifndef _STEER_FOR_SEEK_KERNEL_H_
-#define _STEER_FOR_SEEK_KERNEL_H_
+#ifndef _STEER_FOR_SEEK_KERNEL_CU_
+#define _STEER_FOR_SEEK_KERNEL_CU_
 
 #include "VehicleData.h"
 #include "CUDAKernelOptions.cu"
@@ -87,4 +87,4 @@ steerForSeekKernel(VehicleData *vehicleData, float3 *seekVectors, float3 *steeri
     ((float*)steeringVectors)[blockOffset + threadIdx.x + 2*blockDim.x] = SK_F(threadIdx.x + 2*blockDim.x);
 }
 
-#endif // _STEER_FOR_SEEK_KERNEL_H_
+#endif // _STEER_FOR_SEEK_KERNEL_CU_

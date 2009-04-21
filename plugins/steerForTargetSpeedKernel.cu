@@ -1,5 +1,5 @@
-#ifndef _STEER_FOR_TARGET_SPPED_KERNEL_H_
-#define _STEER_FOR_TARGET_SPEED_KERNEL_H_
+#ifndef _STEER_FOR_TARGET_SPPED_KERNEL_CU_
+#define _STEER_FOR_TARGET_SPEED_KERNEL_CU_
 
 #include <cutil.h>
 #include "CUDAVectorUtilities.cu"

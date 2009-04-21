@@ -1,5 +1,5 @@
-#ifndef _RESET_ON_COLLISION_KERNEL_H_
-#define _RESET_ON_COLLISION_KERNEL_H_
+#ifndef _RESET_ON_COLLISION_KERNEL_CU_
+#define _RESET_ON_COLLISION_KERNEL_CU_
 
 #include "VehicleData.h"
 #include "CUDAKernelOptions.cu"
@@ -48,4 +48,4 @@ resetOnCollisionKernel(VehicleData *vehicleData, float *random, float3 position,
     
 }   
 
-#endif // _RESET_ON_COLLISION_KERNEL_H_
+#endif // _RESET_ON_COLLISION_KERNEL_CU_

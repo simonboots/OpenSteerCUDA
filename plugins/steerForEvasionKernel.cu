@@ -1,5 +1,5 @@
-#ifndef _STEER_FOR_EVASION_KERNEL_H_
-#define _STEER_FOR_EVASION_KERNEL_H_
+#ifndef _STEER_FOR_EVASION_KERNEL_CU_
+#define _STEER_FOR_EVASION_KERNEL_CU_
 
 #include <stdio.h>
 #include <cutil.h>
@@ -101,4 +101,4 @@ steerForFleeKernelSingle(float3 position, float3 velocity, float3 fleeVector, fl
     ((float*)steeringVectors)[blockOffset + threadIdx.x + 2*blockDim.x] = S_F(threadIdx.x + 2*blockDim.x);
 } 
 
-#endif // _STEER_FOR_EVASION_KERNEL_H_
+#endif // _STEER_FOR_EVASION_KERNEL_CU_

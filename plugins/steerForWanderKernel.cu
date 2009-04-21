@@ -1,5 +1,5 @@
-#ifndef _STEER_FOR_WANDER_KERNEL_H_
-#define _STEER_FOR_WANDER_KERNEL_H_
+#ifndef _STEER_FOR_WANDER_KERNEL_CU_
+#define _STEER_FOR_WANDER_KERNEL_CU_
 
 #include <cutil.h>
 #include "VehicleData.h"
@@ -98,4 +98,4 @@ scalarRandomWalk(float initial, float walkspeed, float min, float max, float ran
     return clip(wander, min, max);
 }
 
-#endif // _STEER_FOR_FLEE_KERNEL_H_
+#endif // _STEER_FOR_FLEE_KERNEL_CU_

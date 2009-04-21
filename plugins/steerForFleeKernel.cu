@@ -1,5 +1,5 @@
-#ifndef _STEER_FOR_FLEE_KERNEL_H_
-#define _STEER_FOR_FLEE_KERNEL_H_
+#ifndef _STEER_FOR_FLEE_KERNEL_CU_
+#define _STEER_FOR_FLEE_KERNEL_CU_
 
 #include "VehicleData.h"
 #include "CUDAKernelOptions.cu"
@@ -91,4 +91,4 @@ steerForFleeKernel(VehicleData *vehicleData, float3 *fleeVectors, float3 *steeri
     ((float*)steeringVectors)[blockOffset + threadIdx.x + 2*blockDim.x] = FL_F(threadIdx.x + 2*blockDim.x);
 }
 
-#endif // _STEER_FOR_FLEE_KERNEL_H_
+#endif // _STEER_FOR_FLEE_KERNEL_CU_
