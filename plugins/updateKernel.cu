@@ -24,7 +24,7 @@
 #endif
 
 __global__ void
-updateKernel(VehicleData *vehicleData, float3 *steeringVectors, float elapsedTime) //, kernel_options options)
+updateKernel(VehicleData *vehicleData, float3 *steeringVectors, float elapsedTime, kernel_options options)
 {
     int id = (blockIdx.x * blockDim.x + threadIdx.x);
     //int numOfAgents = gridDim.x * blockDim.x;
@@ -134,16 +134,46 @@ updateKernel(VehicleData *vehicleData, float3 *steeringVectors, float elapsedTim
     V(threadIdx.x) = float3Div(V(threadIdx.x), speed);
     __syncthreads();
     
-    // ******************************************************
-    // using smoothed_acceleration vector to store up vector!
-    // ******************************************************
-    
-    // loading position data from global memory (coalesced)
-    SA_F(threadIdx.x) = ((float*)(*vehicleData).up)[blockOffset + threadIdx.x];
-    SA_F(threadIdx.x + blockDim.x) = ((float*)(*vehicleData).up)[blockOffset + threadIdx.x + blockDim.x];
-    SA_F(threadIdx.x + 2*blockDim.x) = ((float*)(*vehicleData).up)[blockOffset + threadIdx.x + 2*blockDim.x];
-    
-    __syncthreads();
+    // regenerate loca space for banking
+    if (options & LOCAL_SPACE_BANKING == LOCAL_SPACE_BANKING) {
+        // the length of this global-upward-pointing vector controls the vehicle's
+        // tendency to right itself as it is rolled over from turning acceleration
+        float3 globalUp = make_float3(0, 0.2f, 0);
+        
+        // acceleration points toward the center of local path curvature, the
+        // length determines how much the vehicle will roll while turning
+        float3 accelUp = float3Mul(SA(threadIdx.x), 0.05f);
+        
+        // combined banking, sum of UP due to turning and global UP
+        float3 bankUp = float3Add(accelUp, globalUp);
+        
+        // ******************************************************
+        // using smoothed_acceleration vector to store up vector!
+        // ******************************************************
+        
+        // loading position data from global memory (coalesced)
+        SA_F(threadIdx.x) = ((float*)(*vehicleData).up)[blockOffset + threadIdx.x];
+        SA_F(threadIdx.x + blockDim.x) = ((float*)(*vehicleData).up)[blockOffset + threadIdx.x + blockDim.x];
+        SA_F(threadIdx.x + 2*blockDim.x) = ((float*)(*vehicleData).up)[blockOffset + threadIdx.x + 2*blockDim.x];
+        __syncthreads();
+        
+        // blend bankUp into vehicle's UP basis vector
+        float smoothRate = elapsedTime * 3;
+        SA(threadIdx.x) = float3Normalize(float3BlendIn(smoothRate, bankUp, SA(threadIdx.x)));
+        __syncthreads();
+        
+    } else {
+        
+        // ******************************************************
+        // using smoothed_acceleration vector to store up vector!
+        // ******************************************************
+        
+        // loading position data from global memory (coalesced)
+        SA_F(threadIdx.x) = ((float*)(*vehicleData).up)[blockOffset + threadIdx.x];
+        SA_F(threadIdx.x + blockDim.x) = ((float*)(*vehicleData).up)[blockOffset + threadIdx.x + blockDim.x];
+        SA_F(threadIdx.x + 2*blockDim.x) = ((float*)(*vehicleData).up)[blockOffset + threadIdx.x + 2*blockDim.x];
+        __syncthreads();
+    }
     
     // regenerate local space
     // ******************************************

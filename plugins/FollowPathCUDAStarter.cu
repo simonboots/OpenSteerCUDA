@@ -15,7 +15,7 @@ __global__ void
 steerToStayOnPathKernel(VehicleData *vehicleData, float3 *steeringVectors, float predictionTime);
 
 __global__ void
-updateKernel(VehicleData *vehicleData, float3 *steeringVectors, float elapsedTime);
+updateKernel(VehicleData *vehicleData, float3 *steeringVectors, float elapsedTime, kernel_options options);
 
 // device memory objects
 static float3 *d_steeringVectors = NULL;
@@ -73,7 +73,7 @@ void runFollowPathKernel(VehicleData *h_vehicleData, int numOfVehicles, PathwayD
     //CUT_CHECK_ERROR("steerToFollowPathKernel execution failed");
     
     // start update kernel
-    updateKernel<<<grid, threads>>>(d_vehicleData, d_steeringVectors, elapsedTime);
+    updateKernel<<<grid, threads>>>(d_vehicleData, d_steeringVectors, elapsedTime, NONE);
     //CUT_CHECK_ERROR("updateKernel execution failed");
     
     // copy vehicle data back to host memory

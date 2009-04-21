@@ -9,7 +9,7 @@ __global__ __device__ void
 steerForPursuitKernel(VehicleData *vehicleData, float3 wandererPosition, float3 wandererVelocity, float3 *steeringVectors, float maxPredictionTime);
 
 __global__ void
-updateKernel(VehicleData *vehicleData, float3 *steeringVectors, float elapsedTime);
+updateKernel(VehicleData *vehicleData, float3 *steeringVectors, float elapsedTime, kernel_options options);
 
 static float3 *d_steeringVectors = NULL;
 static VehicleData *d_vehicleData = NULL;
@@ -70,7 +70,7 @@ void runMultiplePursuitKernel(VehicleData *h_vehicleData, int numOfVehicles, flo
 //    CUT_SAFE_CALL(cutStartTimer(timer));
     
     // call updateKernel
-    updateKernel<<<grid, threads>>>(d_vehicleData, d_steeringVectors, elapsedTime);
+    updateKernel<<<grid, threads>>>(d_vehicleData, d_steeringVectors, elapsedTime, NONE);
     //CUT_CHECK_ERROR("Kernel execution failed");
     
     cudaThreadSynchronize();

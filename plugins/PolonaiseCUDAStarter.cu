@@ -8,7 +8,7 @@ __global__ void
 steerForSeekKernel(VehicleData *vehicleData, float3 *seekVectors, float3 *steeringVectors);
 
 __global__ void
-updateKernel(VehicleData *vehicleData, float3 *steeringVectors, float elapsedTime);
+updateKernel(VehicleData *vehicleData, float3 *steeringVectors, float elapsedTime, kernel_options options);
 
 __global__ void
 findFollowerKernel(VehicleData *vehicleData, float3 *seekVectors);
@@ -78,7 +78,7 @@ void runPolonaiseKernel(VehicleData *h_vehicleData, int numOfAgents, float elaps
 //    CUT_SAFE_CALL(cutStartTimer(timer));
 
     // call updateKernel
-    updateKernel<<<grid, threads>>>(d_vehicleData, d_steeringVectors, elapsedTime);
+    updateKernel<<<grid, threads>>>(d_vehicleData, d_steeringVectors, elapsedTime, NONE);
     //CUT_CHECK_ERROR("Kernel execution failed");
     
     //cudaThreadSynchronize();

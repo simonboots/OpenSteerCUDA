@@ -14,7 +14,7 @@ __global__ __device__ void
 steerForWander2DKernel(VehicleData *vehicleData, float *random, float dt, float3 *steeringVectors, float2 *wanderData, float blendFactor, kernel_options options);
 
 __global__ void
-updateKernel(VehicleData *vehicleData, float3 *steeringVectors, float elapsedTime);
+updateKernel(VehicleData *vehicleData, float3 *steeringVectors, float elapsedTime, kernel_options options);
 
 using namespace OpenSteer;
 using namespace std;
@@ -89,7 +89,7 @@ void runWanderAroundKernel(VehicleData *h_vehicleData, int numOfVehicles, Obstac
     //CUT_CHECK_ERROR("kernel execution failed!");
     
     // start update kernel
-    updateKernel<<<grid, threads>>>(d_vehicleData, d_steeringVectors, elapsedTime);
+    updateKernel<<<grid, threads>>>(d_vehicleData, d_steeringVectors, elapsedTime, NONE);
     //CUT_CHECK_ERROR("kernel execution failed!");
     
     cudaMemcpy(h_vehicleData, d_vehicleData, mem_size_vehicle, cudaMemcpyDeviceToHost);
