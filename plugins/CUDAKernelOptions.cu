@@ -1,5 +1,5 @@
-#ifndef _CUDA_KERNEL_OPTIONS_H_
-#define _CUDA_KERNEL_OPTIONS_H_
+#ifndef _CUDA_KERNEL_OPTIONS_CU_
+#define _CUDA_KERNEL_OPTIONS_CU_
 
 #define TPB 128
 #define MAX_OBSTACLES 128
@@ -12,4 +12,4 @@ typedef enum kernel_opt
     SPHERICAL_WRAP_AROUND = 1 << 3
 } kernel_options;
 
-#endif // _CUDA_KERNEL_OPTIONS_H_
+#endif // _CUDA_KERNEL_OPTIONS_CU_

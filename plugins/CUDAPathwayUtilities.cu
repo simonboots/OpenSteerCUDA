@@ -1,5 +1,5 @@
-#ifndef _CUDA_PATHWAY_UTILITIES_H_
-#define _CUDA_PATHWAY_UTILITIES_H_
+#ifndef _CUDA_PATHWAY_UTILITIES_CU_
+#define _CUDA_PATHWAY_UTILITIES_CU_
 
 #include "CUDAFloatUtilities.cu"
 #include "CUDAVectorUtilities.cu"
@@ -198,4 +198,4 @@ getSegmentNormal(float3 p0, float3 p1)
     return float3Div(normal, float3Length(normal));
 }
 
-#endif // _CUDA_PATHWAY_UTILITIES_H_
+#endif // _CUDA_PATHWAY_UTILITIES_CU_

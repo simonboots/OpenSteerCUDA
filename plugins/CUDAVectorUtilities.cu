@@ -1,5 +1,5 @@
-#ifndef _CUDA_VECTOR_UTILITIES_H_
-#define _CUDA_VECTOR_UTILITIES_H_
+#ifndef _CUDA_VECTOR_UTILITIES_CU_
+#define _CUDA_VECTOR_UTILITIES_CU_
 
 #include "CUDAFloatUtilities.cu"
 
@@ -203,4 +203,4 @@ float3Distance(float3 a, float3 b)
     return float3Length(a);
 }
 
-#endif // _CUDA_VECTOR_UTILITIES_H_
+#endif // _CUDA_VECTOR_UTILITIES_CU_

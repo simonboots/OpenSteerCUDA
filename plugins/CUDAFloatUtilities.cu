@@ -1,5 +1,5 @@
-#ifndef _CUDA_FLOAT_UTILITIES_H_
-#define _CUDA_FLOAT_UTILITIES_H_
+#ifndef _CUDA_FLOAT_UTILITIES_CU_
+#define _CUDA_FLOAT_UTILITIES_CU_
 
 __device__ float
 interpolate(float alpha, float x0, float x1);
@@ -39,4 +39,4 @@ intervalComparison (float x, float lowerBound, float upperBound)
     return 0;
 }
 
-#endif // _CUDA_FLOAT_UTILITIES_H_
+#endif // _CUDA_FLOAT_UTILITIES_CU_

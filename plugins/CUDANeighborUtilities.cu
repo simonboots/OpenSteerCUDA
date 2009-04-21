@@ -1,5 +1,5 @@
-#ifndef _CUDA_NEIGHBOR_UTILITIES_H_
-#define _CUDA_NEIGHBOR_UTILITIES_H_
+#ifndef _CUDA_NEIGHBOR_UTILITIES_CU_
+#define _CUDA_NEIGHBOR_UTILITIES_CU_
 
 #include "NeighborData.h"
 #include "VehicleData.h"
@@ -124,4 +124,4 @@ sphericalWrapAround (float3 myPosition, float3 center)
         return myPosition;
 }
 
-#endif // _CUDA_NEIGHBOR_UTILITIES_H_
+#endif // _CUDA_NEIGHBOR_UTILITIES_CU_
