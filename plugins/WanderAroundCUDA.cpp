@@ -52,7 +52,7 @@
 
 using namespace OpenSteer;
 
-void runWanderAroundKernel(VehicleData *h_vehicleData, int numOfVehicles, ObstacleData *h_obstacleData, int numOfObstacles, float elapsedTime);
+void runWanderAroundKernel(VehicleData *h_vehicleData, VehicleConst *h_vehicleConst, int numOfVehicles, ObstacleData *h_obstacleData, int numOfObstacles, float elapsedTime);
 void endWanderAround(void);
 
 typedef std::vector<SphericalObstacle*> SOG;  // spherical obstacle group
@@ -116,7 +116,6 @@ class WanderAroundCUDAPlugIn : public PlugIn
         
         const static int numOfAgents = 2048;
         const static int numOfObstacles = 100;
-        VehicleData *vData;
         unsigned int obstacleCount;
         bool first_time;
         
@@ -140,10 +139,6 @@ class WanderAroundCUDAPlugIn : public PlugIn
                                                10);
             OpenSteerDemo::camera.fixedPosition.set (40, 40, 40);
             
-
-            MemoryBackend *mb = MemoryBackend::instance();
-            vData = mb->getVehicleData();
-            
             obstacleCount = 0;
             
             for (int i = 0; i < numOfObstacles; i++) addOneObstacle();
@@ -164,7 +159,11 @@ class WanderAroundCUDAPlugIn : public PlugIn
 
             }
             
-            runWanderAroundKernel(vData, numOfAgents, obstacles, numOfObstacles, elapsedTime);
+            MemoryBackend *mb = MemoryBackend::instance();
+            VehicleData *vData = mb->getVehicleData();
+            VehicleConst *vConst = mb->getVehicleConst();
+            
+            runWanderAroundKernel(vData, vConst, numOfAgents, obstacles, numOfObstacles, elapsedTime);
             
             if (obstacles != NULL) {
                 delete[] obstacles;

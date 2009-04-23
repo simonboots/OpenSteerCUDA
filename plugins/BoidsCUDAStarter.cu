@@ -18,7 +18,7 @@ __global__ void
 steerForCohesionKernel(VehicleData *vehicleData, float3 *steeringVectors, float maxDistance, float cosMaxAngle, NeighborData* neighborData, float blendFactor, kernel_options options);
 
 __global__ void
-updateKernel(VehicleData *vehicleData, float3 *steeringVectors, float elapsedTime, kernel_options options);
+updateKernel(VehicleData *vehicleData, VehicleConst *vehicleConst, float3 *steeringVectors, float elapsedTime, kernel_options options);
 
 void debugNeighbors(VehicleData *vehicleData, NeighborData* neighborData, int numOfVehicles);
 
@@ -28,12 +28,13 @@ void debugNeighbors(VehicleData *vehicleData, NeighborData* neighborData, int nu
 static float3* d_steeringVectors = NULL;
 static float3* h_steeringVectors = NULL;
 static VehicleData* d_vehicleData = NULL;
+static VehicleConst* d_vehicleConst = NULL;
 static NeighborData* d_neighborData = NULL;
 static NeighborData* h_neighborData = NULL;
 static int* d_neighborIndices = NULL;
 static int* d_neighborAgents = NULL;
 
-void runBoidsKernel(VehicleData *h_vehicleData, int numOfVehicles, int* h_neighborIndices, int numOfNIndices, int* h_neighborAgents, int numOfNAgents, float elapsedTime)
+void runBoidsKernel(VehicleData *h_vehicleData, VehicleConst *h_vehicleConst, int numOfVehicles, int* h_neighborIndices, int numOfNIndices, int* h_neighborAgents, int numOfNAgents, float elapsedTime)
 {
     // init GPU
     int gpu_count;
@@ -52,6 +53,12 @@ void runBoidsKernel(VehicleData *h_vehicleData, int numOfVehicles, int* h_neighb
     if (d_vehicleData == NULL) {
         cudaMalloc((void **)&d_vehicleData, mem_size_vehicle);
         cudaMemcpy(d_vehicleData, h_vehicleData, mem_size_vehicle, cudaMemcpyHostToDevice);
+    }
+    
+    const unsigned int mem_size_vehicle_const = sizeof(VehicleConst);
+    if (d_vehicleConst == NULL) {
+        cudaMalloc((void **)&d_vehicleConst, mem_size_vehicle_const);
+        cudaMemcpy(d_vehicleConst, h_vehicleConst, mem_size_vehicle_const, cudaMemcpyHostToDevice);
     }
     
     const unsigned int mem_size_steering = sizeof(float3) * numOfVehicles;
@@ -146,7 +153,7 @@ void runBoidsKernel(VehicleData *h_vehicleData, int numOfVehicles, int* h_neighb
 //    }
     
     // run update kernel
-    updateKernel<<<grid, threads>>>(d_vehicleData, d_steeringVectors, elapsedTime, (kernel_options)(LOCAL_SPACE_BANKING | SPHERICAL_WRAP_AROUND));
+    updateKernel<<<grid, threads>>>(d_vehicleData, d_vehicleConst, d_steeringVectors, elapsedTime, (kernel_options)(LOCAL_SPACE_BANKING | SPHERICAL_WRAP_AROUND));
     
     CUT_SAFE_CALL(cutStopTimer(timer));
     printf("Raw processing time (updateKernel): %f (ms) \n", cutGetTimerValue(timer));
@@ -165,12 +172,14 @@ void runBoidsKernel(VehicleData *h_vehicleData, int numOfVehicles, int* h_neighb
 void endBoids(void)
 {
     cudaFree(d_vehicleData);
+    cudaFree(d_vehicleConst);
     cudaFree(d_steeringVectors);    
     cudaFree(d_neighborIndices);
     cudaFree(d_neighborAgents);
     cudaFree(d_neighborData);
 
     d_vehicleData = NULL;
+    d_vehicleConst = NULL;
     d_steeringVectors = NULL;
     d_neighborIndices = NULL;
     d_neighborAgents = NULL;

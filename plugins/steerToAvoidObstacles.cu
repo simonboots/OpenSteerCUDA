@@ -45,7 +45,7 @@ __constant__ ObstacleData d_obstacles[MAX_OBSTACLES];
 __constant__ int d_numOfObstacles;
 
 __global__ void
-steerToAvoidObstacles(VehicleData* vehicleData, float3 *steeringVectors)
+steerToAvoidObstacles(VehicleData* vehicleData, VehicleConst* vehicleConst, float3 *steeringVectors)
 {
     int id = (blockIdx.x * blockDim.x + threadIdx.x);
     int blockOffset = (blockDim.x * blockIdx.x * 3);
@@ -85,7 +85,7 @@ steerToAvoidObstacles(VehicleData* vehicleData, float3 *steeringVectors)
         
         // compute line-sphere intersection parameters
         b = -2*lc.z;
-        c = lc.x*lc.x + lc.y*lc.y + lc.z*lc.z - (d_obstacles[i].radius + (*vehicleData).radius[id])*(d_obstacles[i].radius + (*vehicleData).radius[id]);
+        c = lc.x*lc.x + lc.y*lc.y + lc.z*lc.z - (d_obstacles[i].radius + (*vehicleConst).radius[id])*(d_obstacles[i].radius + (*vehicleConst).radius[id]);
         d = (b * b) - (4 * c);
         
         // path does not intersect sphere
@@ -116,8 +116,8 @@ steerToAvoidObstacles(VehicleData* vehicleData, float3 *steeringVectors)
         float3 offset = float3Sub((*vehicleData).position[id], d_obstacles[nearestIntersectionID].center);
         A(threadIdx.x) = float3PerpendicularComponent(offset, (*vehicleData).forward[id]);
         A(threadIdx.x) = float3Normalize(A(threadIdx.x));
-        A(threadIdx.x) = float3Mul(A(threadIdx.x), (*vehicleData).maxForce[id]);
-        A(threadIdx.x) = float3Add(A(threadIdx.x), float3Mul((*vehicleData).forward[id], (*vehicleData).maxForce[id] * 0.75));
+        A(threadIdx.x) = float3Mul(A(threadIdx.x), (*vehicleConst).maxForce[id]);
+        A(threadIdx.x) = float3Add(A(threadIdx.x), float3Mul((*vehicleData).forward[id], (*vehicleConst).maxForce[id] * 0.75));
     }
     
     __syncthreads();

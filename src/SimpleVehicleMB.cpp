@@ -208,16 +208,6 @@ OpenSteer::SimpleVehicleMB::applySteeringForce (const Vec3& force,
     // regenerate local space (by default: align vehicle's forward axis with
     // new velocity, but this behavior may be overridden by derived classes.)
     regenerateLocalSpace (newVelocity, elapsedTime);
-    
-    // maintain path curvature information
-    measurePathCurvature (elapsedTime);
-    
-    // running average of recent positions
-    Vec3 tsmoothedPosition = smoothedPosition();
-    blendIntoAccumulator (elapsedTime * 0.06f, // QQQ
-                          position (),
-                          tsmoothedPosition);
-    resetSmoothedPosition(tsmoothedPosition);
 }
 
 
@@ -274,35 +264,6 @@ OpenSteer::SimpleVehicleMB::regenerateLocalSpaceForBanking (const Vec3& newVeloc
     // adjust orthonormal basis vectors to be aligned with new velocity
     if (speed() > 0) regenerateOrthonormalBasisUF (newVelocity / speed());
 }
-
-
-// ----------------------------------------------------------------------------
-// measure path curvature (1/turning-radius), maintain smoothed version
-
-
-void 
-OpenSteer::SimpleVehicleMB::measurePathCurvature (const float elapsedTime)
-{
-    if (elapsedTime > 0)
-    {
-        const Vec3 dP = mb->lastPosition(mb_id) - position ();
-        const Vec3 dF = (mb->lastForward(mb_id) - forward ()) / dP.length ();
-        const Vec3 lateral = dF.perpendicularComponent (forward ());
-        const float sign = (lateral.dot (side ()) < 0) ? 1.0f : -1.0f;
-        setCurvature(lateral.length() * sign);
-        
-        float tsmoothedCurvature = smoothedCurvature();
-        
-        blendIntoAccumulator (elapsedTime * 4.0f,
-                              curvature(),
-                              tsmoothedCurvature);
-        
-        setSmoothedCurvature(tsmoothedCurvature);
-        mb->setLastForward(mb_id, forward ());
-        mb->setLastPosition(mb_id, position ());
-    }
-}
-
 
 // ----------------------------------------------------------------------------
 // draw lines from vehicle's position showing its velocity and acceleration

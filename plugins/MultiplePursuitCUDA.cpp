@@ -41,7 +41,7 @@
 #include "OpenSteer/OpenSteerDemo.h"
 #include "VehicleData.h"
 
-void runMultiplePursuitKernel(VehicleData *h_vehicleData, int numOfVehicles, float3 wandererPosition, float3 wandererVelocity, float elapsedTime, int copy_vehicle_data);
+void runMultiplePursuitKernel(VehicleData *h_vehicleData, VehicleConst *h_vehicleConst, int numOfVehicles, float3 wandererPosition, float3 wandererVelocity, float elapsedTime, int copy_vehicle_data);
 void endMultiplePursuit(void);
 
 using namespace OpenSteer;
@@ -207,8 +207,7 @@ class MpPlugInCUDA : public PlugIn
         const char* name (void) {return "Multiple Pursuit CUDA";}
         
         float selectionOrderSortKey (void) {return 2.5f;}
-        
-        VehicleData *vData;
+
         int pursuerCount;
         
         virtual ~MpPlugInCUDA() {} // be more "nice" to avoid a compiler warning
@@ -241,9 +240,11 @@ class MpPlugInCUDA : public PlugIn
             static bool copy_vehicle_data = true;
             
             MemoryBackend *mb = MemoryBackend::instance();
-            vData = mb->getVehicleData();
+            VehicleData *vData = mb->getVehicleData();
+            VehicleConst *vConst = mb->getVehicleConst();
             
             runMultiplePursuitKernel(vData,
+                                     vConst,
                                      pursuerCount,
                                      make_float3(wanderer->position().x, wanderer->position().y, wanderer->position().z),
                                      make_float3(wanderer->velocity().x, wanderer->velocity().y, wanderer->velocity().z),

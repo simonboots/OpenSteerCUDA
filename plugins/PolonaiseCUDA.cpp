@@ -43,7 +43,7 @@
 #include "VehicleData.h"
 
 
-void runPolonaiseKernel(VehicleData *h_vehicleData, int numOfAgents, float elapsedTime);
+void runPolonaiseKernel(VehicleData *h_vehicleData, VehicleConst *h_vehicleConst, int numOfAgents, float elapsedTime);
 void endPolonaise(void);
 
 using namespace OpenSteer;
@@ -107,7 +107,6 @@ public:
     float selectionOrderSortKey (void) {return 3.5f;}
     
     const static int numOfAgents = 2048;
-    VehicleData *vData;
 
     // be more "nice" to avoid a compiler warning
     virtual ~PolonaiseCUDAPlugIn() {}
@@ -131,9 +130,10 @@ public:
     void update (const float currentTime, const float elapsedTime)
     {        
         MemoryBackend *mb = MemoryBackend::instance();
-        vData = mb->getVehicleData();
+        VehicleData *vData = mb->getVehicleData();
+        VehicleConst *vConst = mb->getVehicleConst();
         
-        runPolonaiseKernel(vData, numOfAgents, elapsedTime);
+        runPolonaiseKernel(vData, vConst, numOfAgents, elapsedTime);
         
         for (iterator iter = theVehicle.begin(); iter != theVehicle.end(); iter++) {
             (*iter)->update(currentTime, elapsedTime);

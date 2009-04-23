@@ -9,13 +9,14 @@ __global__ __device__ void
 steerForPursuitKernel(VehicleData *vehicleData, float3 wandererPosition, float3 wandererVelocity, float3 *steeringVectors, float maxPredictionTime);
 
 __global__ void
-updateKernel(VehicleData *vehicleData, float3 *steeringVectors, float elapsedTime, kernel_options options);
+updateKernel(VehicleData *vehicleData, VehicleConst *vehicleConst, float3 *steeringVectors, float elapsedTime, kernel_options options);
 
 static float3 *d_steeringVectors = NULL;
 static VehicleData *d_vehicleData = NULL;
+static VehicleConst *d_vehicleConst = NULL;
 static int first_time = 1;
 
-void runMultiplePursuitKernel(VehicleData *h_vehicleData, int numOfVehicles, float3 wandererPosition, float3 wandererVelocity, float elapsedTime, int copy_vehicle_data)
+void runMultiplePursuitKernel(VehicleData *h_vehicleData, VehicleConst *h_vehicleConst, int numOfVehicles, float3 wandererPosition, float3 wandererVelocity, float elapsedTime, int copy_vehicle_data)
 {
     const float h_timeFactorTable[9] = {2.f, 4.f, 0.85f, 2.f, 0.8f, 1.8f, 0.5f, 1.f, 4.f};
     
@@ -50,6 +51,12 @@ void runMultiplePursuitKernel(VehicleData *h_vehicleData, int numOfVehicles, flo
         
         cudaMemcpy(d_vehicleData, h_vehicleData, mem_size_vehicle, cudaMemcpyHostToDevice);
     }
+    
+    const unsigned int mem_size_vehicle_const = sizeof(VehicleConst);
+    if (d_vehicleConst == NULL) {
+        cudaMalloc((void **) &d_vehicleConst, mem_size_vehicle_const);
+        cudaMemcpy(d_vehicleConst, h_vehicleConst, mem_size_vehicle_const, cudaMemcpyHostToDevice);
+    }
             
     // create and start timer
 //    unsigned int timer = 0;
@@ -70,11 +77,9 @@ void runMultiplePursuitKernel(VehicleData *h_vehicleData, int numOfVehicles, flo
 //    CUT_SAFE_CALL(cutStartTimer(timer));
     
     // call updateKernel
-    updateKernel<<<grid, threads>>>(d_vehicleData, d_steeringVectors, elapsedTime, NONE);
+    updateKernel<<<grid, threads>>>(d_vehicleData, d_vehicleConst, d_steeringVectors, elapsedTime, NONE);
     //CUT_CHECK_ERROR("Kernel execution failed");
-    
-    cudaThreadSynchronize();
-    
+        
     // stop and destroy timer
 //    CUT_SAFE_CALL(cutStopTimer(timer));
 //    printf("Raw processing time (updateKernel): %f (ms) \n", cutGetTimerValue(timer));
@@ -98,8 +103,10 @@ void runMultiplePursuitKernel(VehicleData *h_vehicleData, int numOfVehicles, flo
 void endMultiplePursuit(void)
 {
     cudaFree(d_vehicleData);
+    cudaFree(d_vehicleConst);
     cudaFree(d_steeringVectors);
     
     d_vehicleData = NULL;
+    d_vehicleConst = NULL;
     d_steeringVectors = NULL;
 }

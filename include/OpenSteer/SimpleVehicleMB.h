@@ -124,8 +124,6 @@ namespace OpenSteer {
                 setMaxSpeed (1.0f);   // velocity is clipped to this magnitude
                 
                 // reset bookkeeping to do running averages of these quanities
-                resetSmoothedPosition ();
-                resetSmoothedCurvature ();
                 resetSmoothedAcceleration ();
             }
             
@@ -183,31 +181,10 @@ namespace OpenSteer {
             // (assumes velocity remains constant)
             Vec3 predictFuturePosition (const float predictionTime) const;
             
-            // get instantaneous curvature (since last update)
-            float curvature (void) {return mb->curvature(mb_id);}
-            float setCurvature(float c) {return mb->setCurvature(mb_id, c);}
-            
-            // get/reset smoothedCurvature, smoothedAcceleration and smoothedPosition
-            float smoothedCurvature (void) {return mb->smoothedCurvature(mb_id);}
-            float setSmoothedCurvature(float v) {return mb->setSmoothedCurvature(mb_id,v);}
-            float resetSmoothedCurvature (float value = 0)
-            {
-                mb->setLastForward(mb_id, Vec3::zero);
-                mb->setLastPosition(mb_id, Vec3::zero);
-                mb->setSmoothedCurvature(mb_id, value);
-                mb->setCurvature(mb_id, value);
-                return value;
-            }
             Vec3 smoothedAcceleration (void) {return mb->smoothedAcceleration(mb_id);}
             Vec3 resetSmoothedAcceleration (const Vec3& value = Vec3::zero)
             {
                 mb->setSmoothedAcceleration(mb_id, value);
-                return value;
-            }
-            Vec3 smoothedPosition (void) {return mb->smoothedPosition(mb_id);}
-            Vec3 resetSmoothedPosition (const Vec3& value = Vec3::zero)
-            {
-                mb->setSmoothedPosition(mb_id, value);
                 return value;
             }
             
@@ -230,32 +207,6 @@ namespace OpenSteer {
                 setForward (RandomUnitVectorOnXZPlane ());
                 setSide (localRotateForwardToSide (forward()));
             }
-            
-//        private:
-//            
-//            float _mass;       // mass (defaults to unity so acceleration=force)
-//            
-//            float _radius;     // size of bounding sphere, for obstacle avoidance, etc.
-//            
-//            float _speed;      // speed along Forward direction.  Because local space
-//            // is velocity-aligned, velocity = Forward * Speed
-//            
-//            float _maxForce;   // the maximum steering force this vehicle can apply
-//            // (steering force is clipped to this magnitude)
-//            
-//            float _maxSpeed;   // the maximum speed this vehicle is allowed to move
-//            // (velocity is clipped to this magnitude)
-//            
-//            float _curvature;
-//            Vec3 _lastForward;
-//            Vec3 _lastPosition;
-//            float _smoothedCurvature;
-//            Vec3 _smoothedAcceleration;
-//            
-//        public:
-//            Vec3 _smoothedPosition;
-            // measure path curvature (1/turning-radius), maintain smoothed version
-            void measurePathCurvature (const float elapsedTime);
         };
     
     

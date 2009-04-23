@@ -10,11 +10,17 @@ OpenSteer::MemoryBackend::MemoryBackend() {
     
     cudaError_t retval = cudaMallocHost((void**)&_data, sizeof(VehicleData));
     if (retval == cudaSuccess) {
-        std::cout << "MemoryBackend initialized" << std::endl;
+        std::cout << "MemoryBackend: variable data initialized" << std::endl;
     } else {
-        std::cout << "MemoryBackend initialization failed: " << cudaGetErrorString(retval) << std::endl;
+        std::cout << "MemoryBackend: variable data initialization failed: " << cudaGetErrorString(retval) << std::endl;
     }
-
+    
+    retval = cudaMallocHost((void**)&_const, sizeof(VehicleConst));
+    if (retval == cudaSuccess) {
+        std::cout << "MemoryBackend: const data initialized" << std::endl;
+    } else {
+        std::cout << "MemoryBackend: const data initialization failed: " << cudaGetErrorString(retval) << std::endl;
+    }
 }
 
 OpenSteer::MemoryBackend::~MemoryBackend() {
@@ -22,7 +28,13 @@ OpenSteer::MemoryBackend::~MemoryBackend() {
     if (_data != 0) {
         cudaFreeHost(_data);
     }
+    
+    if (_const != 0) {
+        cudaFreeHost(_const);
+    }
+    
     _data = 0;
+    _const = 0;
     _instance = 0;
     _idCounter = 0;
 }
@@ -41,6 +53,14 @@ VehicleData* OpenSteer::MemoryBackend::getVehicleData(void) {
 
 void OpenSteer::MemoryBackend::setVehicleData(VehicleData* vd) {
     _data = vd;
+}
+
+VehicleConst* OpenSteer::MemoryBackend::getVehicleConst(void) {
+    return _const;
+}
+
+void OpenSteer::MemoryBackend::setVehicleConst(VehicleConst *vc) {
+    _const = vc;
 }
 
 
@@ -113,20 +133,20 @@ OpenSteer::Vec3 OpenSteer::MemoryBackend::setPosition(int i, float x, float y, f
 }
 
 float OpenSteer::MemoryBackend::mass(int i) const {
-    return _data->mass[i];
+    return _const->mass[i];
 }
 
 float OpenSteer::MemoryBackend::setMass(int i, float v) {
-    _data->mass[i] = v;
+    _const->mass[i] = v;
     return v;
 }
 
 float OpenSteer::MemoryBackend::radius(int i) const {
-    return _data->radius[i];
+    return _const->radius[i];
 }
 
 float OpenSteer::MemoryBackend::setRadius(int i, float v) {
-    _data->radius[i] = v;
+    _const->radius[i] = v;
     return v;
 }
 
@@ -140,74 +160,23 @@ float OpenSteer::MemoryBackend::setSpeed(int i, float v) {
 }
 
 float OpenSteer::MemoryBackend::maxForce(int i) const {
-    return _data->maxForce[i];
+    return _const->maxForce[i];
 }
 
 float OpenSteer::MemoryBackend::setMaxForce(int i, float v) {
-    _data->maxForce[i] = v;
+    _const->maxForce[i] = v;
     return v;
 }
 
 float OpenSteer::MemoryBackend::maxSpeed(int i) const {
-    return _data->maxSpeed[i];
+    return _const->maxSpeed[i];
 }
 
 float OpenSteer::MemoryBackend::setMaxSpeed(int i, float v) {
-    _data->maxSpeed[i] = v;
+    _const->maxSpeed[i] = v;
     return v;
 }
 
-float OpenSteer::MemoryBackend::curvature(int i) const {
-    return _data->curvature[i];
-}
-
-float OpenSteer::MemoryBackend::setCurvature(int i, float v) {
-    _data->curvature[i] = v;
-    return v;
-}
-
-OpenSteer::Vec3 OpenSteer::MemoryBackend::lastForward(int i) const {
-    float3 v = _data->lastForward[i];
-    return Vec3(v.x, v.y, v.z);    
-}
-
-OpenSteer::Vec3 OpenSteer::MemoryBackend::setLastForward(int i, const Vec3& v3) {
-    float3 v = make_float3(v3.x, v3.y, v3.z);
-    _data->lastForward[i] = v;
-    return v3;
-}
-
-OpenSteer::Vec3 OpenSteer::MemoryBackend::setLastForward(int i, float x, float y, float z) {
-    float3 v = make_float3(x, y, z);
-    _data->lastForward[i] = v;
-    return Vec3(x, y, z);
-}
-
-OpenSteer::Vec3 OpenSteer::MemoryBackend::lastPosition(int i) const {
-    float3 v = _data->lastPosition[i];
-    return Vec3(v.x, v.y, v.z);
-}
-
-OpenSteer::Vec3 OpenSteer::MemoryBackend::setLastPosition(int i, const Vec3& v3) {
-    float3 v = make_float3(v3.x, v3.y, v3.z);
-    _data->lastPosition[i] = v;    
-    return v3;
-}
-
-OpenSteer::Vec3 OpenSteer::MemoryBackend::setLastPosition(int i, float x, float y, float z) {
-    float3 v = make_float3(x, y, z);
-    _data->lastPosition[i] = v;    
-    return Vec3(x, y, z);
-}
-
-float OpenSteer::MemoryBackend::smoothedCurvature(int i) const {
-    return _data->smoothedCurvature[i];
-}
-
-float OpenSteer::MemoryBackend::setSmoothedCurvature(int i, float v) {
-    _data->smoothedCurvature[i] = v;
-    return v;
-}
 
 OpenSteer::Vec3 OpenSteer::MemoryBackend::smoothedAcceleration(int i) const {
     float3 v = _data->smoothedAcceleration[i];
@@ -223,22 +192,5 @@ OpenSteer::Vec3 OpenSteer::MemoryBackend::setSmoothedAcceleration(int i, const V
 OpenSteer::Vec3 OpenSteer::MemoryBackend::setSmoothedAcceleration(int i, float x, float y, float z) {
     float3 v = make_float3(x, y, z);
     _data->smoothedAcceleration[i] = v;
-    return Vec3(x, y, z);
-}
-
-OpenSteer::Vec3 OpenSteer::MemoryBackend::smoothedPosition(int i) const {
-    float3 v = _data->smoothedPosition[i];
-    return Vec3(v.x, v.y, v.z);
-}
-
-OpenSteer::Vec3 OpenSteer::MemoryBackend::setSmoothedPosition(int i, const Vec3& v3) {
-    float3 v = make_float3(v3.x, v3.y, v3.z);
-    _data->smoothedPosition[i] = v;
-    return v3;
-}
-
-OpenSteer::Vec3 OpenSteer::MemoryBackend::setSmoothedPosition(int i, float x, float y, float z) {
-    float3 v = make_float3(x, y, z);
-    _data->smoothedPosition[i] = v;
     return Vec3(x, y, z);
 }

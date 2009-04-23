@@ -25,7 +25,7 @@
 #endif
 
 __global__ void
-updateKernel(VehicleData *vehicleData, float3 *steeringVectors, float elapsedTime, kernel_options options)
+updateKernel(VehicleData *vehicleData, VehicleConst *vehicleConst, float3 *steeringVectors, float elapsedTime, kernel_options options)
 {
     int id = (blockIdx.x * blockDim.x + threadIdx.x);
     //int numOfAgents = gridDim.x * blockDim.x;
@@ -68,7 +68,7 @@ updateKernel(VehicleData *vehicleData, float3 *steeringVectors, float elapsedTim
     // adjustRawSteeringForce
     float3 v; // v = adjustedForce
     
-    float maxAdjustedSpeed = 0.2f * (*vehicleData).maxSpeed[id];
+    float maxAdjustedSpeed = 0.2f * (*vehicleConst).maxSpeed[id];
     
     if ((speed > maxAdjustedSpeed) || (FV(threadIdx.x).x == 0.f && FV(threadIdx.x).z == 0.f)) {
         v = FV(threadIdx.x);
@@ -77,8 +77,8 @@ updateKernel(VehicleData *vehicleData, float3 *steeringVectors, float elapsedTim
         v = limitMaxDeviationAngle(FV(threadIdx.x), cosine, float3Div(V(threadIdx.x), speed));
     }
     
-    v = float3TruncateLength(v, (*vehicleData).maxForce[id]); // v = clippedForce
-    v = float3Div(v, (*vehicleData).mass[id]); // v = new_acceleration
+    v = float3TruncateLength(v, (*vehicleConst).maxForce[id]); // v = clippedForce
+    v = float3Div(v, (*vehicleConst).mass[id]); // v = new_acceleration
     
     if (elapsedTime > 0) {
         float smoothRate = clip(9 * elapsedTime, 0.15f, 0.4f);
@@ -97,7 +97,7 @@ updateKernel(VehicleData *vehicleData, float3 *steeringVectors, float elapsedTim
     
     __syncthreads();
     
-    V(threadIdx.x) = float3TruncateLength(V(threadIdx.x), (*vehicleData).maxSpeed[id]);
+    V(threadIdx.x) = float3TruncateLength(V(threadIdx.x), (*vehicleConst).maxSpeed[id]);
     
     __syncthreads(); // position is re-written
     

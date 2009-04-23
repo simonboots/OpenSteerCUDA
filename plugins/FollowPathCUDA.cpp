@@ -48,7 +48,7 @@
 #include "OpenSteer/VehicleData.h"
 #include "OpenSteer/ObstacleData.h"
 
-void runFollowPathKernel(VehicleData *h_vehicleData, int numOfVehicles, PathwayData *h_pathwayData, int *h_directions, ObstacleData *h_obstacleData, int numOfObstacles, float elapsedTime);
+void runFollowPathKernel(VehicleData *h_vehicleData, VehicleConst *h_vehicleConst, int numOfVehicles, PathwayData *h_pathwayData, int *h_directions, ObstacleData *h_obstacleData, int numOfObstacles, float elapsedTime);
 void endFollowPath(void);
 
 
@@ -131,7 +131,6 @@ class FollowPathCUDAPlugIn : public PlugIn
         const static int numOfAgents = 2048;
         const static int numOfObstacles = 2;
         
-        VehicleData *vData;
         PathwayData *pwd;
         int *directions;
         int first_time;
@@ -180,9 +179,10 @@ class FollowPathCUDAPlugIn : public PlugIn
             }
             
             MemoryBackend *mb = MemoryBackend::instance();
-            vData = mb->getVehicleData();
+            VehicleData *vData = mb->getVehicleData();
+            VehicleConst *vConst = mb->getVehicleConst();
             
-            runFollowPathKernel(vData, numOfAgents, pwd, directions, obstacles, numOfObstacles, elapsedTime);
+            runFollowPathKernel(vData, vConst, numOfAgents, pwd, directions, obstacles, numOfObstacles, elapsedTime);
             
             for (iterator iter = theVehicles.begin(); iter != theVehicles.end(); iter++) {
                 (*iter)->update(currentTime, elapsedTime);

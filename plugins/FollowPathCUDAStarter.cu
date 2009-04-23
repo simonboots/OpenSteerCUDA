@@ -8,23 +8,24 @@
 
 
 __global__ void
-steerToAvoidObstacles(VehicleData* vehicleData, float3 *steeringVectors);
+steerToAvoidObstacles(VehicleData* vehicleData, VehicleConst* vehicleConst, float3 *steeringVectors);
 __global__ void
 steerToFollowPathKernel(VehicleData *vehicleData, float3 *steeringVectors, int *direction, float predictionTime, float blendFactor, kernel_options options);
 __global__ void
 steerToStayOnPathKernel(VehicleData *vehicleData, float3 *steeringVectors, float predictionTime);
 
 __global__ void
-updateKernel(VehicleData *vehicleData, float3 *steeringVectors, float elapsedTime, kernel_options options);
+updateKernel(VehicleData *vehicleData, VehicleConst *vehicleConst, float3 *steeringVectors, float elapsedTime, kernel_options options);
 
 // device memory objects
 static float3 *d_steeringVectors = NULL;
 static VehicleData *d_vehicleData = NULL;
+static VehicleConst *d_vehicleConst = NULL;
 static int *d_directions = NULL;
 
 static int first_run = 1;
 
-void runFollowPathKernel(VehicleData *h_vehicleData, int numOfVehicles, PathwayData *h_pathwayData, int *h_directions, ObstacleData *h_obstacleData, int numOfObstacles, float elapsedTime)
+void runFollowPathKernel(VehicleData *h_vehicleData, VehicleConst *h_vehicleConst, int numOfVehicles, PathwayData *h_pathwayData, int *h_directions, ObstacleData *h_obstacleData, int numOfObstacles, float elapsedTime)
 {
     // init GPU
     int gpu_count;
@@ -43,6 +44,12 @@ void runFollowPathKernel(VehicleData *h_vehicleData, int numOfVehicles, PathwayD
     if (d_vehicleData == NULL) {
         cudaMalloc((void **)&d_vehicleData, mem_size_vehicle);
         cudaMemcpy(d_vehicleData, h_vehicleData, mem_size_vehicle, cudaMemcpyHostToDevice);
+    }
+    
+    const unsigned int mem_size_vehicle_const = sizeof(VehicleConst);
+    if (d_vehicleConst == NULL) {
+        cudaMalloc((void **)&d_vehicleConst, mem_size_vehicle_const);
+        cudaMemcpy(d_vehicleConst, h_vehicleConst, mem_size_vehicle_const, cudaMemcpyHostToDevice);
     }
     
     if (d_steeringVectors == NULL) {
@@ -65,7 +72,7 @@ void runFollowPathKernel(VehicleData *h_vehicleData, int numOfVehicles, PathwayD
     }
     
     // start avoidObstacle kernel
-    steerToAvoidObstacles<<<grid, threads>>>(d_vehicleData, d_steeringVectors);
+    steerToAvoidObstacles<<<grid, threads>>>(d_vehicleData, d_vehicleConst, d_steeringVectors);
     
     // start followPath kernel
     steerToFollowPathKernel<<<grid, threads>>>(d_vehicleData, d_steeringVectors, d_directions, 3.f, 1.f, IGNORE_UNLESS_ZERO);
@@ -73,7 +80,7 @@ void runFollowPathKernel(VehicleData *h_vehicleData, int numOfVehicles, PathwayD
     //CUT_CHECK_ERROR("steerToFollowPathKernel execution failed");
     
     // start update kernel
-    updateKernel<<<grid, threads>>>(d_vehicleData, d_steeringVectors, elapsedTime, NONE);
+    updateKernel<<<grid, threads>>>(d_vehicleData, d_vehicleConst, d_steeringVectors, elapsedTime, NONE);
     //CUT_CHECK_ERROR("updateKernel execution failed");
     
     // copy vehicle data back to host memory
@@ -85,10 +92,12 @@ void runFollowPathKernel(VehicleData *h_vehicleData, int numOfVehicles, PathwayD
 void endFollowPath(void)
 {
     cudaFree(d_vehicleData);
+    cudaFree(d_vehicleConst);
     cudaFree(d_steeringVectors);
     cudaFree(d_directions);
     
     d_vehicleData = NULL;
+    d_vehicleConst = NULL;
     d_steeringVectors = NULL;
     d_directions = NULL;
 }

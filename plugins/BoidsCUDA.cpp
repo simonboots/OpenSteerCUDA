@@ -50,7 +50,7 @@ using namespace OpenSteer;
 
 // ----------------------------------------------------------------------------
 
-void runBoidsKernel(VehicleData *h_vehicleData, int numOfVehicles, int* h_neighborIndices, int numOfNIndices, int* h_neighborAgents, int numOfNAgents, float elapsedTime);
+void runBoidsKernel(VehicleData *h_vehicleData, VehicleConst *h_vehicleConst, int numOfVehicles, int* h_neighborIndices, int numOfNIndices, int* h_neighborAgents, int numOfNAgents, float elapsedTime);
 void endBoids(void);
 
 typedef OpenSteer::AbstractProximityDatabase<AbstractVehicle*> ProximityDatabase;
@@ -298,6 +298,7 @@ class BoidsCUDAPlugIn : public PlugIn
         {
             MemoryBackend *mb = MemoryBackend::instance();
             VehicleData *vData = mb->getVehicleData();
+            VehicleConst *vConst = mb->getVehicleConst();
             
             int n = 0;
             for (iterator i = flock.begin(); i != flock.end(); i++)
@@ -305,7 +306,7 @@ class BoidsCUDAPlugIn : public PlugIn
                 grid->save((**i).position(), n++);
             }
             
-            runBoidsKernel(vData, numOfAgents, grid->getIndices(), grid->numOfCells(), grid->getAgents(), grid->numOfAgents(), elapsedTime);
+            runBoidsKernel(vData, vConst, numOfAgents, grid->getIndices(), grid->numOfCells(), grid->getAgents(), grid->numOfAgents(), elapsedTime);
             
             grid->clear();
         }

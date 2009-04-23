@@ -19,9 +19,8 @@
 #define MF(i) maxForce[i]
 #endif
 
-
 __global__ void
-steerForTargetSpeedKernel(VehicleData *vehicleData, float *targetSpeeds, float3 *steeringVectors)
+steerForTargetSpeedKernel(VehicleData *vehicleData, VehicleConst *vehicleConst, float *targetSpeeds, float3 *steeringVectors)
 {
     int id = (blockIdx.x * blockDim.x + threadIdx.x);
     int blockOffset = (blockDim.x * blockIdx.x * 3);
@@ -44,7 +43,7 @@ steerForTargetSpeedKernel(VehicleData *vehicleData, float *targetSpeeds, float3 
     F_F(threadIdx.x + 2*blockDim.x) = ((float*)(*vehicleData).forward)[blockOffset + threadIdx.x + 2*blockDim.x];
     
     // copy maxForce data from global memory (coalesced)
-    MF(threadIdx.x) = (*vehicleData).maxForce[id];
+    MF(threadIdx.x) = (*vehicleConst).maxForce[id];
     
     __syncthreads();
     

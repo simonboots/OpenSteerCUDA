@@ -46,26 +46,15 @@ namespace OpenSteer {
         float setMaxForce(int, float);
         float maxSpeed(int) const;
         float setMaxSpeed(int, float);
-        float curvature(int) const;
-        float setCurvature(int, float);
-        Vec3 lastForward(int) const;
-        Vec3 setLastForward(int, const Vec3&);
-        Vec3 setLastForward(int, float, float, float);
-        Vec3 lastPosition(int) const;
-        Vec3 setLastPosition(int, const Vec3&);
-        Vec3 setLastPosition(int, float, float, float);
-        float smoothedCurvature(int) const;
-        float setSmoothedCurvature(int, float);
         Vec3 smoothedAcceleration(int) const;
         Vec3 setSmoothedAcceleration(int, const Vec3&);
         Vec3 setSmoothedAcceleration(int, float, float, float);
-        Vec3 smoothedPosition(int) const;
-        Vec3 setSmoothedPosition(int, const Vec3&);
-        Vec3 setSmoothedPosition(int, float, float, float);
         
         int getNextID(void);
         VehicleData* getVehicleData(void);
         void setVehicleData(VehicleData*);
+        VehicleConst* getVehicleConst(void);
+        void setVehicleConst(VehicleConst*);
         
         ~MemoryBackend();
         
@@ -74,6 +63,7 @@ namespace OpenSteer {
     private:
         static MemoryBackend* _instance;
         VehicleData *_data;
+        VehicleConst *_const;
         static int _idCounter;
     };
     

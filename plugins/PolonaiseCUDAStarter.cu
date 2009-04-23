@@ -8,16 +8,17 @@ __global__ void
 steerForSeekKernel(VehicleData *vehicleData, float3 *seekVectors, float3 *steeringVectors);
 
 __global__ void
-updateKernel(VehicleData *vehicleData, float3 *steeringVectors, float elapsedTime, kernel_options options);
+updateKernel(VehicleData *vehicleData, VehicleConst *vehicleConst, float3 *steeringVectors, float elapsedTime, kernel_options options);
 
 __global__ void
 findFollowerKernel(VehicleData *vehicleData, float3 *seekVectors);
 
 static VehicleData* d_vehicleData = NULL;
+static VehicleConst* d_vehicleConst = NULL;
 static float3* d_steeringVectors = NULL;
 static float3* d_seekVectors = NULL;
 
-void runPolonaiseKernel(VehicleData *h_vehicleData, int numOfAgents, float elapsedTime) {
+void runPolonaiseKernel(VehicleData *h_vehicleData, VehicleConst *h_vehicleConst, int numOfAgents, float elapsedTime) {
 
     int gpu_count;
     cudaGetDeviceCount(&gpu_count);
@@ -38,10 +39,15 @@ void runPolonaiseKernel(VehicleData *h_vehicleData, int numOfAgents, float elaps
     
     // prepare vehicle data
     const unsigned int mem_size_vehicle = sizeof(VehicleData);
-    
     if (d_vehicleData == NULL) {
         cudaMalloc((void **) &d_vehicleData, mem_size_vehicle);
         cudaMemcpy(d_vehicleData, h_vehicleData, mem_size_vehicle, cudaMemcpyHostToDevice);
+    }
+    
+    const unsigned int mem_size_vehicle_const = sizeof(VehicleConst);
+    if (d_vehicleConst == NULL) {
+        cudaMalloc((void **)&d_vehicleConst, mem_size_vehicle_const);
+        cudaMemcpy(d_vehicleConst, h_vehicleConst, mem_size_vehicle_const, cudaMemcpyHostToDevice);
     }
     
     // prepare steerForSeekKernel
@@ -78,7 +84,7 @@ void runPolonaiseKernel(VehicleData *h_vehicleData, int numOfAgents, float elaps
 //    CUT_SAFE_CALL(cutStartTimer(timer));
 
     // call updateKernel
-    updateKernel<<<grid, threads>>>(d_vehicleData, d_steeringVectors, elapsedTime, NONE);
+    updateKernel<<<grid, threads>>>(d_vehicleData, d_vehicleConst, d_steeringVectors, elapsedTime, NONE);
     //CUT_CHECK_ERROR("Kernel execution failed");
     
     //cudaThreadSynchronize();
@@ -104,10 +110,12 @@ void runPolonaiseKernel(VehicleData *h_vehicleData, int numOfAgents, float elaps
 void endPolonaise(void)
 {
     cudaFree(d_vehicleData);
+    cudaFree(d_vehicleConst);
     cudaFree(d_steeringVectors);
     cudaFree(d_seekVectors);
     
     d_vehicleData = NULL;
+    d_vehicleConst = NULL;
     d_steeringVectors = NULL;
     d_seekVectors = NULL;
 }
