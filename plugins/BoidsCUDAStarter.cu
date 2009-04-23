@@ -61,7 +61,16 @@ void runBoidsKernel(VehicleData *h_vehicleData, int numOfVehicles, int* h_neighb
         h_steeringVectors = (float3*)malloc(mem_size_steering);
     }
     
+    unsigned int timer = 0;
+    CUT_SAFE_CALL(cutCreateTimer(&timer));
+    CUT_SAFE_CALL(cutStartTimer(timer));
+    
     cudaMemset(d_steeringVectors, 0, mem_size_steering);
+    
+    CUT_SAFE_CALL(cutStopTimer(timer));
+    printf("Raw processing time (cudaMemset): %f (ms) \n", cutGetTimerValue(timer));
+    CUT_SAFE_CALL(cutDeleteTimer(timer));
+    CUT_SAFE_CALL(cutCreateTimer(&timer));
     
     const unsigned int mem_size_neighbor_indices = sizeof(int) * numOfNIndices;
     const unsigned int mem_size_neighbor_agents = sizeof(int) * numOfNAgents;
@@ -70,17 +79,31 @@ void runBoidsKernel(VehicleData *h_vehicleData, int numOfVehicles, int* h_neighb
     if (d_neighborData == NULL) {
         const unsigned int mem_size_neighbor_data = sizeof(NeighborData) * numOfVehicles;
         cudaMalloc((void **)&d_neighborData, mem_size_neighbor_data);
-        h_neighborData = (NeighborData*) malloc(mem_size_neighbor_data);
+        //h_neighborData = (NeighborData*) malloc(mem_size_neighbor_data);
         cudaMalloc((void **)&d_neighborIndices, mem_size_neighbor_indices);
         cudaMalloc((void **)&d_neighborAgents, mem_size_neighbor_agents);
     }
+
+    CUT_SAFE_CALL(cutStartTimer(timer));
     
     // copy neighbor raw data to global memory
     cudaMemcpy(d_neighborIndices, h_neighborIndices, mem_size_neighbor_indices, cudaMemcpyHostToDevice);
     cudaMemcpy(d_neighborAgents, h_neighborAgents, mem_size_neighbor_agents, cudaMemcpyHostToDevice);
     
+    CUT_SAFE_CALL(cutStopTimer(timer));
+    printf("Raw processing time (cudaMemcpy): %f (ms) \n", cutGetTimerValue(timer));
+    CUT_SAFE_CALL(cutDeleteTimer(timer));
+    CUT_SAFE_CALL(cutCreateTimer(&timer));
+    CUT_SAFE_CALL(cutStartTimer(timer));
+    
     // run find neighbor kernel
     findNeighborsKernel<<<grid, threads>>>(d_vehicleData, d_neighborIndices, d_neighborAgents, d_neighborData, 4.24f);
+    
+    CUT_SAFE_CALL(cutStopTimer(timer));
+    printf("Raw processing time (findNeighbors): %f (ms) \n", cutGetTimerValue(timer));
+    CUT_SAFE_CALL(cutDeleteTimer(timer));
+    CUT_SAFE_CALL(cutCreateTimer(&timer));
+    CUT_SAFE_CALL(cutStartTimer(timer));
     
     // copy neighbor data back for testing reason
     //cudaMemcpy(h_neighborData, d_neighborData, mem_size_neighbor_data, cudaMemcpyDeviceToHost);
@@ -90,11 +113,29 @@ void runBoidsKernel(VehicleData *h_vehicleData, int numOfVehicles, int* h_neighb
     // run steer for separation kernel
     steerForSeparationKernel<<<grid, threads>>>(d_vehicleData, d_steeringVectors, 5.f, -0.707f, d_neighborData, 1.f, NONE);
     
+    CUT_SAFE_CALL(cutStopTimer(timer));
+    printf("Raw processing time (steerForSeparation): %f (ms) \n", cutGetTimerValue(timer));
+    CUT_SAFE_CALL(cutDeleteTimer(timer));
+    CUT_SAFE_CALL(cutCreateTimer(&timer));
+    CUT_SAFE_CALL(cutStartTimer(timer));
+    
     // run steer for alignment kernel
     steerForAlignmentKernel<<<grid, threads>>>(d_vehicleData, d_steeringVectors, 7.5f, 0.7f, d_neighborData, 0.4f, NONE);
     
+    CUT_SAFE_CALL(cutStopTimer(timer));
+    printf("Raw processing time (steerForAlignment): %f (ms) \n", cutGetTimerValue(timer));
+    CUT_SAFE_CALL(cutDeleteTimer(timer));
+    CUT_SAFE_CALL(cutCreateTimer(&timer));
+    CUT_SAFE_CALL(cutStartTimer(timer));
+    
     // run steer for cohesion kernel
     steerForCohesionKernel<<<grid, threads>>>(d_vehicleData, d_steeringVectors, 9.f, -0.15f, d_neighborData, 0.285f, NONE);
+    
+    CUT_SAFE_CALL(cutStopTimer(timer));
+    printf("Raw processing time (steerForCohesion): %f (ms) \n", cutGetTimerValue(timer));
+    CUT_SAFE_CALL(cutDeleteTimer(timer));
+    CUT_SAFE_CALL(cutCreateTimer(&timer));
+    CUT_SAFE_CALL(cutStartTimer(timer));
     
     // copy steering vectors back to test
     //cudaMemcpy(h_steeringVectors, d_steeringVectors, mem_size_steering, cudaMemcpyDeviceToHost);
@@ -107,8 +148,18 @@ void runBoidsKernel(VehicleData *h_vehicleData, int numOfVehicles, int* h_neighb
     // run update kernel
     updateKernel<<<grid, threads>>>(d_vehicleData, d_steeringVectors, elapsedTime, (kernel_options)(LOCAL_SPACE_BANKING | SPHERICAL_WRAP_AROUND));
     
+    CUT_SAFE_CALL(cutStopTimer(timer));
+    printf("Raw processing time (updateKernel): %f (ms) \n", cutGetTimerValue(timer));
+    CUT_SAFE_CALL(cutDeleteTimer(timer));
+    CUT_SAFE_CALL(cutCreateTimer(&timer));
+    CUT_SAFE_CALL(cutStartTimer(timer));
+    
     // copy vehicle data back to host memory
-    cudaMemcpy(h_vehicleData, d_vehicleData, mem_size_vehicle, cudaMemcpyDeviceToHost);
+    //cudaMemcpy(h_vehicleData, d_vehicleData, mem_size_vehicle, cudaMemcpyDeviceToHost);
+    
+    CUT_SAFE_CALL(cutStopTimer(timer));
+    printf("Raw processing time (memcopy back): %f (ms) \n", cutGetTimerValue(timer));
+    CUT_SAFE_CALL(cutDeleteTimer(timer));
 }
 
 void endBoids(void)

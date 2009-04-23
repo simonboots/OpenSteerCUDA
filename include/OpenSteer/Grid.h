@@ -14,7 +14,7 @@ namespace OpenSteer {
 class Grid {
 public:
     static const unsigned int worldSize = 100;
-    static const unsigned int cellSize = 10; // 100 / 5 = 20^3 cells
+    static const unsigned int cellSize = 5; // 100 / 5 = 20^3 cells
     
     Grid();
     ~Grid();

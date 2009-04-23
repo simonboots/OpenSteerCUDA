@@ -273,7 +273,7 @@ public:
 
         // make default-sized flock
         population = 0;
-        for (int i = 0; i < 1024; i++) addBoidToFlock ();
+        for (int i = 0; i < 4096; i++) addBoidToFlock ();
 
         // initialize camera
         OpenSteerDemo::init3dCamera (*OpenSteerDemo::selectedVehicle);

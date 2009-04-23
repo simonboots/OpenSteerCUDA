@@ -1,3 +1,4 @@
+#include <cuda_runtime.h>
 #include "OpenSteer/Grid.h"
 
 OpenSteer::Grid::Grid()
@@ -71,10 +72,16 @@ int* OpenSteer::Grid::getIndices(void)
     
     if (lastNumOfIndices != _numOfCells) {
         if (pIndices != NULL)
-            delete pIndices;
+            cudaFreeHost(pIndices);
         
         lastNumOfIndices = _numOfCells;
-        pIndices = new int[_numOfCells];
+        
+        cudaError_t retval = cudaMallocHost((void**)&pIndices, sizeof(int) * _numOfCells);
+        if (retval == cudaSuccess) {
+            std::cout << "GridIndices initialized" << std::endl;
+        } else {
+            std::cout << "GridIndices initialization failed: " << cudaGetErrorString(retval) << std::endl;
+        }
     }
     
     int sum = 0;
@@ -93,10 +100,16 @@ int* OpenSteer::Grid::getAgents(void)
     
     if (lastNumOfAgents != _numOfAgents) {
         if (pAgents != NULL)
-            delete pAgents;
-        
+            cudaFreeHost(pAgents);
+
         lastNumOfAgents = _numOfAgents;
-        pAgents = new int[_numOfAgents];
+        
+        cudaError_t retval = cudaMallocHost((void**)&pAgents, sizeof(int) * _numOfAgents);
+        if (retval == cudaSuccess) {
+            std::cout << "GridAgents initialized" << std::endl;
+        } else {
+            std::cout << "GridAgents initialization failed: " << cudaGetErrorString(retval) << std::endl;
+        }
     } 
     
     int n = 0;

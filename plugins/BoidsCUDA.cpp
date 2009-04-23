@@ -266,7 +266,7 @@ class BoidsCUDAPlugIn : public PlugIn
         
         float selectionOrderSortKey (void) {return 0.5f;}
         
-        static const int numOfAgents = 1024;
+        static const int numOfAgents = 4096;
         
         virtual ~BoidsCUDAPlugIn() {} // be more "nice" to avoid a compiler warning
         
