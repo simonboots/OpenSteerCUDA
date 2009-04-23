@@ -155,7 +155,7 @@ void runBoidsKernel(VehicleData *h_vehicleData, int numOfVehicles, int* h_neighb
     CUT_SAFE_CALL(cutStartTimer(timer));
     
     // copy vehicle data back to host memory
-    //cudaMemcpy(h_vehicleData, d_vehicleData, mem_size_vehicle, cudaMemcpyDeviceToHost);
+    cudaMemcpy(h_vehicleData, d_vehicleData, mem_size_vehicle, cudaMemcpyDeviceToHost);
     
     CUT_SAFE_CALL(cutStopTimer(timer));
     printf("Raw processing time (memcopy back): %f (ms) \n", cutGetTimerValue(timer));
