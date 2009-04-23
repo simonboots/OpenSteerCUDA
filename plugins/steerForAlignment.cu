@@ -69,18 +69,19 @@ steerForAlignmentKernel(VehicleData *vehicleData, float3 *steeringVectors, float
     int i = 0;
     for (; i < neighborData[id].numOfNeighbors; i++) {
         int idOfNeighbor = neighborData[id].idsOfNeighbors[i];
-        if (inNeighborhood(P(threadIdx.x), F(threadIdx.x), (*vehicleData).position[idOfNeighbor], (*vehicleData).radius[id] * 3, maxDistance, cosMaxAngle) == 1) {
+//        if (inNeighborhood(P(threadIdx.x), F(threadIdx.x), (*vehicleData).position[idOfNeighbor], (*vehicleData).radius[id] * 3, maxDistance, cosMaxAngle) == 1) {
 
             S(threadIdx.x) = float3Add(S(threadIdx.x), (*vehicleData).forward[idOfNeighbor]);
             
             neighbors++;
-        }
+//        }
     }
     
     if (neighbors > 0) S(threadIdx.x) = float3Normalize(float3Sub(float3Div(S(threadIdx.x), (float)neighbors), F(threadIdx.x)));
     
-    // mix in wander behavior
-    if (options & IGNORE_UNLESS_ZERO == IGNORE_UNLESS_ZERO
+    S(threadIdx.x) = float3Mul(S(threadIdx.x), 8.f);
+    
+    if (0
         && steeringVectors[id].x != 0.f
         && steeringVectors[id].y != 0.f
         && steeringVectors[id].z != 0.f)
@@ -88,7 +89,8 @@ steerForAlignmentKernel(VehicleData *vehicleData, float3 *steeringVectors, float
         S(threadIdx.x) = steeringVectors[id];
         
     } else {
-        S(threadIdx.x) = float3BlendIn(blendFactor, S(threadIdx.x), steeringVectors[id]);
+        S(threadIdx.x) = float3Add(S(threadIdx.x), steeringVectors[id]);
+        //S(threadIdx.x) = float3BlendIn(blendFactor, S(threadIdx.x), steeringVectors[id]);
     }
     
     

@@ -14,14 +14,15 @@ namespace OpenSteer {
 class Grid {
 public:
     static const unsigned int worldSize = 100;
-    static const unsigned int cellSize = 5; // 100 / 5 = 20^3 cells
+    static const unsigned int cellSize = 10; // 100 / 5 = 20^3 cells
     
     Grid();
     ~Grid();
     static int index(Vec3 position);
     static int index(float x, float y, float z);
     void clear(void);
-    int size(void);
+    int numOfAgents(void);
+    int numOfCells(void);
     void save(Vec3 position, int id);
     void save(float x, float y, float z, int id);
     int *getIndices(void);
@@ -29,7 +30,10 @@ public:
     
 private:
     cells allCells;
-    int numOfAgents;
+    int _numOfAgents;
+    int _numOfCells;
+    int* pAgents;
+    int* pIndices;
 };
     
 } // namespace

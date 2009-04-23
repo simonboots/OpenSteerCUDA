@@ -4,6 +4,7 @@
 #include "NeighborData.h"
 #include "VehicleData.h"
 #include "CUDAVectorUtilities.cu"
+#include <stdio.h>
 
 #define WORLD_SIZE 100
 #define CELL_SIZE 5
@@ -11,7 +12,7 @@
 __device__ int
 index(float _x, float _y, float _z)
 {
-    int cellsPerDimension = WORLD_SIZE/CELL_SIZE;
+    int cellsPerDimension = 2*WORLD_SIZE/CELL_SIZE;
     
     int x = (_x + WORLD_SIZE) / CELL_SIZE;
     int y = (_y + WORLD_SIZE) / CELL_SIZE;
@@ -25,7 +26,7 @@ index(float _x, float _y, float _z)
 __device__ int
 indexByCellIndex(int3 cell)
 {
-    int cellsPerDimension = WORLD_SIZE/CELL_SIZE;
+    int cellsPerDimension = 2*WORLD_SIZE/CELL_SIZE;
     
     return cell.x +
     cell.y * cellsPerDimension +
@@ -46,7 +47,7 @@ cellIndex(float3 position)
 __device__ int
 isValidCell(int3 cell)
 {
-    int cellsPerDimension = WORLD_SIZE/CELL_SIZE;
+    int cellsPerDimension = 2*WORLD_SIZE/CELL_SIZE;
     if (cell.x >= cellsPerDimension ||
         cell.y >= cellsPerDimension ||
         cell.z >= cellsPerDimension) {
@@ -56,22 +57,22 @@ isValidCell(int3 cell)
 }
 
 __device__ void
-addNeighbor(NeighborData neighbor, float radius, VehicleData *vehicleData, int vehicleIndex, int myID)
+addNeighbor(NeighborData *neighbor, float radius, VehicleData *vehicleData, int vehicleIndex, int myID)
 {
     float distance = float3Distance((*vehicleData).position[myID], (*vehicleData).position[vehicleIndex]);
-
+    
     if (distance > radius) return;
     
-    if (neighbor.numOfNeighbors <= MAX_NEIGHBORS) {
+    if (neighbor[myID].numOfNeighbors < MAX_NEIGHBORS) {
         // just add to neighbors
-        neighbor.idsOfNeighbors[neighbor.numOfNeighbors++] = vehicleIndex;
+        neighbor[myID].idsOfNeighbors[neighbor[myID].numOfNeighbors++] = vehicleIndex;
     } else {
         // replace neighbor with longest distance
         float maxDistance = 0.f;
         int neighborToReplace = -1;
         int i;
-        for (i = 0; i < neighbor.numOfNeighbors; i++) {
-            float testDistance = float3Distance((*vehicleData).position[myID], (*vehicleData).position[neighbor.idsOfNeighbors[i]]);
+        for (i = 0; i < neighbor[myID].numOfNeighbors; i++) {
+            float testDistance = float3Distance((*vehicleData).position[myID], (*vehicleData).position[neighbor[myID].idsOfNeighbors[i]]);
             if (testDistance > maxDistance) {
                 maxDistance = testDistance;
                 neighborToReplace = i;
@@ -79,7 +80,7 @@ addNeighbor(NeighborData neighbor, float radius, VehicleData *vehicleData, int v
         }
         
         if (distance < maxDistance) {
-            neighbor.idsOfNeighbors[neighborToReplace] = vehicleIndex;
+            neighbor[myID].idsOfNeighbors[neighborToReplace] = vehicleIndex;
         }
     }
 }
@@ -117,8 +118,8 @@ sphericalWrapAround (float3 myPosition, float3 center)
 {
     float3 offset = float3Sub(myPosition, center);
     float r = float3Length(offset);
-    if (r > WORLD_SIZE/2)
-        return float3Add(myPosition, float3Mul(float3Div(offset, r), WORLD_SIZE * -1));      \
+    if (r > WORLD_SIZE)
+        return float3Add(myPosition, float3Mul(float3Div(offset, r), WORLD_SIZE * -2));      \
         //return *this + ((offset/r) * radius * -2);
     else
         return myPosition;

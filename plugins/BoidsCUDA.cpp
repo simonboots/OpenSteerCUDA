@@ -40,6 +40,7 @@
 #include "OpenSteer/SimpleVehicleMB.h"
 #include "OpenSteer/OpenSteerDemo.h"
 #include "OpenSteer/Proximity.h"
+#include "OpenSteer/Grid.h"
 
 
 
@@ -49,6 +50,8 @@ using namespace OpenSteer;
 
 // ----------------------------------------------------------------------------
 
+void runBoidsKernel(VehicleData *h_vehicleData, int numOfVehicles, int* h_neighborIndices, int numOfNIndices, int* h_neighborAgents, int numOfNAgents, float elapsedTime);
+void endBoids(void);
 
 typedef OpenSteer::AbstractProximityDatabase<AbstractVehicle*> ProximityDatabase;
 typedef OpenSteer::AbstractTokenForProximityDatabase<AbstractVehicle*> ProximityToken;
@@ -123,10 +126,10 @@ public:
     void update (const float currentTime, const float elapsedTime)
     {
         // steer to flock and perhaps to stay within the spherical boundary
-        applySteeringForce (steerToFlock () + handleBoundary(), elapsedTime);
+        //applySteeringForce (steerToFlock () + handleBoundary(), elapsedTime);
         
         // notify proximity database that our position has changed
-        proximityToken->updateForNewPosition (position());
+        //proximityToken->updateForNewPosition (position());
     }
     
     
@@ -261,11 +264,13 @@ class BoidsCUDAPlugIn : public PlugIn
         
         const char* name (void) {return "Boids CUDA";}
         
-        float selectionOrderSortKey (void) {return 200.5f;}
+        float selectionOrderSortKey (void) {return 0.5f;}
         
-        static const int numOfAgents = 2048;
+        static const int numOfAgents = 1024;
         
         virtual ~BoidsCUDAPlugIn() {} // be more "nice" to avoid a compiler warning
+        
+        Grid *grid;
         
         void open (void)
         {
@@ -285,15 +290,24 @@ class BoidsCUDAPlugIn : public PlugIn
             OpenSteerDemo::camera.lookdownDistance = 20;
             OpenSteerDemo::camera.aimLeadTime = 0.5;
             OpenSteerDemo::camera.povOffset.set (0, 0.5, -2);
+            
+            grid = new Grid();
         }
         
         void update (const float currentTime, const float elapsedTime)
         {
-            // update flock simulation for each boid
+            MemoryBackend *mb = MemoryBackend::instance();
+            VehicleData *vData = mb->getVehicleData();
+            
+            int n = 0;
             for (iterator i = flock.begin(); i != flock.end(); i++)
             {
-                (**i).update (currentTime, elapsedTime);
+                grid->save((**i).position(), n++);
             }
+            
+            runBoidsKernel(vData, numOfAgents, grid->getIndices(), grid->numOfCells(), grid->getAgents(), grid->numOfAgents(), elapsedTime);
+            
+            grid->clear();
         }
         
         void redraw (const float currentTime, const float elapsedTime)
@@ -325,6 +339,10 @@ class BoidsCUDAPlugIn : public PlugIn
             // delete the proximity database
             delete pd;
             pd = NULL;
+            
+            endBoids();
+            
+            delete grid;
         }
         
         void reset (void)

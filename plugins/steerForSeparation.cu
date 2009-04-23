@@ -61,19 +61,21 @@ steerForSeparationKernel(VehicleData *vehicleData, float3 *steeringVectors, floa
     int i = 0;
     for (; i < neighborData[id].numOfNeighbors; i++) {
         int idOfNeighbor = neighborData[id].idsOfNeighbors[i];
-        if (inNeighborhood(P(threadIdx.x), (*vehicleData).forward[id], (*vehicleData).position[idOfNeighbor], (*vehicleData).radius[id] * 3, maxDistance, cosMaxAngle) == 1) {
-            float3 offset = float3Sub(P(threadIdx.x), (*vehicleData).position[id]);
+//        if (inNeighborhood(P(threadIdx.x), (*vehicleData).forward[id], (*vehicleData).position[idOfNeighbor], (*vehicleData).radius[id] * 3, maxDistance, cosMaxAngle) == 1) {
+            float3 offset = float3Sub((*vehicleData).position[idOfNeighbor], P(threadIdx.x));
             float distanceSquared = float3Dot(offset, offset);
             S(threadIdx.x) = float3Add(S(threadIdx.x), float3Div(offset, -distanceSquared));
             
             neighbors++;
-        }
+//        }
     }
     
     if (neighbors > 0) S(threadIdx.x) = float3Normalize(float3Div(S(threadIdx.x), (float)neighbors));
     
-    // mix in wander behavior
-    if (options & IGNORE_UNLESS_ZERO == IGNORE_UNLESS_ZERO
+    
+    S(threadIdx.x) = float3Mul(S(threadIdx.x), 5.f);
+
+    if (0
         && steeringVectors[id].x != 0.f
         && steeringVectors[id].y != 0.f
         && steeringVectors[id].z != 0.f)
@@ -81,7 +83,8 @@ steerForSeparationKernel(VehicleData *vehicleData, float3 *steeringVectors, floa
         S(threadIdx.x) = steeringVectors[id];
         
     } else {
-        S(threadIdx.x) = float3BlendIn(blendFactor, S(threadIdx.x), steeringVectors[id]);
+        //S(threadIdx.x) = float3Add(S(threadIdx.x), steeringVectors[id])
+        //S(threadIdx.x) = float3BlendIn(blendFactor, S(threadIdx.x), steeringVectors[id]);
     }
     
     

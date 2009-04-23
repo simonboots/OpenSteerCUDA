@@ -2,12 +2,14 @@
 
 OpenSteer::Grid::Grid()
 {
-    int numOfCells = (Grid::worldSize / Grid::cellSize) * (Grid::worldSize / Grid::cellSize) * (Grid::worldSize / Grid::cellSize);
+    _numOfCells = (2 * Grid::worldSize / Grid::cellSize) * (2 * Grid::worldSize / Grid::cellSize) * (2 * Grid::worldSize / Grid::cellSize);
     
-    for (int i = 0; i < numOfCells; i++) {
+    for (int i = 0; i < _numOfCells; i++) {
         allCells.push_back(new agents);
     }
-    numOfAgents = 0;
+    _numOfAgents = 0;
+    pAgents = NULL;
+    pIndices = NULL;
 }
 
 OpenSteer::Grid::~Grid()
@@ -22,7 +24,7 @@ int OpenSteer::Grid::index(Vec3 position)
 
 int OpenSteer::Grid::index(float _x, float _y, float _z)
 {
-    int cellsPerDimension = Grid::worldSize / Grid::cellSize;
+    int cellsPerDimension = 2 * Grid::worldSize / Grid::cellSize;
     int x = (_x + Grid::worldSize) / Grid::cellSize;
     int y = (_y + Grid::worldSize) / Grid::cellSize;
     int z = (_z + Grid::worldSize) / Grid::cellSize;
@@ -38,12 +40,17 @@ void OpenSteer::Grid::clear(void)
         (*i)->clear();
     }
     
-    numOfAgents = 0;
+    _numOfAgents = 0;
 }
 
-int OpenSteer::Grid::size(void)
+int OpenSteer::Grid::numOfAgents(void)
 {
-    return numOfAgents;
+    return _numOfAgents;
+}
+
+int OpenSteer::Grid::numOfCells(void)
+{
+    return _numOfCells;
 }
 
 void OpenSteer::Grid::save(Vec3 position, int id)
@@ -55,33 +62,50 @@ void OpenSteer::Grid::save(float x, float y, float z, int id)
 {
     int index = Grid::index(x, y, z);
     (allCells.at(index))->push_back(id);
-    numOfAgents++;
+    _numOfAgents++;
 }
 
 int* OpenSteer::Grid::getIndices(void)
 {
-    int numOfCells = (Grid::worldSize / Grid::cellSize) * (Grid::worldSize / Grid::cellSize) * (Grid::worldSize / Grid::cellSize);
-    int *indices = new int[numOfCells];
+    static int lastNumOfIndices = 0;
+    
+    if (lastNumOfIndices != _numOfCells) {
+        if (pIndices != NULL)
+            delete pIndices;
+        
+        lastNumOfIndices = _numOfCells;
+        pIndices = new int[_numOfCells];
+    }
     
     int sum = 0;
     int n = 0;
     for (cellsIterator i = allCells.begin(); i != allCells.end(); i++) {
-        indices[n++] = sum;
+        pIndices[n++] = sum;
         sum += (*i)->size();
     }
     
-    return indices;
+    return pIndices;
 }
 
 int* OpenSteer::Grid::getAgents(void)
 {
-    int *agents = new int[numOfAgents];
+    static int lastNumOfAgents = 0;
+    
+    if (lastNumOfAgents != _numOfAgents) {
+        if (pAgents != NULL)
+            delete pAgents;
+        
+        lastNumOfAgents = _numOfAgents;
+        pAgents = new int[_numOfAgents];
+    } 
     
     int n = 0;
     
     for (cellsIterator ci = allCells.begin(); ci != allCells.end(); ci++) {
         for (agentsIterator ai = (*ci)->begin(); ai != (*ci)->end(); ai++) {
-            agents[n++] = *ai;
+            pAgents[n++] = *ai;
         }
     }
+    
+    return pAgents;
 }
