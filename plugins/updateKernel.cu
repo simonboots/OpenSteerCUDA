@@ -119,7 +119,7 @@ updateKernel(VehicleData *vehicleData, float3 *steeringVectors, float elapsedTim
     __syncthreads();
     
     // handle spherical wrap around
-    if (options & SPHERICAL_WRAP_AROUND == SPHERICAL_WRAP_AROUND) {
+    if ((options & SPHERICAL_WRAP_AROUND) != 0) {
         FV(threadIdx.x) = sphericalWrapAround(FV(threadIdx.x), make_float3(0.f, 0.f, 0.f));
         __syncthreads();
     }
@@ -142,8 +142,8 @@ updateKernel(VehicleData *vehicleData, float3 *steeringVectors, float elapsedTim
     V(threadIdx.x) = float3Div(V(threadIdx.x), speed);
     __syncthreads();
     
-    // regenerate loca space for banking
-    if (options & LOCAL_SPACE_BANKING == LOCAL_SPACE_BANKING) {
+    // regenerate local space for banking
+    if ((options & LOCAL_SPACE_BANKING) != 0) {
         // the length of this global-upward-pointing vector controls the vehicle's
         // tendency to right itself as it is rolled over from turning acceleration
         float3 globalUp = make_float3(0, 0.2f, 0);

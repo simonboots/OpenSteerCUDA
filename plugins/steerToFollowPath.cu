@@ -137,7 +137,7 @@ steerForSeekKernelSingle(float3 position, float3 velocity, float3 seekVector, fl
     __syncthreads();
     
     // mix in wander behavior
-    if (options & IGNORE_UNLESS_ZERO == IGNORE_UNLESS_ZERO
+    if ((options & IGNORE_UNLESS_ZERO) != 0
         && steeringVectors[id].x != 0.f
         && steeringVectors[id].z != 0.f)
     {

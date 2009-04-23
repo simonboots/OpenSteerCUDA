@@ -72,7 +72,7 @@ steerForWander2DKernel(VehicleData *vehicleData, float *random, float dt, float3
     S(threadIdx.x).z = SI(threadIdx.x).z + U(threadIdx.x).z;
     
     // mix in wander behavior
-    if (options & IGNORE_UNLESS_ZERO == IGNORE_UNLESS_ZERO
+    if ((options & IGNORE_UNLESS_ZERO) != 0
         && steeringVectors[id].x != 0.f
         && steeringVectors[id].z != 0.f)
     {
