@@ -104,7 +104,8 @@ void runBoidsKernel(VehicleData *h_vehicleData, VehicleConst *h_vehicleConst, in
     CUT_SAFE_CALL(cutStartTimer(timer));
     
     // run find neighbor kernel
-    findNeighborsKernel<<<grid, threads>>>(d_vehicleData, d_neighborIndices, d_neighborAgents, d_neighborData, 4.24f);
+    findNeighborsKernel<<<numOfVehicles/TPB, TPB>>>(d_vehicleData, d_neighborIndices, d_neighborAgents, d_neighborData, 4.24f);
+    //CUT_CHECK_ERROR("findNeighborsKernel execution failed");
     
     CUT_SAFE_CALL(cutStopTimer(timer));
     printf("Raw processing time (findNeighbors): %f (ms) \n", cutGetTimerValue(timer));
@@ -119,6 +120,7 @@ void runBoidsKernel(VehicleData *h_vehicleData, VehicleConst *h_vehicleConst, in
 
     // run steer for separation kernel
     steerForSeparationKernel<<<grid, threads>>>(d_vehicleData, d_steeringVectors, 5.f, -0.707f, d_neighborData, 1.f, NONE);
+    
     
     CUT_SAFE_CALL(cutStopTimer(timer));
     printf("Raw processing time (steerForSeparation): %f (ms) \n", cutGetTimerValue(timer));

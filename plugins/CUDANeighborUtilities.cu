@@ -57,22 +57,23 @@ isValidCell(int3 cell)
 }
 
 __device__ void
-addNeighbor(NeighborData *neighbor, float radius, VehicleData *vehicleData, int vehicleIndex, int myID)
+addNeighbor(NeighborData *neighbor, float radius, VehicleData *vehicleData, int vehicleIndex, int myID, float3** positions)
 {
     float distance = float3Distance((*vehicleData).position[myID], (*vehicleData).position[vehicleIndex]);
     
     if (distance > radius) return;
     
-    if (neighbor[myID].numOfNeighbors < MAX_NEIGHBORS) {
+    if (neighbor[threadIdx.x].numOfNeighbors < MAX_NEIGHBORS) {
         // just add to neighbors
-        neighbor[myID].idsOfNeighbors[neighbor[myID].numOfNeighbors++] = vehicleIndex;
+        neighbor[threadIdx.x].idsOfNeighbors[neighbor[threadIdx.x].numOfNeighbors] = vehicleIndex;
+        positions[threadIdx.x][neighbor[threadIdx.x].numOfNeighbors++] = (*vehicleData).position[vehicleIndex];                                                                    
     } else {
         // replace neighbor with longest distance
         float maxDistance = 0.f;
         int neighborToReplace = -1;
         int i;
-        for (i = 0; i < neighbor[myID].numOfNeighbors; i++) {
-            float testDistance = float3Distance((*vehicleData).position[myID], (*vehicleData).position[neighbor[myID].idsOfNeighbors[i]]);
+        for (i = 0; i < neighbor[threadIdx.x].numOfNeighbors; i++) {
+            float testDistance = float3Distance((*vehicleData).position[myID], positions[threadIdx.x][i]);
             if (testDistance > maxDistance) {
                 maxDistance = testDistance;
                 neighborToReplace = i;
@@ -80,7 +81,8 @@ addNeighbor(NeighborData *neighbor, float radius, VehicleData *vehicleData, int 
         }
         
         if (distance < maxDistance) {
-            neighbor[myID].idsOfNeighbors[neighborToReplace] = vehicleIndex;
+            neighbor[threadIdx.x].idsOfNeighbors[neighborToReplace] = vehicleIndex;
+            positions[threadIdx.x][neighborToReplace] = (*vehicleData).position[vehicleIndex];
         }
     }
 }

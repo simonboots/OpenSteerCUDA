@@ -5,7 +5,6 @@
 
 #define MAX_VEHICLE 4096
 
-
 typedef struct vehicle_data {
     // LocalSpace
     float3  side[MAX_VEHICLE];
