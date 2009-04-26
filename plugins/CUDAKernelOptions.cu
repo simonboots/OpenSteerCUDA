@@ -1,7 +1,7 @@
 #ifndef _CUDA_KERNEL_OPTIONS_CU_
 #define _CUDA_KERNEL_OPTIONS_CU_
 
-#define TPB 64
+#define TPB 128
 #define MAX_OBSTACLES 128
 
 typedef enum kernel_opt

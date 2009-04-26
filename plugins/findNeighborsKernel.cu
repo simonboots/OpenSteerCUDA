@@ -40,9 +40,6 @@ findNeighborsKernel(VehicleData* vehicleData, int* indices, int* agents, Neighbo
     // shared memort for neighbor data
     __shared__ NeighborData neighbor[TPB];
     
-    // shared memory for position data
-    __shared__ float3 positions[TPB][MAX_NEIGHBORS];
-    
     //printf("handling id %d\n", id);
     
     // reset numbers of neighbors
@@ -80,19 +77,19 @@ findNeighborsKernel(VehicleData* vehicleData, int* indices, int* agents, Neighbo
                 int i = startID;
                 for (; i < endID; i++) {
                     if (agents[i] != id)
-                        addNeighbor(neighbor, radius, vehicleData, agents[i], id, (float3**)positions);
+                        addNeighbor(neighbor, radius, vehicleData, agents[i], id);
                 }
             }
         }
     }
-    
-    __syncthreads();
-    int i;    
+
     // copy neighbor data back to global memory
+    __syncthreads();
+
+    int i;    
     for (i = 0; i < (sizeof(NeighborData) / sizeof(int)); i++) {
         ((int*)neighbors)[blockOffsetNeighbors + threadIdx.x + i*blockDim.x] = N_I(threadIdx.x + i*blockDim.x);
     }
-    //neighbors[id] = neighbor[threadIdx.x];
     
     __syncthreads();
 //    if (neighbors[id].numOfNeighbors > 0) 
