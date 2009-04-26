@@ -344,6 +344,9 @@ class BoidsCUDAPlugIn : public PlugIn
             endBoids();
             
             delete grid;
+            
+            // reset MemoryBackend of SimpleVehicleMB
+            SimpleVehicleMB::resetBackend();
         }
         
         void reset (void)
