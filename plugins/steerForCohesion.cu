@@ -34,7 +34,7 @@
 
 
 __global__ void
-steerForCohesionKernel(VehicleData *vehicleData, float3 *steeringVectors, float maxDistance, float cosMaxAngle, NeighborData* neighborData, float blendFactor, kernel_options options)
+steerForCohesionKernel(VehicleData *vehicleData, VehicleConst *vehicleConst, float3 *steeringVectors, float maxDistance, float cosMaxAngle, NeighborData* neighborData, float blendFactor, kernel_options options)
 {
     int id = (blockIdx.x * blockDim.x + threadIdx.x);
     int blockOffset = (blockDim.x * blockIdx.x * 3);
@@ -60,19 +60,19 @@ steerForCohesionKernel(VehicleData *vehicleData, float3 *steeringVectors, float 
     int i = 0;
     for (; i < neighborData[id].numOfNeighbors; i++) {
         int idOfNeighbor = neighborData[id].idsOfNeighbors[i];
-  //      if (inNeighborhood(P(threadIdx.x), (*vehicleData).forward[id], (*vehicleData).position[idOfNeighbor], (*vehicleData).radius[id] * 3, maxDistance, cosMaxAngle) == 1) {
+//        if (inNeighborhood(P(threadIdx.x), (*vehicleData).forward[id], (*vehicleData).position[idOfNeighbor], (*vehicleConst).radius[id] * 3, maxDistance, cosMaxAngle) == 1) {
             
             S(threadIdx.x) = float3Add(S(threadIdx.x), (*vehicleData).position[idOfNeighbor]);
             
             neighbors++;
- //       }
+//        }
     }
     
     if (neighbors > 0) S(threadIdx.x) = float3Normalize(float3Sub(float3Div(S(threadIdx.x), (float)neighbors), P(threadIdx.x)));
     
     S(threadIdx.x) = float3Mul(S(threadIdx.x), 8.f);
     
-    if (0
+    if ((options & IGNORE_UNLESS_ZERO) != 0
         && steeringVectors[id].x != 0.f
         && steeringVectors[id].y != 0.f
         && steeringVectors[id].z != 0.f)

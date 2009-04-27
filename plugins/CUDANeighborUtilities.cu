@@ -105,10 +105,15 @@ inNeighborhood(float3 myPosition, float3 myForward, float3 otherPosition, float 
         }
         else
         {
-            // otherwise, test angular offset from forward axis
-            float3 unitOffset = float3Div(offset, distance);
-            float forwardness = float3Dot(myForward, unitOffset);
-            return forwardness > cosMaxAngle;
+            if (distance != 0.f)
+            {
+                // otherwise, test angular offset from forward axis
+                float3 unitOffset = float3Div(offset, distance);
+                float forwardness = float3Dot(myForward, unitOffset);
+                return forwardness > cosMaxAngle;                
+            } else {
+                return 0;
+            }
         }
     }
 }
