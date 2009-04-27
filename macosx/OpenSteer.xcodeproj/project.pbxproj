@@ -127,6 +127,7 @@
 		1CA56BDE0F824EF800819A74 /* SimpleVehicleMB.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SimpleVehicleMB.cpp; sourceTree = "<group>"; };
 		1CA7B00D0FA5AD0F004E76BF /* steerToAvoidCloseNeighbors.cu */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 4; name = steerToAvoidCloseNeighbors.cu; path = ../plugins/steerToAvoidCloseNeighbors.cu; sourceTree = SOURCE_ROOT; };
 		1CA7B0130FA5B762004E76BF /* steerToAvoidNeighbors.cu */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 4; name = steerToAvoidNeighbors.cu; path = ../plugins/steerToAvoidNeighbors.cu; sourceTree = SOURCE_ROOT; };
+		1CB06F0E0FA6401300E59A31 /* AbstractCUDAKernel.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.h; fileEncoding = 4; path = AbstractCUDAKernel.h; sourceTree = "<group>"; };
 		1CBD02080F72795400DEE3E8 /* PolonaiseCUDA.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PolonaiseCUDA.cpp; sourceTree = "<group>"; };
 		1CBD023E0F72876D00DEE3E8 /* PolonaiseCUDAStarter.cu */ = {isa = PBXFileReference; explicitFileType = sourcecode.c; fileEncoding = 4; path = PolonaiseCUDAStarter.cu; sourceTree = "<group>"; };
 		1CBD02860F728D4800DEE3E8 /* libcutil.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libcutil.a; path = CUDA/lib/libcutil.a; sourceTree = SYSTEM_DEVELOPER_DIR; };
@@ -343,6 +344,7 @@
 				1CD4EAF80F934EC000F5D923 /* PathwayData.h */,
 				1C9C36E90F948BD500F4A359 /* PathwayDataFunc.h */,
 				1C6C7F3A0F9C8BEE003932BE /* NeighborData.h */,
+				1CB06F0E0FA6401300E59A31 /* AbstractCUDAKernel.h */,
 			);
 			path = OpenSteer;
 			sourceTree = "<group>";
