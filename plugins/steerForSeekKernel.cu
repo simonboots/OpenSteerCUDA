@@ -2,45 +2,28 @@
 #define _STEER_FOR_SEEK_KERNEL_CU_
 
 #include "VehicleData.h"
+#include "CUDAVectorUtilities.cu"
 #include "CUDAKernelOptions.cu"
 
 #define CHECK_BANK_CONFLICTS 0
 #if CHECK_BANK_CONFLICTS
-#define V_F(i) (CUT_BANK_CHECKER(((float*)velocity), i))
 #define F_F(i) (CUT_BANK_CHECKER(((float*)forward), i))
 #define P_F(i) (CUT_BANK_CHECKER(((float*)position), i))
-#define S_F(i) (CUT_BANK_CHECKER(((float*)steering), i))
-#define A_F(i) (CUT_BANK_CHECKER(((float*)avoidance), i))
-#define LC_F(i) (CUT_BANK_CHECKER(((float*)localcenter), i))
 #define SK_F(i) (CUT_BANK_CHECKER(((float*)seek), i))
-#define V(i) (CUT_BANK_CHECKER(velocity, i))
 #define F(i) (CUT_BANK_CHECKER(forward, i))
 #define P(i) (CUT_BANK_CHECKER(position, i))
-#define S(i) (CUT_BANK_CHECKER(steering, i))
-#define SP(i) (CUT_BANK_CHECKER(speed, i))
-#define A(i) (CUT_BANK_CHECKER(avoidance, i))
-#define LC(i) (CUT_BANK_CHECKER(localcenter, i))
 #define SK(i) (CUT_BANK_CHECKER(seek, i))
 #else
-#define V_F(i) ((float*)velocity)[i]
 #define F_F(i) ((float*)forward)[i]
 #define P_F(i) ((float*)position)[i]
-#define S_F(i) ((float*)steering)[i]
-#define A_F(i) ((float*)avoidance)[i]
-#define LC_F(i) ((float*)localcenter)[i]
 #define SK_F(i) ((float*)seek)[i]
-#define V(i) velocity[i]
 #define F(i) forward[i]
 #define P(i) position[i]
-#define S(i) steering[i]
-#define A(i) avoidance[i]
-#define SP(i) speed[i]
-#define LC(i) localcenter[i]
 #define SK(i) seek[i]
 #endif
 
 __global__ void
-steerForSeekKernel(VehicleData *vehicleData, float3 *seekVectors, float3 *steeringVectors)
+steerForSeekKernel(VehicleData *vehicleData, float3 *seekVectors, float3 *steeringVectors, float weight, kernel_options options)
 {
     int id = (blockIdx.x * blockDim.x + threadIdx.x);    
     int blockOffset = (blockDim.x * blockIdx.x * 3);
@@ -79,6 +62,21 @@ steerForSeekKernel(VehicleData *vehicleData, float3 *seekVectors, float3 *steeri
     SK(threadIdx.x).y = (SK(threadIdx.x).y - P(threadIdx.x).y) - (F(threadIdx.x).y * speed);
     SK(threadIdx.x).z = (SK(threadIdx.x).z - P(threadIdx.x).z) - (F(threadIdx.x).z * speed);
 
+    __syncthreads();
+    
+    // multiply by weight
+    SK(threadIdx.x) = float3Mul(SK(threadIdx.x), weight);
+    
+    if ((options & IGNORE_UNLESS_ZERO) != 0
+        && (steeringVectors[id].x != 0.f
+         || steeringVectors[id].y != 0.f
+         || steeringVectors[id].z != 0.f))
+    {
+        SK(threadIdx.x) = steeringVectors[id];
+    } else {
+        SK(threadIdx.x) = float3Add(SK(threadIdx.x), steeringVectors[id]);
+    }
+    
     __syncthreads();
     
     // copy steering vectors to global memory (coalesced)

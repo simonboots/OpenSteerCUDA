@@ -7,7 +7,7 @@
 #include "CUDAVectorUtilities.cu"
 #include "CUDAKernelOptions.cu"
 
-#define CHECK_BANK_CONFLICTS 1
+#define CHECK_BANK_CONFLICTS 0
 #if CHECK_BANK_CONFLICTS
 #define S_F(i) (CUT_BANK_CHECKER(((float*)steering), i))
 #define S(i) (CUT_BANK_CHECKER(steering, i))
@@ -28,14 +28,11 @@ __device__ float
 scalarRandomWalk(float initial, float walkspeed, float min, float max, float random);
 
 __global__ __device__ void
-steerForWander2DKernel(VehicleData *vehicleData, float *random, float dt, float3 *steeringVectors, float2 *wanderData, float blendFactor, kernel_options options)
+steerForWander2DKernel(VehicleData *vehicleData, float *random, float dt, float3 *steeringVectors, float2 *wanderData, float weight, kernel_options options)
 {
     int id = (blockIdx.x * blockDim.x + threadIdx.x);
     int blockOffset2 = (blockDim.x * blockIdx.x);
     int blockOffset3 = (blockDim.x * blockIdx.x * 3);
-    
-    // shared memory for random numbers
-    //__shared__ float2 random[TPB];
     
     // shared memory for side vector
     __shared__ float3 side[TPB];
@@ -71,19 +68,20 @@ steerForWander2DKernel(VehicleData *vehicleData, float *random, float dt, float3
     S(threadIdx.x).y = 0.f; // SI(threadIdx.x).y + U(threadIdx.x).y;
     S(threadIdx.x).z = SI(threadIdx.x).z + U(threadIdx.x).z;
     
-    // mix in wander behavior
+    // multiply by weight
+    S(threadIdx.x) = float3Mul(S(threadIdx.x), weight);
+    
     if ((options & IGNORE_UNLESS_ZERO) != 0
-        && steeringVectors[id].x != 0.f
-        && steeringVectors[id].z != 0.f)
+        && (steeringVectors[id].x != 0.f
+         || steeringVectors[id].y != 0.f
+         || steeringVectors[id].z != 0.f))
     {
-            S(threadIdx.x) = steeringVectors[id];
-
+        S(threadIdx.x) = steeringVectors[id];
     } else {
-            S(threadIdx.x) = float3BlendIn(blendFactor, S(threadIdx.x), steeringVectors[id]);
+        S(threadIdx.x) = float3Add(S(threadIdx.x), steeringVectors[id]);
     }
     
     __syncthreads();
-
 
     // copy steering vector back to global memory (coalesced)
     ((float*)steeringVectors)[blockOffset3 + threadIdx.x] =  S_F(threadIdx.x);

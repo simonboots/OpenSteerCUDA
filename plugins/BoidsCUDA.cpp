@@ -264,7 +264,7 @@ class BoidsCUDAPlugIn : public PlugIn
         
         const char* name (void) {return "Boids CUDA";}
         
-        float selectionOrderSortKey (void) {return 0.5f;}
+        float selectionOrderSortKey (void) {return 1.f;}
         
         static const int numOfAgents = 4096;
         

@@ -83,6 +83,8 @@ steerToAvoidCloseNeighbors(VehicleData *vehicleData, VehicleConst *vehicleConst,
          || steeringVectors[id].z != 0.f))
     {
         S(threadIdx.x) = steeringVectors[id];
+    } else {
+        S(threadIdx.x) = float3Add(S(threadIdx.x), steeringVectors[id]);
     }
 
     __syncthreads();

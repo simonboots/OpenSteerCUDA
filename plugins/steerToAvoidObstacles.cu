@@ -131,6 +131,8 @@ steerToAvoidObstacles(VehicleData* vehicleData, VehicleConst* vehicleConst, floa
         || steeringVectors[id].z != 0.f))
     {
         A(threadIdx.x) = steeringVectors[id];
+    } else {
+        A(threadIdx.x) = float3Add(A(threadIdx.x), steeringVectors[id]);
     }
     
     __syncthreads();

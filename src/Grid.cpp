@@ -11,6 +11,8 @@ OpenSteer::Grid::Grid()
     _numOfAgents = 0;
     pAgents = NULL;
     pIndices = NULL;
+    lastNumOfIndices = -1;
+    lastNumOfAgents = -1;
 }
 
 OpenSteer::Grid::~Grid()
@@ -67,9 +69,7 @@ void OpenSteer::Grid::save(float x, float y, float z, int id)
 }
 
 int* OpenSteer::Grid::getIndices(void)
-{
-    static int lastNumOfIndices = 0;
-    
+{    
     if (lastNumOfIndices != _numOfCells) {
         if (pIndices != NULL)
             cudaFreeHost(pIndices);
@@ -95,9 +95,7 @@ int* OpenSteer::Grid::getIndices(void)
 }
 
 int* OpenSteer::Grid::getAgents(void)
-{
-    static int lastNumOfAgents = 0;
-    
+{    
     if (lastNumOfAgents != _numOfAgents) {
         if (pAgents != NULL)
             cudaFreeHost(pAgents);

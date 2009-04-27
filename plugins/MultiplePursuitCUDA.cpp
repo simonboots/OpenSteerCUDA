@@ -206,7 +206,7 @@ class MpPlugInCUDA : public PlugIn
         
         const char* name (void) {return "Multiple Pursuit CUDA";}
         
-        float selectionOrderSortKey (void) {return 2.5f;}
+        float selectionOrderSortKey (void) {return 3.f;}
 
         int pursuerCount;
         

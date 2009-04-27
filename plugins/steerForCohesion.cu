@@ -34,7 +34,7 @@
 
 
 __global__ void
-steerForCohesionKernel(VehicleData *vehicleData, VehicleConst *vehicleConst, float3 *steeringVectors, float maxDistance, float cosMaxAngle, NeighborData* neighborData, float blendFactor, kernel_options options)
+steerForCohesionKernel(VehicleData *vehicleData, VehicleConst *vehicleConst, float3 *steeringVectors, float maxDistance, float cosMaxAngle, NeighborData* neighborData, float weight, kernel_options options)
 {
     int id = (blockIdx.x * blockDim.x + threadIdx.x);
     int blockOffset = (blockDim.x * blockIdx.x * 3);
@@ -70,21 +70,21 @@ steerForCohesionKernel(VehicleData *vehicleData, VehicleConst *vehicleConst, flo
     
     if (neighbors > 0) S(threadIdx.x) = float3Normalize(float3Sub(float3Div(S(threadIdx.x), (float)neighbors), P(threadIdx.x)));
     
-    S(threadIdx.x) = float3Mul(S(threadIdx.x), 8.f);
+    // multiply by weight
+    S(threadIdx.x) = float3Mul(S(threadIdx.x), weight);
     
     if ((options & IGNORE_UNLESS_ZERO) != 0
-        && steeringVectors[id].x != 0.f
-        && steeringVectors[id].y != 0.f
-        && steeringVectors[id].z != 0.f)
+        && (steeringVectors[id].x != 0.f
+         || steeringVectors[id].y != 0.f
+         || steeringVectors[id].z != 0.f))
     {
         S(threadIdx.x) = steeringVectors[id];
-        
     } else {
         S(threadIdx.x) = float3Add(S(threadIdx.x), steeringVectors[id]);
-        //S(threadIdx.x) = float3BlendIn(blendFactor, S(threadIdx.x), steeringVectors[id]);
     }
     
     
+    // ADDITION FEHLT!!!!
     __syncthreads();
     
     // writing back to global memory (coalesced)

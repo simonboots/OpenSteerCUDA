@@ -113,7 +113,7 @@ class WanderAroundCUDAPlugIn : public PlugIn
         
         const char* name (void) {return "WanderAround CUDA";}
         
-        float selectionOrderSortKey (void) {return 0.1f;}
+        float selectionOrderSortKey (void) {return 5.f;}
         
         const static int numOfAgents = 1024;
         const static int numOfObstacles = 30;

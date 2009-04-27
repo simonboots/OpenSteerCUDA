@@ -11,30 +11,20 @@
 
 #define CHECK_BANK_CONFLICTS 0
 #if CHECK_BANK_CONFLICTS
-#define V_F(i) (CUT_BANK_CHECKER(((float*)velocity), i))
-#define F_F(i) (CUT_BANK_CHECKER(((float*)forward), i))
 #define P_F(i) (CUT_BANK_CHECKER(((float*)position), i))
 #define S_F(i) (CUT_BANK_CHECKER(((float*)steering), i))
-#define V(i) (CUT_BANK_CHECKER(velocity, i))
-#define F(i) (CUT_BANK_CHECKER(forward, i))
 #define P(i) (CUT_BANK_CHECKER(position, i))
 #define S(i) (CUT_BANK_CHECKER(steering, i))
-#define SP(i) (CUT_BANK_CHECKER(speed, i))
 #else
-#define V_F(i) ((float*)velocity)[i]
-#define F_F(i) ((float*)forward)[i]
 #define P_F(i) ((float*)position)[i]
 #define S_F(i) ((float*)steering)[i]
-#define V(i) velocity[i]
-#define F(i) forward[i]
 #define P(i) position[i]
 #define S(i) steering[i]
-#define SP(i) speed[i]
 #endif
 
 
 __global__ void
-steerForSeparationKernel(VehicleData *vehicleData, VehicleConst *vehicleConst, float3 *steeringVectors, float maxDistance, float cosMaxAngle, NeighborData* neighborData, float blendFactor, kernel_options options)
+steerForSeparationKernel(VehicleData *vehicleData, VehicleConst *vehicleConst, float3 *steeringVectors, float maxDistance, float cosMaxAngle, NeighborData* neighborData, float weight, kernel_options options)
 {
     int id = (blockIdx.x * blockDim.x + threadIdx.x);
     int blockOffset = (blockDim.x * blockIdx.x * 3);
@@ -72,18 +62,17 @@ steerForSeparationKernel(VehicleData *vehicleData, VehicleConst *vehicleConst, f
     
     if (neighbors > 0) S(threadIdx.x) = float3Normalize(float3Div(S(threadIdx.x), (float)neighbors));
     
-    
-    S(threadIdx.x) = float3Mul(S(threadIdx.x), 5.f);
+    S(threadIdx.x) = float3Mul(S(threadIdx.x), weight);
 
     if ((options & IGNORE_UNLESS_ZERO) != 0
-        && steeringVectors[id].x != 0.f
-        && steeringVectors[id].y != 0.f
-        && steeringVectors[id].z != 0.f)
+        && (steeringVectors[id].x != 0.f
+         || steeringVectors[id].y != 0.f
+         || steeringVectors[id].z != 0.f))
     {
         S(threadIdx.x) = steeringVectors[id];
-        
+    } else {
+        S(threadIdx.x) = float3Add(S(threadIdx.x), steeringVectors[id]);
     }
-    
     
     __syncthreads();
     

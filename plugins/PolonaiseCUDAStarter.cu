@@ -5,13 +5,13 @@
 #include "CUDAKernelOptions.cu"
 
 __global__ void
-steerForSeekKernel(VehicleData *vehicleData, float3 *seekVectors, float3 *steeringVectors);
+findFollowerKernel(VehicleData *vehicleData, float3 *seekVectors);
+
+__global__ void
+steerForSeekKernel(VehicleData *vehicleData, float3 *seekVectors, float3 *steeringVectors, float weight, kernel_options options);
 
 __global__ void
 updateKernel(VehicleData *vehicleData, VehicleConst *vehicleConst, float3 *steeringVectors, float elapsedTime, kernel_options options);
-
-__global__ void
-findFollowerKernel(VehicleData *vehicleData, float3 *seekVectors);
 
 static VehicleData* d_vehicleData = NULL;
 static VehicleConst* d_vehicleConst = NULL;
@@ -32,10 +32,13 @@ void runPolonaiseKernel(VehicleData *h_vehicleData, VehicleConst *h_vehicleConst
     dim3 threads(TPB,1,1);
     
     // prepare memory for steeringVectors
+    const unsigned int mem_size_steering = sizeof(float3) * numOfAgents;
     if (d_steeringVectors == NULL) {
-        const unsigned int mem_size_steering = sizeof(float3) * numOfAgents;
         cudaMalloc((void **) &d_steeringVectors, mem_size_steering);
     }
+    
+    cudaMemset(d_steeringVectors, 0, mem_size_steering);
+
     
     // prepare vehicle data
     const unsigned int mem_size_vehicle = sizeof(VehicleData);
@@ -73,7 +76,7 @@ void runPolonaiseKernel(VehicleData *h_vehicleData, VehicleConst *h_vehicleConst
 //    CUT_SAFE_CALL(cutStartTimer(timer));
 
     // call steerForSeekKernel
-    steerForSeekKernel<<<grid, threads>>>(d_vehicleData, d_seekVectors, d_steeringVectors);
+    steerForSeekKernel<<<grid, threads>>>(d_vehicleData, d_seekVectors, d_steeringVectors, 1.f, NONE);
     //CUT_CHECK_ERROR("Kernel execution failed");
             
     // stop and destroy timer

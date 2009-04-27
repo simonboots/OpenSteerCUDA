@@ -32,6 +32,8 @@ private:
     cells allCells;
     int _numOfAgents;
     int _numOfCells;
+    int lastNumOfIndices;
+    int lastNumOfAgents;
     int* pAgents;
     int* pIndices;
 };

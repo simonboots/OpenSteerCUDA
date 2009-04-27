@@ -104,7 +104,7 @@ public:
     
     const char* name (void) {return "Polonaise CUDA";}
 
-    float selectionOrderSortKey (void) {return 3.5f;}
+    float selectionOrderSortKey (void) {return 4.f;}
     
     const static int numOfAgents = 2048;
 

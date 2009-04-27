@@ -103,7 +103,6 @@
 		1C18EE6C0F7C037F00100C21 /* steerForPursuitKernel.cu */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 4; name = steerForPursuitKernel.cu; path = ../plugins/steerForPursuitKernel.cu; sourceTree = "<group>"; };
 		1C1B66130F9DD2FD002C5E0C /* steerForAlignment.cu */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 4; name = steerForAlignment.cu; path = ../plugins/steerForAlignment.cu; sourceTree = SOURCE_ROOT; };
 		1C1B66170F9DD4CC002C5E0C /* steerForCohesion.cu */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 4; name = steerForCohesion.cu; path = ../plugins/steerForCohesion.cu; sourceTree = SOURCE_ROOT; };
-		1C1B661B0F9DDC2D002C5E0C /* Flocking.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Flocking.cpp; sourceTree = "<group>"; };
 		1C1B66E50F9DEC13002C5E0C /* BoidsCUDA.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BoidsCUDA.cpp; sourceTree = "<group>"; };
 		1C3568AB0F9F009B0079E377 /* BoidsCUDAStarter.cu */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 4; path = BoidsCUDAStarter.cu; sourceTree = "<group>"; };
 		1C3569F80F9F1B7C0079E377 /* libcutilD.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libcutilD.a; path = CUDA/lib/libcutilD.a; sourceTree = SYSTEM_DEVELOPER_DIR; };
@@ -234,26 +233,39 @@
 		1C18ED9F0F7BB72F00100C21 /* Kernels */ = {
 			isa = PBXGroup;
 			children = (
-				1C8DA5670F767783006231F5 /* updateKernel.cu */,
 				1CCE694B0F7A3C4800DB4AA8 /* steerForSeekKernel.cu */,
 				1C18EDA90F7BC3B600100C21 /* steerForFleeKernel.cu */,
 				1C18EDEA0F7BC6BF00100C21 /* steerForWanderKernel.cu */,
 				1C18EE130F7BE14200100C21 /* steerForTargetSpeedKernel.cu */,
 				1C18EE6C0F7C037F00100C21 /* steerForPursuitKernel.cu */,
+				1C6A88860F95EE6900A2D253 /* steerForEvasionKernel.cu */,
 				1C45007A0F8E06E900804B2F /* steerToAvoidObstacles.cu */,
+				1CA7B00D0FA5AD0F004E76BF /* steerToAvoidCloseNeighbors.cu */,
+				1CA7B0130FA5B762004E76BF /* steerToAvoidNeighbors.cu */,
 				1CD457670F937A00008D29D5 /* steerToFollowPath.cu */,
 				1C6A87C10F95D92500A2D253 /* steerToStayOnPath.cu */,
-				1C0FF03C0F88E5A5002009B6 /* findFollowerKernel.cu */,
-				1CC990830F8B5346009D50A4 /* resetOnCollisionKernel.cu */,
-				1C6A88860F95EE6900A2D253 /* steerForEvasionKernel.cu */,
-				1C6C7F310F9C8A4E003932BE /* findNeighborsKernel.cu */,
 				1C9119700F9CDB3900941CFC /* steerForSeparation.cu */,
 				1C1B66130F9DD2FD002C5E0C /* steerForAlignment.cu */,
 				1C1B66170F9DD4CC002C5E0C /* steerForCohesion.cu */,
-				1CA7B00D0FA5AD0F004E76BF /* steerToAvoidCloseNeighbors.cu */,
-				1CA7B0130FA5B762004E76BF /* steerToAvoidNeighbors.cu */,
+				1C0FF03C0F88E5A5002009B6 /* findFollowerKernel.cu */,
+				1C6C7F310F9C8A4E003932BE /* findNeighborsKernel.cu */,
+				1CC990830F8B5346009D50A4 /* resetOnCollisionKernel.cu */,
+				1C8DA5670F767783006231F5 /* updateKernel.cu */,
 			);
 			name = Kernels;
+			sourceTree = "<group>";
+		};
+		1CB06E920FA6144A00E59A31 /* other */ = {
+			isa = PBXGroup;
+			children = (
+				32FFF56606E9CECE00E1D8A3 /* LowSpeedTurn.cpp */,
+				32FFF56706E9CECE00E1D8A3 /* MapDrive.cpp */,
+				32FFF56906E9CECE00E1D8A3 /* OneTurning.cpp */,
+				32FFF56A06E9CECE00E1D8A3 /* Pedestrian.cpp */,
+				32FFF56B06E9CECE00E1D8A3 /* Soccer.cpp */,
+				32FFF56506E9CECE00E1D8A3 /* CaptureTheFlag.cpp */,
+			);
+			name = other;
 			sourceTree = "<group>";
 		};
 		29B97314FDCFA39411CA2CEA /* opensteer */ = {
@@ -361,25 +373,19 @@
 		32FFF56306E9CECE00E1D8A3 /* plugins */ = {
 			isa = PBXGroup;
 			children = (
+				1CB06E920FA6144A00E59A31 /* other */,
 				32FFF56406E9CECE00E1D8A3 /* Boids.cpp */,
 				1C1B66E50F9DEC13002C5E0C /* BoidsCUDA.cpp */,
 				1C3568AB0F9F009B0079E377 /* BoidsCUDAStarter.cu */,
-				32FFF56506E9CECE00E1D8A3 /* CaptureTheFlag.cpp */,
-				1C1B661B0F9DDC2D002C5E0C /* Flocking.cpp */,
 				1CD457470F936E62008D29D5 /* FollowPath.cpp */,
 				1C9C36A10F94872900F4A359 /* FollowPathCUDA.cpp */,
 				1C9C36E50F948A4100F4A359 /* FollowPathCUDAStarter.cu */,
-				32FFF56606E9CECE00E1D8A3 /* LowSpeedTurn.cpp */,
-				32FFF56706E9CECE00E1D8A3 /* MapDrive.cpp */,
 				32FFF56806E9CECE00E1D8A3 /* MultiplePursuit.cpp */,
 				1C18EE1C0F7BF24A00100C21 /* MultiplePursuitCUDA.cpp */,
 				1C18EE640F7C031300100C21 /* MultiplePursuitCUDAStarter.cu */,
-				32FFF56906E9CECE00E1D8A3 /* OneTurning.cpp */,
-				32FFF56A06E9CECE00E1D8A3 /* Pedestrian.cpp */,
 				1CC9C2180F70FD1400990434 /* Polonaise.cpp */,
 				1CBD02080F72795400DEE3E8 /* PolonaiseCUDA.cpp */,
 				1CBD023E0F72876D00DEE3E8 /* PolonaiseCUDAStarter.cu */,
-				32FFF56B06E9CECE00E1D8A3 /* Soccer.cpp */,
 				1CA02A120F8D188100D03331 /* WanderAround.cpp */,
 				1CC8D5FB0F8DC64B006CEA94 /* WanderAroundCUDA.cpp */,
 				1CC8D6060F8DC8D9006CEA94 /* WanderAroundCUDAStarter.cu */,

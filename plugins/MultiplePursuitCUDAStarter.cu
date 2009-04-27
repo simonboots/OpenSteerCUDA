@@ -6,7 +6,7 @@
 #include "CUDAKernelOptions.cu"
 
 __global__ __device__ void
-steerForPursuitKernel(VehicleData *vehicleData, float3 wandererPosition, float3 wandererVelocity, float3 *steeringVectors, float maxPredictionTime);
+steerForPursuitKernel(VehicleData *vehicleData, float3 wandererPosition, float3 wandererVelocity, float3 *steeringVectors, float maxPredictionTime, float weight, kernel_options options);
 
 __global__ void
 updateKernel(VehicleData *vehicleData, VehicleConst *vehicleConst, float3 *steeringVectors, float elapsedTime, kernel_options options);
@@ -42,6 +42,8 @@ void runMultiplePursuitKernel(VehicleData *h_vehicleData, VehicleConst *h_vehicl
         cudaMalloc((void **) &d_steeringVectors, mem_size_steering);
     }
     
+    cudaMemset(d_steeringVectors, 0, mem_size_steering);
+    
     // prepare vehicle data
     const unsigned int mem_size_vehicle = sizeof(VehicleData);
     
@@ -64,7 +66,7 @@ void runMultiplePursuitKernel(VehicleData *h_vehicleData, VehicleConst *h_vehicl
 //    CUT_SAFE_CALL(cutStartTimer(timer));
     
     // call steerForSeekKernel
-    steerForPursuitKernel<<<grid, threads>>>(d_vehicleData, wandererPosition, wandererVelocity, d_steeringVectors, 20.f);
+    steerForPursuitKernel<<<grid, threads>>>(d_vehicleData, wandererPosition, wandererVelocity, d_steeringVectors, 20.f, 1.f, NONE);
     //CUT_CHECK_ERROR("Kernel execution failed");
     
     // stop and destroy timer

@@ -32,10 +32,10 @@
 
 // prototype
 __device__ void
-steerForFleeKernelSingle(float3 position, float3 velocity, float3 seekVector, float3 *steeringVectors);
+steerForFleeKernelSingle(float3 position, float3 velocity, float3 seekVector, float3 *steeringVectors, float weight, kernel_options options);
 
 __global__ void
-steerForEvasionKernel(VehicleData *vehicleData, float3 menacePosition, float3 menaceVelocity, float3 *steeringVectors, float maxPredictionTime)
+steerForEvasionKernel(VehicleData *vehicleData, float3 menacePosition, float3 menaceVelocity, float3 *steeringVectors, float maxPredictionTime, float weight, kernel_options options)
 {
     int id = blockIdx.x * blockDim.x + threadIdx.x;
     int blockOffset = blockDim.x * blockIdx.x * 3;
@@ -78,11 +78,11 @@ steerForEvasionKernel(VehicleData *vehicleData, float3 menacePosition, float3 me
     
     float3 target = float3PredictFuturePosition(menacePosition, menaceVelocity, predictionTime);
 
-    steerForFleeKernelSingle(P(threadIdx.x), V(threadIdx.x), target, steeringVectors);
+    steerForFleeKernelSingle(P(threadIdx.x), V(threadIdx.x), target, steeringVectors, weight, options);
 }
 
 __device__ void
-steerForFleeKernelSingle(float3 position, float3 velocity, float3 fleeVector, float3 *steeringVectors)
+steerForFleeKernelSingle(float3 position, float3 velocity, float3 fleeVector, float3 *steeringVectors, float weight, kernel_options options)
 {
     int id = (blockIdx.x * blockDim.x + threadIdx.x);
     int blockOffset = (blockDim.x * blockIdx.x * 3);
@@ -93,6 +93,21 @@ steerForFleeKernelSingle(float3 position, float3 velocity, float3 fleeVector, fl
     S(threadIdx.x).x = (position.x - fleeVector.x) - velocity.x;
     S(threadIdx.x).y = (position.y - fleeVector.y) - velocity.y;
     S(threadIdx.x).z = (position.z - fleeVector.z) - velocity.z;
+    
+    __syncthreads();
+    
+    // multiply by weight
+    S(threadIdx.x) = float3Mul(S(threadIdx.x), weight);
+    
+    if ((options & IGNORE_UNLESS_ZERO) != 0
+        && (steeringVectors[id].x != 0.f
+            || steeringVectors[id].y != 0.f
+            || steeringVectors[id].z != 0.f))
+    {
+        S(threadIdx.x) = steeringVectors[id];
+    } else {
+        S(threadIdx.x) = float3Add(S(threadIdx.x), steeringVectors[id]);
+    }
     
     __syncthreads();
     

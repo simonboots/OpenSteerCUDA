@@ -36,10 +36,10 @@
 __constant__ PathwayData pathway;
 
 __device__ void
-steerForSeekKernelSingle(float3 position, float3 velocity, float3 seekVector, float3 *steeringVectors, int ignore, float blendFactor, kernel_options options);
+steerForSeekKernelSingle(float3 position, float3 velocity, float3 seekVector, float3 *steeringVectors, int ignore, float weight, kernel_options options);
 
 __global__ void
-steerToFollowPathKernel(VehicleData *vehicleData, float3 *steeringVectors, int *direction, float predictionTime, float blendFactor, kernel_options options)
+steerToFollowPathKernel(VehicleData *vehicleData, float3 *steeringVectors, int *direction, float predictionTime, float weight, kernel_options options)
 {    
     int id = (blockIdx.x * blockDim.x + threadIdx.x);
     int blockOffset = (blockDim.x * blockIdx.x * 3);
@@ -112,11 +112,12 @@ steerToFollowPathKernel(VehicleData *vehicleData, float3 *steeringVectors, int *
         target = mapPathDistanceToPoint(pathway.points, pathway.numElements, pathway.isCyclic, targetPathDistance);
         ignore = 0;
     }
-    steerForSeekKernelSingle(P(threadIdx.x), V(threadIdx.x), target, steeringVectors, ignore, blendFactor, options);
+    
+    steerForSeekKernelSingle(P(threadIdx.x), V(threadIdx.x), target, steeringVectors, ignore, weight, options);
 }
 
 __device__ void
-steerForSeekKernelSingle(float3 position, float3 velocity, float3 seekVector, float3 *steeringVectors, int ignore, float blendFactor, kernel_options options)
+steerForSeekKernelSingle(float3 position, float3 velocity, float3 seekVector, float3 *steeringVectors, int ignore, float weight, kernel_options options)
 {
     int id = (blockIdx.x * blockDim.x + threadIdx.x);
     int blockOffset = (blockDim.x * blockIdx.x * 3);
@@ -136,15 +137,17 @@ steerForSeekKernelSingle(float3 position, float3 velocity, float3 seekVector, fl
     
     __syncthreads();
     
-    // mix in wander behavior
+    // multiply by weight
+    S(threadIdx.x) = float3Mul(S(threadIdx.x), weight);
+    
     if ((options & IGNORE_UNLESS_ZERO) != 0
-        && steeringVectors[id].x != 0.f
-        && steeringVectors[id].z != 0.f)
+        && (steeringVectors[id].x != 0.f
+         || steeringVectors[id].y != 0.f
+         || steeringVectors[id].z != 0.f))
     {
         S(threadIdx.x) = steeringVectors[id];
-        
     } else {
-        S(threadIdx.x) = float3BlendIn(blendFactor, S(threadIdx.x), steeringVectors[id]);
+        S(threadIdx.x) = float3Add(S(threadIdx.x), steeringVectors[id]);
     }
     
     __syncthreads();

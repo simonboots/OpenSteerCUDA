@@ -124,7 +124,7 @@ class FollowPathPlugIn : public PlugIn
         
         const char* name (void) {return "FollowPath";}
         
-        float selectionOrderSortKey (void) {return 1.f;}
+        float selectionOrderSortKey (void) {return 1.5f;}
         
         const static int numOfAgents = 2048;
         const static int numOfObstacles = 2;

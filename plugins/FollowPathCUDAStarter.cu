@@ -10,9 +10,9 @@
 __global__ void
 steerToAvoidObstacles(VehicleData* vehicleData, VehicleConst* vehicleConst, float3 *steeringVectors, float weight, kernel_options options);
 __global__ void
-steerToFollowPathKernel(VehicleData *vehicleData, float3 *steeringVectors, int *direction, float predictionTime, float blendFactor, kernel_options options);
+steerToFollowPathKernel(VehicleData *vehicleData, float3 *steeringVectors, int *direction, float predictionTime, float weight, kernel_options options);
 __global__ void
-steerToStayOnPathKernel(VehicleData *vehicleData, float3 *steeringVectors, float predictionTime);
+steerToStayOnPathKernel(VehicleData *vehicleData, float3 *steeringVectors, float predictionTime, float weight, kernel_options options);
 
 __global__ void
 updateKernel(VehicleData *vehicleData, VehicleConst *vehicleConst, float3 *steeringVectors, float elapsedTime, kernel_options options);
@@ -52,10 +52,13 @@ void runFollowPathKernel(VehicleData *h_vehicleData, VehicleConst *h_vehicleCons
         cudaMemcpy(d_vehicleConst, h_vehicleConst, mem_size_vehicle_const, cudaMemcpyHostToDevice);
     }
     
+    const unsigned int mem_size_steering = sizeof(float3) * numOfVehicles;
+
     if (d_steeringVectors == NULL) {
-        const unsigned int mem_size_steering = sizeof(float3) * numOfVehicles;
         cudaMalloc((void **)&d_steeringVectors, mem_size_steering);
     }
+    
+    cudaMemset(d_steeringVectors, 0, mem_size_steering);
     
     if (d_directions == NULL) {
         const unsigned int mem_size_directions = sizeof(int) * numOfVehicles;
@@ -76,7 +79,7 @@ void runFollowPathKernel(VehicleData *h_vehicleData, VehicleConst *h_vehicleCons
     
     // start followPath kernel
     steerToFollowPathKernel<<<grid, threads>>>(d_vehicleData, d_steeringVectors, d_directions, 3.f, 1.f, IGNORE_UNLESS_ZERO);
-    //steerToStayOnPathKernel<<<grid, threads>>>(d_vehicleData, d_steeringVectors, 3.f);
+    //steerToStayOnPathKernel<<<grid, threads>>>(d_vehicleData, d_steeringVectors, 3.f, 1.f, IGNORE_UNLESS_ZERO);
     //CUT_CHECK_ERROR("steerToFollowPathKernel execution failed");
     
     // start update kernel
@@ -100,4 +103,6 @@ void endFollowPath(void)
     d_vehicleConst = NULL;
     d_steeringVectors = NULL;
     d_directions = NULL;
+    
+    first_run = 1;
 }

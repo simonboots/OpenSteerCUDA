@@ -20,7 +20,7 @@
 #endif
 
 __global__ void
-steerForTargetSpeedKernel(VehicleData *vehicleData, VehicleConst *vehicleConst, float *targetSpeeds, float3 *steeringVectors)
+steerForTargetSpeedKernel(VehicleData *vehicleData, VehicleConst *vehicleConst, float *targetSpeeds, float3 *steeringVectors, float weight, kernel_options options)
 {
     int id = (blockIdx.x * blockDim.x + threadIdx.x);
     int blockOffset = (blockDim.x * blockIdx.x * 3);
@@ -52,6 +52,22 @@ steerForTargetSpeedKernel(VehicleData *vehicleData, VehicleConst *vehicleConst, 
     F(threadIdx.x) = float3Mul(F(threadIdx.x), speedError);
     
     __syncthreads();
+    
+    // multiply by weight
+    F(threadIdx.x) = float3Mul(F(threadIdx.x), weight);
+    
+    if ((options & IGNORE_UNLESS_ZERO) != 0
+        && (steeringVectors[id].x != 0.f
+         || steeringVectors[id].y != 0.f
+         || steeringVectors[id].z != 0.f))
+    {
+        F(threadIdx.x) = steeringVectors[id];
+    } else {
+        F(threadIdx.x) = float3Add(F(threadIdx.x), steeringVectors[id]);
+    }
+    
+    __syncthreads();
+    
     
     // writing back to global memory (coalesced)
     ((float*)steeringVectors)[blockOffset + threadIdx.x] = F_F(threadIdx.x);

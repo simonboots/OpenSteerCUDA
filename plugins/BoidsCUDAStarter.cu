@@ -9,13 +9,13 @@ __global__ void
 findNeighborsKernel(VehicleData* vehicleData, int* indices, int* agents, NeighborData* neighbours, float radius);
 
 __global__ void
-steerForSeparationKernel(VehicleData *vehicleData, VehicleConst *vehicleConst, float3 *steeringVectors, float maxDistance, float cosMaxAngle, NeighborData* neighborData, float blendFactor, kernel_options options);
+steerForSeparationKernel(VehicleData *vehicleData, VehicleConst *vehicleConst, float3 *steeringVectors, float maxDistance, float cosMaxAngle, NeighborData* neighborData, float weight, kernel_options options);
 
 __global__ void
-steerForAlignmentKernel(VehicleData *vehicleData, VehicleConst *vehicleConst, float3 *steeringVectors, float maxDistance, float cosMaxAngle, NeighborData* neighborData, float blendFactor, kernel_options options);
+steerForAlignmentKernel(VehicleData *vehicleData, VehicleConst *vehicleConst, float3 *steeringVectors, float maxDistance, float cosMaxAngle, NeighborData* neighborData, float weight, kernel_options options);
 
 __global__ void
-steerForCohesionKernel(VehicleData *vehicleData, VehicleConst *vehicleConst, float3 *steeringVectors, float maxDistance, float cosMaxAngle, NeighborData* neighborData, float blendFactor, kernel_options options);
+steerForCohesionKernel(VehicleData *vehicleData, VehicleConst *vehicleConst, float3 *steeringVectors, float maxDistance, float cosMaxAngle, NeighborData* neighborData, float weight, kernel_options options);
 
 __global__ void
 updateKernel(VehicleData *vehicleData, VehicleConst *vehicleConst, float3 *steeringVectors, float elapsedTime, kernel_options options);
@@ -119,7 +119,7 @@ void runBoidsKernel(VehicleData *h_vehicleData, VehicleConst *h_vehicleConst, in
     //debugNeighbors(h_vehicleData, h_neighborData, numOfVehicles);
 
     // run steer for separation kernel
-    steerForSeparationKernel<<<grid, threads>>>(d_vehicleData, d_vehicleConst, d_steeringVectors, 5.f, -0.707f, d_neighborData, 1.f, NONE);
+    steerForSeparationKernel<<<grid, threads>>>(d_vehicleData, d_vehicleConst, d_steeringVectors, 5.f, -0.707f, d_neighborData, 5.f, NONE);
     
     
     CUT_SAFE_CALL(cutStopTimer(timer));
@@ -129,7 +129,7 @@ void runBoidsKernel(VehicleData *h_vehicleData, VehicleConst *h_vehicleConst, in
     CUT_SAFE_CALL(cutStartTimer(timer));
     
     // run steer for alignment kernel
-    steerForAlignmentKernel<<<grid, threads>>>(d_vehicleData, d_vehicleConst, d_steeringVectors, 7.5f, 0.7f, d_neighborData, 0.4f, NONE);
+    steerForAlignmentKernel<<<grid, threads>>>(d_vehicleData, d_vehicleConst, d_steeringVectors, 7.5f, 0.7f, d_neighborData, 8.f, NONE);
     
     CUT_SAFE_CALL(cutStopTimer(timer));
     printf("Raw processing time (steerForAlignment): %f (ms) \n", cutGetTimerValue(timer));
@@ -138,7 +138,7 @@ void runBoidsKernel(VehicleData *h_vehicleData, VehicleConst *h_vehicleConst, in
     CUT_SAFE_CALL(cutStartTimer(timer));
     
     // run steer for cohesion kernel
-    steerForCohesionKernel<<<grid, threads>>>(d_vehicleData, d_vehicleConst, d_steeringVectors, 9.f, -0.15f, d_neighborData, 0.285f, NONE);
+    steerForCohesionKernel<<<grid, threads>>>(d_vehicleData, d_vehicleConst, d_steeringVectors, 9.f, -0.15f, d_neighborData, 8.f, NONE);
     
     CUT_SAFE_CALL(cutStopTimer(timer));
     printf("Raw processing time (steerForCohesion): %f (ms) \n", cutGetTimerValue(timer));

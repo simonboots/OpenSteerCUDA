@@ -12,21 +12,17 @@
 #define CHECK_BANK_CONFLICTS 0
 #if CHECK_BANK_CONFLICTS
 #define V_F(i) (CUT_BANK_CHECKER(((float*)velocity), i))
-#define F_F(i) (CUT_BANK_CHECKER(((float*)forward), i))
 #define P_F(i) (CUT_BANK_CHECKER(((float*)position), i))
 #define S_F(i) (CUT_BANK_CHECKER(((float*)steering), i))
 #define V(i) (CUT_BANK_CHECKER(velocity, i))
-#define F(i) (CUT_BANK_CHECKER(forward, i))
 #define P(i) (CUT_BANK_CHECKER(position, i))
 #define S(i) (CUT_BANK_CHECKER(steering, i))
 #define SP(i) (CUT_BANK_CHECKER(speed, i))
 #else
 #define V_F(i) ((float*)velocity)[i]
-#define F_F(i) ((float*)forward)[i]
 #define P_F(i) ((float*)position)[i]
 #define S_F(i) ((float*)steering)[i]
 #define V(i) velocity[i]
-#define F(i) forward[i]
 #define P(i) position[i]
 #define S(i) steering[i]
 #define SP(i) speed[i]
@@ -36,10 +32,10 @@
 __constant__ PathwayData pathway;
 
 __device__ void
-steerForSeekKernelSingle(float3 position, float3 velocity, float3 seekVector, float3 *steeringVectors, int ignore);
+steerForSeekKernelSingle(float3 position, float3 velocity, float3 seekVector, float3 *steeringVectors, int ignore, float weight, kernel_options options);
 
 __global__ void
-steerToStayOnPathKernel(VehicleData *vehicleData, float3 *steeringVectors, float predictionTime)
+steerToStayOnPathKernel(VehicleData *vehicleData, float3 *steeringVectors, float predictionTime, float weight, kernel_options options)
 {    
     int id = (blockIdx.x * blockDim.x + threadIdx.x);
     int blockOffset = (blockDim.x * blockIdx.x * 3);
@@ -95,11 +91,11 @@ steerToStayOnPathKernel(VehicleData *vehicleData, float3 *steeringVectors, float
         ignore = 0;
     }
     
-    steerForSeekKernelSingle(P(threadIdx.x), V(threadIdx.x), target, steeringVectors, ignore);
+    steerForSeekKernelSingle(P(threadIdx.x), V(threadIdx.x), target, steeringVectors, ignore, weight, options);
 }
 
 __device__ void
-steerForSeekKernelSingle(float3 position, float3 velocity, float3 seekVector, float3 *steeringVectors, int ignore)
+steerForSeekKernelSingle(float3 position, float3 velocity, float3 seekVector, float3 *steeringVectors, int ignore, float weight, kernel_options options)
 {
     int id = (blockIdx.x * blockDim.x + threadIdx.x);
     int blockOffset = (blockDim.x * blockIdx.x * 3);
@@ -115,6 +111,21 @@ steerForSeekKernelSingle(float3 position, float3 velocity, float3 seekVector, fl
         S(threadIdx.x).x = seekVector.x;
         S(threadIdx.x).y = seekVector.y;
         S(threadIdx.x).z = seekVector.z;
+    }
+    
+    __syncthreads();
+    
+    // multiply by weight
+    S(threadIdx.x) = float3Mul(S(threadIdx.x), weight);
+    
+    if ((options & IGNORE_UNLESS_ZERO) != 0
+        && (steeringVectors[id].x != 0.f
+         || steeringVectors[id].y != 0.f
+         || steeringVectors[id].z != 0.f))
+    {
+        S(threadIdx.x) = steeringVectors[id];
+    } else {
+        S(threadIdx.x) = float3Add(S(threadIdx.x), steeringVectors[id]);
     }
     
     __syncthreads();

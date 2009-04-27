@@ -126,7 +126,7 @@ class FollowPathCUDAPlugIn : public PlugIn
         
         const char* name (void) {return "FollowPath CUDA";}
         
-        float selectionOrderSortKey (void) {return 1.5f;}
+        float selectionOrderSortKey (void) {return 2.f;}
         
         const static int numOfAgents = 2048;
         const static int numOfObstacles = 2;

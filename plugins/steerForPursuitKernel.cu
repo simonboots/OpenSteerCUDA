@@ -30,13 +30,13 @@
 
 // prototype
 __device__ void
-steerForSeekKernelSingle(float3 position, float3 velocity, float3 seekVector, float3 *steeringVectors);
+steerForSeekKernelSingle(float3 position, float3 velocity, float3 seekVector, float3 *steeringVectors, float weight, kernel_options options);
 
 // constant memory (timeFactorTable)
 __constant__ float timeFactorTable[9];
 
 __global__ void
-steerForPursuitKernel(VehicleData *vehicleData, float3 wandererPosition, float3 wandererVelocity, float3 *steeringVectors, float maxPredictionTime)
+steerForPursuitKernel(VehicleData *vehicleData, float3 wandererPosition, float3 wandererVelocity, float3 *steeringVectors, float maxPredictionTime, float weight, kernel_options options)
 {
     int id = (blockIdx.x * blockDim.x + threadIdx.x);
     int blockOffset = (blockDim.x * blockIdx.x * 3);
@@ -102,18 +102,12 @@ steerForPursuitKernel(VehicleData *vehicleData, float3 wandererPosition, float3 
     
     // estimated position of quarry at intercept
     float3 target = float3PredictFuturePosition(wandererPosition, wandererVelocity, etl);
-
     
-    // annotation
-//    annotationLine (position(),
-//                    target,
-//                    gaudyPursuitAnnotation ? color : gGray40);
-    
-    steerForSeekKernelSingle(P(threadIdx.x), V(threadIdx.x), target, steeringVectors);
+    steerForSeekKernelSingle(P(threadIdx.x), V(threadIdx.x), target, steeringVectors, weight, options);
 }
 
 __device__ void
-steerForSeekKernelSingle(float3 position, float3 velocity, float3 seekVector, float3 *steeringVectors)
+steerForSeekKernelSingle(float3 position, float3 velocity, float3 seekVector, float3 *steeringVectors, float weight, kernel_options options)
 {
     int id = (blockIdx.x * blockDim.x + threadIdx.x);
     int blockOffset = (blockDim.x * blockIdx.x * 3);
@@ -127,6 +121,21 @@ steerForSeekKernelSingle(float3 position, float3 velocity, float3 seekVector, fl
     
     __syncthreads();
     
+    // multiply by weight
+    S(threadIdx.x) = float3Mul(S(threadIdx.x), weight);
+    
+    if ((options & IGNORE_UNLESS_ZERO) != 0
+        && (steeringVectors[id].x != 0.f
+         || steeringVectors[id].y != 0.f
+         || steeringVectors[id].z != 0.f))
+    {
+        S(threadIdx.x) = steeringVectors[id];
+    } else {
+        S(threadIdx.x) = float3Add(S(threadIdx.x), steeringVectors[id]);
+    }  
+    
+    __syncthreads();
+        
     ((float*)steeringVectors)[blockOffset + threadIdx.x] = S_F(threadIdx.x);
     ((float*)steeringVectors)[blockOffset + threadIdx.x + blockDim.x] = S_F(threadIdx.x + blockDim.x);
     ((float*)steeringVectors)[blockOffset + threadIdx.x + 2*blockDim.x] = S_F(threadIdx.x + 2*blockDim.x);
