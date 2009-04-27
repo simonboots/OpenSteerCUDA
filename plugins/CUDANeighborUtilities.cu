@@ -130,4 +130,46 @@ sphericalWrapAround (float3 myPosition, float3 center)
         return myPosition;
 }
 
+__device__ float
+predictNearestApproachTime(VehicleData *vehicleData, int myID, int neighborID)
+{
+    // imagine we are at the origin with no velocity,
+    // compute the relative velocity of the other vehicle
+    float3 myVelocity = float3Mul((*vehicleData).forward[myID], (*vehicleData).speed[myID]);
+    float3 otherVelocity = float3Mul((*vehicleData).forward[neighborID], (*vehicleData).speed[neighborID]);
+    float3 relVelocity = float3Sub(otherVelocity, myVelocity);
+    float relSpeed = float3Length(relVelocity);
+    
+    // for parallel paths, the vehicles will always be at the same distance,
+    // so return 0 (aka "now") since "there is no time like the present"
+    if (relSpeed == 0) return 0;
+    
+    // Now consider the path of the other vehicle in this relative
+    // space, a line defined by the relative position and velocity.
+    // The distance from the origin (our vehicle) to that line is
+    // the nearest approach.
+    
+    // Take the unit tangent along the other vehicle's path
+    float3 relTangent = float3Div(relVelocity, relSpeed);
+    
+    // find distance from its path to origin (compute offset from
+    // other to us, find length of projection onto path)
+    float3 relPosition = float3Sub((*vehicleData).position[myID], (*vehicleData).position[neighborID]);
+    float projection = float3Dot(relTangent, relPosition);
+    
+    return projection / relSpeed;
+}
+
+__device__ float
+computeNearestApproachPositions(VehicleData *vehicleData, int myID, int neighborID, float time, float3 *threatPositionAtNearestApproach)
+{
+    float3 myTravel = float3Mul((*vehicleData).forward[myID], (*vehicleData).speed[myID] * time);
+    float3 otherTravel = float3Mul((*vehicleData).forward[neighborID], (*vehicleData).speed[neighborID] * time);
+    
+    float3 myFinal = float3Add((*vehicleData).position[myID], myTravel);
+    float3 otherFinal = float3Add((*vehicleData).position[neighborID], otherTravel);
+    
+    return float3Distance(myFinal, otherFinal);
+}
+
 #endif // _CUDA_NEIGHBOR_UTILITIES_CU_

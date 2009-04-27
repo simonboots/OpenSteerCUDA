@@ -35,7 +35,9 @@
 		1C9C36A20F94872900F4A359 /* FollowPathCUDA.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1C9C36A10F94872900F4A359 /* FollowPathCUDA.cpp */; };
 		1C9C36EB0F948BD500F4A359 /* PathwayDataFunc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1C9C36EA0F948BD500F4A359 /* PathwayDataFunc.cpp */; };
 		1CA02A130F8D188100D03331 /* WanderAround.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1CA02A120F8D188100D03331 /* WanderAround.cpp */; };
+		1CA4556F0FA5EC15003AC8B3 /* steerToAvoidNeighbors.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1CA7B0130FA5B762004E76BF /* steerToAvoidNeighbors.cu */; };
 		1CA56BDF0F824EF800819A74 /* SimpleVehicleMB.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1CA56BDE0F824EF800819A74 /* SimpleVehicleMB.cpp */; };
+		1CA7B0970FA5DE99004E76BF /* steerToAvoidCloseNeighbors.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1CA7B00D0FA5AD0F004E76BF /* steerToAvoidCloseNeighbors.cu */; };
 		1CBD02870F728D4800DEE3E8 /* libcutil.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1CBD02860F728D4800DEE3E8 /* libcutil.a */; };
 		1CC8D5FC0F8DC64B006CEA94 /* WanderAroundCUDA.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1CC8D5FB0F8DC64B006CEA94 /* WanderAroundCUDA.cpp */; };
 		1CC8D61A0F8DD037006CEA94 /* WanderAroundCUDAStarter.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1CC8D6060F8DC8D9006CEA94 /* WanderAroundCUDAStarter.cu */; };
@@ -124,6 +126,8 @@
 		1CA56B4B0F82266200819A74 /* VehicleData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VehicleData.h; sourceTree = "<group>"; };
 		1CA56BDD0F824EF800819A74 /* SimpleVehicleMB.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SimpleVehicleMB.h; sourceTree = "<group>"; };
 		1CA56BDE0F824EF800819A74 /* SimpleVehicleMB.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SimpleVehicleMB.cpp; sourceTree = "<group>"; };
+		1CA7B00D0FA5AD0F004E76BF /* steerToAvoidCloseNeighbors.cu */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 4; name = steerToAvoidCloseNeighbors.cu; path = ../plugins/steerToAvoidCloseNeighbors.cu; sourceTree = SOURCE_ROOT; };
+		1CA7B0130FA5B762004E76BF /* steerToAvoidNeighbors.cu */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 4; name = steerToAvoidNeighbors.cu; path = ../plugins/steerToAvoidNeighbors.cu; sourceTree = SOURCE_ROOT; };
 		1CBD02080F72795400DEE3E8 /* PolonaiseCUDA.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PolonaiseCUDA.cpp; sourceTree = "<group>"; };
 		1CBD023E0F72876D00DEE3E8 /* PolonaiseCUDAStarter.cu */ = {isa = PBXFileReference; explicitFileType = sourcecode.c; fileEncoding = 4; path = PolonaiseCUDAStarter.cu; sourceTree = "<group>"; };
 		1CBD02860F728D4800DEE3E8 /* libcutil.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libcutil.a; path = CUDA/lib/libcutil.a; sourceTree = SYSTEM_DEVELOPER_DIR; };
@@ -246,6 +250,8 @@
 				1C9119700F9CDB3900941CFC /* steerForSeparation.cu */,
 				1C1B66130F9DD2FD002C5E0C /* steerForAlignment.cu */,
 				1C1B66170F9DD4CC002C5E0C /* steerForCohesion.cu */,
+				1CA7B00D0FA5AD0F004E76BF /* steerToAvoidCloseNeighbors.cu */,
+				1CA7B0130FA5B762004E76BF /* steerToAvoidNeighbors.cu */,
 			);
 			name = Kernels;
 			sourceTree = "<group>";
@@ -530,6 +536,8 @@
 				1C356C8C0F9F46D90079E377 /* steerForSeparation.cu in Sources */,
 				1C356C8D0F9F46DD0079E377 /* steerForAlignment.cu in Sources */,
 				1C356C8E0F9F46E10079E377 /* steerForCohesion.cu in Sources */,
+				1CA7B0970FA5DE99004E76BF /* steerToAvoidCloseNeighbors.cu in Sources */,
+				1CA4556F0FA5EC15003AC8B3 /* steerToAvoidNeighbors.cu in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

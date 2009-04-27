@@ -45,7 +45,7 @@ __constant__ ObstacleData d_obstacles[MAX_OBSTACLES];
 __constant__ int d_numOfObstacles;
 
 __global__ void
-steerToAvoidObstacles(VehicleData* vehicleData, VehicleConst* vehicleConst, float3 *steeringVectors)
+steerToAvoidObstacles(VehicleData* vehicleData, VehicleConst* vehicleConst, float3 *steeringVectors, float weight, kernel_options options)
 {
     int id = (blockIdx.x * blockDim.x + threadIdx.x);
     int blockOffset = (blockDim.x * blockIdx.x * 3);
@@ -118,6 +118,19 @@ steerToAvoidObstacles(VehicleData* vehicleData, VehicleConst* vehicleConst, floa
         A(threadIdx.x) = float3Normalize(A(threadIdx.x));
         A(threadIdx.x) = float3Mul(A(threadIdx.x), (*vehicleConst).maxForce[id]);
         A(threadIdx.x) = float3Add(A(threadIdx.x), float3Mul((*vehicleData).forward[id], (*vehicleConst).maxForce[id] * 0.75));
+    }
+    
+    __syncthreads();
+    
+    // multiply by weight
+    A(threadIdx.x) = float3Mul(A(threadIdx.x), weight);
+    
+    if ((options & IGNORE_UNLESS_ZERO) != 0
+        && (steeringVectors[id].x != 0.f
+        || steeringVectors[id].y != 0.f
+        || steeringVectors[id].z != 0.f))
+    {
+        A(threadIdx.x) = steeringVectors[id];
     }
     
     __syncthreads();

@@ -8,7 +8,7 @@
 
 
 __global__ void
-steerToAvoidObstacles(VehicleData* vehicleData, VehicleConst* vehicleConst, float3 *steeringVectors);
+steerToAvoidObstacles(VehicleData* vehicleData, VehicleConst* vehicleConst, float3 *steeringVectors, float weight, kernel_options options);
 __global__ void
 steerToFollowPathKernel(VehicleData *vehicleData, float3 *steeringVectors, int *direction, float predictionTime, float blendFactor, kernel_options options);
 __global__ void
@@ -72,7 +72,7 @@ void runFollowPathKernel(VehicleData *h_vehicleData, VehicleConst *h_vehicleCons
     }
     
     // start avoidObstacle kernel
-    steerToAvoidObstacles<<<grid, threads>>>(d_vehicleData, d_vehicleConst, d_steeringVectors);
+    steerToAvoidObstacles<<<grid, threads>>>(d_vehicleData, d_vehicleConst, d_steeringVectors, 1.f, NONE);
     
     // start followPath kernel
     steerToFollowPathKernel<<<grid, threads>>>(d_vehicleData, d_steeringVectors, d_directions, 3.f, 1.f, IGNORE_UNLESS_ZERO);
