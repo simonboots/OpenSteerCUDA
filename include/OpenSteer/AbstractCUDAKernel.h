@@ -1,16 +1,38 @@
 #ifndef _ABSTRACT_CUDA_KERNEL_H_
 #define _ABSTRACT_CUDA_KERNEL_H_
 
+#include <cuda_runtime.h>
+
 namespace OpenSteer
 {
+    class CUDAPlugIn;
+
     class AbstractCUDAKernel
         {
         public:
-            AbstractCUDAKernel();
-            ~AbstractCUDAKernel();
-            virtual void init() = 0;
-            virtual void run() = 0;
-            virtual void reset() = 0;
+            virtual void init(void) = 0;
+            virtual void run(void) = 0;
+            virtual void reset(void) = 0;
+            virtual void close(void) = 0;
+            
+            virtual dim3 gridDim(void) {
+                return dim3(getNumberOfAgents()/threadsPerBlock);
+                        
+            }
+            
+            virtual dim3 blockDim(void) {
+                return dim3(threadsPerBlock);
+            }
+            
+            int getNumberOfAgents(void);
+            
+            void setPlugIn(CUDAPlugIn* plugin) {
+                this->cudaplugin = plugin;
+            }
+            
+        protected:
+            CUDAPlugIn *cudaplugin;
+            int threadsPerBlock;
         };
 
 } // namespace
