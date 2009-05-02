@@ -2,8 +2,8 @@
 #define _STEER_TO_AVOID_CLOSE_NEIGHBORS_CU_
 
 #include <cuda_runtime.h>
-#include "VehicleData.h"
-#include "NeighborData.h"
+#include "OpenSteer/VehicleData.h"
+#include "OpenSteer/NeighborData.h"
 #include "CUDAKernelOptions.cu"
 #include "CUDAVectorUtilities.cu"
 

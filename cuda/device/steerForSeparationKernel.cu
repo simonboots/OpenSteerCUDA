@@ -5,8 +5,8 @@
 #include <cutil.h>
 #include "CUDAVectorUtilities.cu"
 #include "CUDANeighborUtilities.cu"
-#include "VehicleData.h"
-#include "NeighborData.h"
+#include "OpenSteer/VehicleData.h"
+#include "OpenSteer/NeighborData.h"
 #include "CUDAKernelOptions.cu"
 
 #define CHECK_BANK_CONFLICTS 0

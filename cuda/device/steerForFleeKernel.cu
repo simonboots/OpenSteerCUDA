@@ -1,7 +1,7 @@
 #ifndef _STEER_FOR_FLEE_KERNEL_CU_
 #define _STEER_FOR_FLEE_KERNEL_CU_
 
-#include "VehicleData.h"
+#include "OpenSteer/VehicleData.h"
 #include "CUDAVectorUtilities.cu"
 #include "CUDAKernelOptions.cu"
 

@@ -1,8 +1,8 @@
 #ifndef _FIND_NEIGHBORS_KERNEL_CU_
 #define _FIND_NEIGHBORS_KERNEL_CU_
 
-#include "VehicleData.h"
-#include "NeighborData.h"
+#include "OpenSteer/VehicleData.h"
+#include "OpenSteer/NeighborData.h"
 #include "CUDANeighborUtilities.cu"
 #include "CUDAKernelOptions.cu"
 #include <stdio.h>

@@ -1,8 +1,8 @@
 #include <cuda_runtime.h>
 #include <cutil.h>
 #include <stdio.h>
-#include "VehicleData.h"
-#include "RandomizedVector.h"
+#include "OpenSteer/VehicleData.h"
+#include "OpenSteer/RandomizedVector.h"
 #include "CUDAKernelOptions.cu"
 
 __global__ __device__ void

@@ -1,7 +1,7 @@
 #include <cuda_runtime.h>
 #include <cutil.h>
 #include <stdio.h>
-#include "VehicleData.h"
+#include "OpenSteer/VehicleData.h"
 #include "CUDAKernelOptions.cu"
 
 __global__ void

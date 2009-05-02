@@ -41,7 +41,7 @@
 		1CBD02870F728D4800DEE3E8 /* libcutil.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1CBD02860F728D4800DEE3E8 /* libcutil.a */; };
 		1CC033B70FA71E6C00104572 /* steerForWanderKernel.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1C18EDEA0F7BC6BF00100C21 /* steerForWanderKernel.cu */; };
 		1CC034120FA725A100104572 /* CUDAPlugIn.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1CC0333F0FA70F9D00104572 /* CUDAPlugIn.cpp */; };
-		1CC034990FA7335F00104572 /* SteerForWanderKernel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1CC034980FA7335F00104572 /* SteerForWanderKernel.cpp */; };
+		1CC034990FA7335F00104572 /* SteerForWander.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1CC034980FA7335F00104572 /* SteerForWander.cu */; };
 		1CC034D40FA73C7500104572 /* AbstractCUDAKernel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1CC034D30FA73C7500104572 /* AbstractCUDAKernel.cpp */; };
 		1CC8D5FC0F8DC64B006CEA94 /* WanderAroundCUDA.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1CC8D5FB0F8DC64B006CEA94 /* WanderAroundCUDA.cpp */; };
 		1CC8D61A0F8DD037006CEA94 /* WanderAroundCUDAStarter.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1CC8D6060F8DC8D9006CEA94 /* WanderAroundCUDAStarter.cu */; };
@@ -86,7 +86,7 @@
 			outputFiles = (
 				"$(DERIVED_FILES_DIR)/$(INPUT_FILE_BASE).o",
 			);
-			script = "if [ \"${CONFIGURATION}\" == \"Development\" ]; then\n\tFLAGS=\"-g --device-emulation -D_DEBUG\"\nelif [ \"${CONFIGURATION}\" == \"DevelopmentWithGPU\" ]; then\n\tFLAGS=\"-g\"\nelse\n\tFLAGS=\"-O3\"\nfi\n\n/usr/local/cuda/bin/nvcc $FLAGS -c ${INPUT_FILE_PATH} -o ${DERIVED_FILES_DIR}/${INPUT_FILE_BASE}.o -DNVCC -I/usr/local/cuda/include/ -I/Developer/CUDA/common/inc -I${INPUT_FILE_DIR}/../../include/OpenSteer/ -I${INPUT_FILE_DIR}/../../include/ -I${INPUT_FILE_DIR}/../include/OpenSteer/ -I${INPUT_FILE_DIR}/../include/ -I${INPUT_FILE_DIR}/../cuda/device/ --ptxas-options=\"-v\"";
+			script = "if [ \"${CONFIGURATION}\" == \"Development\" ]; then\n\tFLAGS=\"-g --device-emulation -D_DEBUG\"\nelif [ \"${CONFIGURATION}\" == \"DevelopmentWithGPU\" ]; then\n\tFLAGS=\"-g\"\nelse\n\tFLAGS=\"-O3\"\nfi\n\n/usr/local/cuda/bin/nvcc $FLAGS -c ${INPUT_FILE_PATH} -o ${DERIVED_FILES_DIR}/${INPUT_FILE_BASE}.o -DNVCC -I${PROJECT_DIR}/../include/ -I${PROJECT_DIR}/../cuda/device -I/usr/local/cuda/include/ -I/Developer/CUDA/common/inc --ptxas-options=\"-v\"";
 		};
 /* End PBXBuildRule section */
 
@@ -136,8 +136,8 @@
 		1CBD02860F728D4800DEE3E8 /* libcutil.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libcutil.a; path = CUDA/lib/libcutil.a; sourceTree = SYSTEM_DEVELOPER_DIR; };
 		1CC0331A0FA7023100104572 /* CUDAPlugIn.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUDAPlugIn.h; sourceTree = "<group>"; };
 		1CC0333F0FA70F9D00104572 /* CUDAPlugIn.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUDAPlugIn.cpp; sourceTree = "<group>"; };
-		1CC034980FA7335F00104572 /* SteerForWanderKernel.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = SteerForWanderKernel.cpp; path = ../cuda/host/SteerForWanderKernel.cpp; sourceTree = "<group>"; };
-		1CC0349A0FA7338400104572 /* SteerForWanderKernel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SteerForWanderKernel.h; path = ../cuda/host/SteerForWanderKernel.h; sourceTree = "<group>"; };
+		1CC034980FA7335F00104572 /* SteerForWander.cu */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = SteerForWander.cu; path = ../cuda/host/SteerForWander.cu; sourceTree = "<group>"; };
+		1CC0349A0FA7338400104572 /* SteerForWander.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SteerForWander.h; path = ../cuda/host/SteerForWander.h; sourceTree = "<group>"; };
 		1CC034D30FA73C7500104572 /* AbstractCUDAKernel.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AbstractCUDAKernel.cpp; sourceTree = "<group>"; };
 		1CC8D5FB0F8DC64B006CEA94 /* WanderAroundCUDA.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = WanderAroundCUDA.cpp; sourceTree = "<group>"; };
 		1CC8D6060F8DC8D9006CEA94 /* WanderAroundCUDAStarter.cu */ = {isa = PBXFileReference; explicitFileType = sourcecode.c; fileEncoding = 4; path = WanderAroundCUDAStarter.cu; sourceTree = "<group>"; };
@@ -281,8 +281,8 @@
 		1CC033A60FA71B4D00104572 /* Host Code */ = {
 			isa = PBXGroup;
 			children = (
-				1CC034980FA7335F00104572 /* SteerForWanderKernel.cpp */,
-				1CC0349A0FA7338400104572 /* SteerForWanderKernel.h */,
+				1CC034980FA7335F00104572 /* SteerForWander.cu */,
+				1CC0349A0FA7338400104572 /* SteerForWander.h */,
 			);
 			name = "Host Code";
 			sourceTree = "<group>";
@@ -568,7 +568,7 @@
 				1CA4556F0FA5EC15003AC8B3 /* steerToAvoidNeighborsKernel.cu in Sources */,
 				1CC033B70FA71E6C00104572 /* steerForWanderKernel.cu in Sources */,
 				1CC034120FA725A100104572 /* CUDAPlugIn.cpp in Sources */,
-				1CC034990FA7335F00104572 /* SteerForWanderKernel.cpp in Sources */,
+				1CC034990FA7335F00104572 /* SteerForWander.cu in Sources */,
 				1CC034D40FA73C7500104572 /* AbstractCUDAKernel.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

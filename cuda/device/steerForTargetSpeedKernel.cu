@@ -3,7 +3,7 @@
 
 #include <cutil.h>
 #include "CUDAVectorUtilities.cu"
-#include "VehicleData.h"
+#include "OpenSteer/VehicleData.h"
 #include "CUDAKernelOptions.cu"
 
 #define CHECK_BANK_CONFLICTS 1

@@ -2,7 +2,7 @@
 #define _UPDATE_KERNEL_CU_
 
 #include <cutil.h>
-#include "VehicleData.h"
+#include "OpenSteer/VehicleData.h"
 #include "CUDAVectorUtilities.cu"
 #include "CUDANeighborUtilities.cu"
 #include "CUDAKernelOptions.cu"

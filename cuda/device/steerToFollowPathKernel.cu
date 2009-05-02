@@ -2,8 +2,8 @@
 #define _STEER_TO_FOLLOW_PATH_H_
 
 #include <cutil.h>
-#include "VehicleData.h"
-#include "PathwayData.h"
+#include "OpenSteer/VehicleData.h"
+#include "OpenSteer/PathwayData.h"
 #include "CUDAFloatUtilities.cu"
 #include "CUDAVectorUtilities.cu"
 #include "CUDAPathwayUtilities.cu"

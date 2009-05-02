@@ -1,7 +1,7 @@
 #ifndef _FIND_FOLLOWER_KERNEL_CU_
 #define _FIND_FOLLOWER_KERNEL_CU_
 
-#include "VehicleData.h"
+#include "OpenSteer/VehicleData.h"
 
 __global__ void
 findFollowerKernel(VehicleData *vehicleData, float3 *seekVectors)

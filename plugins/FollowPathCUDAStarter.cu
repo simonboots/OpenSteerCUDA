@@ -1,9 +1,9 @@
 #include <cuda_runtime.h>
 #include <cutil.h>
 #include <stdio.h>
-#include "VehicleData.h"
-#include "PathwayData.h"
-#include "ObstacleData.h"
+#include "OpenSteer/VehicleData.h"
+#include "OpenSteer/PathwayData.h"
+#include "OpenSteer/ObstacleData.h"
 #include "CUDAKernelOptions.cu"
 
 

@@ -2,7 +2,7 @@
 #define _STEER_FOR_WANDER_KERNEL_CU_
 
 #include <cutil.h>
-#include "VehicleData.h"
+#include "OpenSteer/VehicleData.h"
 #include "CUDAFloatUtilities.cu"
 #include "CUDAVectorUtilities.cu"
 #include "CUDAKernelOptions.cu"
@@ -27,7 +27,7 @@
 __device__ float
 scalarRandomWalk(float initial, float walkspeed, float min, float max, float random);
 
-__global__ __device__ void
+__global__ void
 steerForWander2DKernel(VehicleData *vehicleData, float *random, float dt, float3 *steeringVectors, float2 *wanderData, float weight, kernel_options options)
 {
     int id = (blockIdx.x * blockDim.x + threadIdx.x);

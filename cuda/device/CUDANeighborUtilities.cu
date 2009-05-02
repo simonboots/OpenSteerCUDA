@@ -1,8 +1,8 @@
 #ifndef _CUDA_NEIGHBOR_UTILITIES_CU_
 #define _CUDA_NEIGHBOR_UTILITIES_CU_
 
-#include "NeighborData.h"
-#include "VehicleData.h"
+#include "OpenSteer/NeighborData.h"
+#include "OpenSteer/VehicleData.h"
 #include "CUDAVectorUtilities.cu"
 #include <stdio.h>
 

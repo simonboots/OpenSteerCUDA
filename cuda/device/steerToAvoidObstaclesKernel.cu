@@ -2,8 +2,8 @@
 #define _STEER_TO_AVOID_OBSTACLES_
 
 #include <cutil.h>
-#include "VehicleData.h"
-#include "ObstacleData.h"
+#include "OpenSteer/VehicleData.h"
+#include "OpenSteer/ObstacleData.h"
 #include "CUDAFloatUtilities.cu"
 #include "CUDAVectorUtilities.cu"
 #include "CUDAKernelOptions.cu"

@@ -2,6 +2,7 @@
 #define _ABSTRACT_CUDA_KERNEL_H_
 
 #include <cuda_runtime.h>
+#include "OpenSteer/VehicleData.h"
 
 namespace OpenSteer
 {
@@ -25,6 +26,9 @@ namespace OpenSteer
             }
             
             int getNumberOfAgents(void);
+            VehicleData* getVehicleData(void);
+            VehicleConst* getVehicleConst(void);
+            float3* getSteeringVectors(void);
             
             void setPlugIn(CUDAPlugIn* plugin) {
                 this->cudaplugin = plugin;

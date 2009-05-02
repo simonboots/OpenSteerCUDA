@@ -39,7 +39,6 @@
 #include <sstream>
 #include "OpenSteer/SimpleVehicleMB.h"
 #include "OpenSteer/OpenSteerDemo.h"
-#include "OpenSteer/Proximity.h"
 #include "OpenSteer/Grid.h"
 
 
@@ -53,10 +52,6 @@ using namespace OpenSteer;
 void runBoidsKernel(VehicleData *h_vehicleData, VehicleConst *h_vehicleConst, int numOfVehicles, int* h_neighborIndices, int numOfNIndices, int* h_neighborAgents, int numOfNAgents, float elapsedTime);
 void endBoids(void);
 
-typedef OpenSteer::AbstractProximityDatabase<AbstractVehicle*> ProximityDatabase;
-typedef OpenSteer::AbstractTokenForProximityDatabase<AbstractVehicle*> ProximityToken;
-
-
 // ----------------------------------------------------------------------------
 
 
@@ -69,23 +64,15 @@ public:
     
     
     // constructor
-    BoidCUDA (ProximityDatabase& pd)
+    BoidCUDA ()
     {
-        // allocate a token for this boid in the proximity database
-        proximityToken = NULL;
-        newPD (pd);
-        
         // reset all boid state
         reset ();
     }
     
     
     // destructor
-    ~BoidCUDA ()
-    {
-        // delete this boid's token in the proximity database
-        delete proximityToken;
-    }
+    ~BoidCUDA () {}
     
     
     // reset state
@@ -108,9 +95,6 @@ public:
         
         // randomize initial position
         setPosition (RandomVectorInUnitRadiusSphere () * 20);
-        
-        // notify proximity database that our position has changed
-        proximityToken->updateForNewPosition (position());
     }
     
     
@@ -120,126 +104,6 @@ public:
         drawBasic3dSphericalVehicle (*this, gGray70);
         // drawTrail ();
     }
-    
-    
-    // per frame simulation update
-    void update (const float currentTime, const float elapsedTime)
-    {
-        // steer to flock and perhaps to stay within the spherical boundary
-        //applySteeringForce (steerToFlock () + handleBoundary(), elapsedTime);
-        
-        // notify proximity database that our position has changed
-        //proximityToken->updateForNewPosition (position());
-    }
-    
-    
-    // basic flocking
-    Vec3 steerToFlock (void)
-    {
-        const float separationRadius =  5.0f;
-        const float separationAngle  = -0.707f;
-        const float separationWeight =  12.0f;
-        
-        const float alignmentRadius = 7.5f;
-        const float alignmentAngle  = 0.7f;
-        const float alignmentWeight = 8.0f;
-        
-        const float cohesionRadius = 9.0f;
-        const float cohesionAngle  = -0.15f;
-        const float cohesionWeight = 8.0f;
-        
-        const float maxRadius = maxXXX (separationRadius,
-                                        maxXXX (alignmentRadius,
-                                                cohesionRadius));
-        
-        // find all flockmates within maxRadius using proximity database
-        neighbors.clear();
-        proximityToken->findNeighbors (position(), maxRadius, neighbors);
-        
-        // determine each of the three component behaviors of flocking
-        const Vec3 separation = steerForSeparation (separationRadius,
-                                                    separationAngle,
-                                                    neighbors);
-        const Vec3 alignment  = steerForAlignment  (alignmentRadius,
-                                                    alignmentAngle,
-                                                    neighbors);
-        const Vec3 cohesion   = steerForCohesion   (cohesionRadius,
-                                                    cohesionAngle,
-                                                    neighbors);
-        
-        // apply weights to components (save in variables for annotation)
-        const Vec3 separationW = separation * separationWeight;
-        const Vec3 alignmentW = alignment * alignmentWeight;
-        const Vec3 cohesionW = cohesion * cohesionWeight;
-        
-        // annotation
-        // const float s = 0.1;
-        // annotationLine (position, position + (separationW * s), gRed);
-        // annotationLine (position, position + (alignmentW  * s), gOrange);
-        // annotationLine (position, position + (cohesionW   * s), gYellow);
-        
-        return separationW + alignmentW + cohesionW;
-    }
-    
-    
-    // Take action to stay within sphereical boundary.  Returns steering
-    // value (which is normally zero) and may take other side-effecting
-    // actions such as kinematically changing the Boid's position.
-    Vec3 handleBoundary (void)
-    {
-        // while inside the sphere do noting
-        if (position().length() < worldRadius) return Vec3::zero;
-        
-        // once outside, select strategy
-        switch (boundaryCondition)
-        {
-            case 0:
-            {
-                // steer back when outside
-                const Vec3 seek = xxxsteerForSeek (Vec3::zero);
-                const Vec3 lateral = seek.perpendicularComponent (forward ());
-                return lateral;
-            }
-            case 1:
-            {
-                // wrap around (teleport)
-                setPosition (position().sphericalWrapAround (Vec3::zero,
-                                                             worldRadius));
-                return Vec3::zero;
-            }
-        }
-        return Vec3::zero; // should not reach here
-    }
-    
-    
-    // make boids "bank" as they fly
-    void regenerateLocalSpace (const Vec3& newVelocity,
-                               const float elapsedTime)
-    {
-        regenerateLocalSpaceForBanking (newVelocity, elapsedTime);
-    }
-    
-    // switch to new proximity database -- just for demo purposes
-    void newPD (ProximityDatabase& pd)
-    {
-        // delete this boid's token in the old proximity database
-        delete proximityToken;
-        
-        // allocate a token for this boid in the proximity database
-        proximityToken = pd.allocateToken (this);
-    }
-    
-    
-    // cycle through various boundary conditions
-    static void nextBoundaryCondition (void)
-    {
-        const int max = 2;
-        boundaryCondition = (boundaryCondition + 1) % max;
-    }
-    static int boundaryCondition;
-    
-    // a pointer to this boid's interface object for the proximity database
-    ProximityToken* proximityToken;
     
     // allocate one and share amoung instances just to save memory usage
     // (change to per-instance allocation to be more MP-safe)
@@ -251,8 +115,6 @@ public:
 
 AVGroup BoidCUDA::neighbors;
 float BoidCUDA::worldRadius = 50.0f;
-int BoidCUDA::boundaryCondition = 0;
-
 
 // ----------------------------------------------------------------------------
 // PlugIn for OpenSteerDemo
@@ -274,10 +136,6 @@ class BoidsCUDAPlugIn : public PlugIn
         
         void open (void)
         {
-            // make the database used to accelerate proximity queries
-            cyclePD = -1;
-            getPD ();
-            
             // make default-sized flock
             population = 0;
             for (int i = 0; i < numOfAgents; i++) addBoidToFlock ();
@@ -337,10 +195,6 @@ class BoidsCUDAPlugIn : public PlugIn
             // delete each member of the flock
             while (population > 0) removeBoidFromFlock ();
             
-            // delete the proximity database
-            delete pd;
-            pd = NULL;
-            
             endBoids();
             
             delete grid;
@@ -361,31 +215,10 @@ class BoidsCUDAPlugIn : public PlugIn
             OpenSteerDemo::camera.doNotSmoothNextMove ();
         }
         
-        // for purposes of demonstration, allow cycling through various
-        // types of proximity databases.  this routine is called when the
-        // OpenSteerDemo user pushes a function key.
-        void getPD (void)
-        {
-            // save pointer to old PD
-            ProximityDatabase* oldPD = pd;
-            
-            const Vec3 center;
-            const float div = 10.0f;
-            const Vec3 divisions (div, div, div);
-            const float diameter = BoidCUDA::worldRadius * 1.1f * 2;
-            const Vec3 dimensions (diameter, diameter, diameter);
-            typedef LQProximityDatabase<AbstractVehicle*> LQPDAV;
-            pd = new LQPDAV (center, dimensions, divisions);
-
-            //pd = new BruteForceProximityDatabase<AbstractVehicle*> ();
-            
-            delete oldPD;
-        }
-        
         void addBoidToFlock (void)
         {
             population++;
-            BoidCUDA* boid = new BoidCUDA (*pd);
+            BoidCUDA* boid = new BoidCUDA ();
             flock.push_back (boid);
             if (population == 1) OpenSteerDemo::selectedVehicle = boid;
         }
@@ -415,14 +248,8 @@ class BoidsCUDAPlugIn : public PlugIn
         BoidCUDA::groupType flock;
         typedef BoidCUDA::groupType::const_iterator iterator;
         
-        // pointer to database used to accelerate proximity queries
-        ProximityDatabase* pd;
-        
         // keep track of current flock size
         int population;
-        
-        // which of the various proximity databases is currently in use
-        int cyclePD;
     };
 
 

@@ -1,6 +1,6 @@
 #include <cuda_runtime.h>
-#include "VehicleData.h"
-#include "NeighborData.h"
+#include "OpenSteer/VehicleData.h"
+#include "OpenSteer/NeighborData.h"
 #include "CUDAKernelOptions.cu"
 #include <stdio.h>
 #include <cutil.h>

@@ -1,10 +1,10 @@
 #include <cuda_runtime.h>
 #include <cutil.h>
 #include <iostream>
-#include "VehicleData.h"
-#include "ObstacleData.h"
-#include "NeighborData.h"
-#include "RandomizedVector.h"
+#include "OpenSteer/VehicleData.h"
+#include "OpenSteer/ObstacleData.h"
+#include "OpenSteer/NeighborData.h"
+#include "OpenSteer/RandomizedVector.h"
 #include "CUDAKernelOptions.cu"
 
 
