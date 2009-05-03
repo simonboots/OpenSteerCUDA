@@ -39,8 +39,3 @@ void OpenSteer::FindFollower::close()
         d_seekVectors = NULL;        
     }
 }
-
-float3* OpenSteer::FindFollower::getSeekVectors()
-{
-    return d_seekVectors;
-}

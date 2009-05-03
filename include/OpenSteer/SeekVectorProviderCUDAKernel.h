@@ -4,7 +4,11 @@
 namespace OpenSteer {
     class SeekVectorProviderCUDAKernel {
     public:
-        virtual float3 *getSeekVectors(void) = 0;
+        virtual float3* getSeekVectors(void) {
+            return d_seekVectors;
+        }
+    protected:
+        float3* d_seekVectors;
     };
 } // namespace
 

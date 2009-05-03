@@ -16,10 +16,8 @@ namespace OpenSteer {
             void init(void);
             void run(void);
             void close(void);
-            float3* getSeekVectors(void);
             
         private:
-            float3 *d_seekVectors;
             unsigned int mem_size_seek_vectors;
         };
     

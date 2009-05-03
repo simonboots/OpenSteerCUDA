@@ -29,6 +29,7 @@
 		1C4BE7C50FAE00EC0028D34A /* FindFollower.cu in Resources */ = {isa = PBXBuildFile; fileRef = 1C4BE7C40FAE00EC0028D34A /* FindFollower.cu */; };
 		1C4BE7CE0FAE04270028D34A /* SteerForSeek.cu in Resources */ = {isa = PBXBuildFile; fileRef = 1C4BE7CD0FAE04270028D34A /* SteerForSeek.cu */; };
 		1C4BE7F50FAE2D8A0028D34A /* SteerForFlee.cu in Resources */ = {isa = PBXBuildFile; fileRef = 1C4BE7F40FAE2D8A0028D34A /* SteerForFlee.cu */; };
+		1C4BE7FC0FAE31D40028D34A /* SteerForTargetSpeed.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1C4BE7FB0FAE31D40028D34A /* SteerForTargetSpeed.cu */; };
 		1C6473A80F821F92006F4046 /* MemoryBackend.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1C6473A70F821F92006F4046 /* MemoryBackend.cpp */; };
 		1C6A83E80F94A0E900A2D253 /* FollowPathCUDAStarter.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1C9C36E50F948A4100F4A359 /* FollowPathCUDAStarter.cu */; };
 		1C6A888E0F95F6F100A2D253 /* steerForEvasionKernel.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1C6A88860F95EE6900A2D253 /* steerForEvasionKernel.cu */; };
@@ -123,6 +124,9 @@
 		1C4BE7CD0FAE04270028D34A /* SteerForSeek.cu */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 4; name = SteerForSeek.cu; path = ../cuda/host/SteerForSeek.cu; sourceTree = "<group>"; };
 		1C4BE7F30FAE2D8A0028D34A /* SteerForFlee.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SteerForFlee.h; path = ../cuda/host/SteerForFlee.h; sourceTree = SOURCE_ROOT; };
 		1C4BE7F40FAE2D8A0028D34A /* SteerForFlee.cu */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 4; name = SteerForFlee.cu; path = ../cuda/host/SteerForFlee.cu; sourceTree = SOURCE_ROOT; };
+		1C4BE7F70FAE303D0028D34A /* TargetSpeedProviderCUDAKernel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TargetSpeedProviderCUDAKernel.h; sourceTree = "<group>"; };
+		1C4BE7FA0FAE31D40028D34A /* SteerForTargetSpeed.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SteerForTargetSpeed.h; path = ../cuda/host/SteerForTargetSpeed.h; sourceTree = SOURCE_ROOT; };
+		1C4BE7FB0FAE31D40028D34A /* SteerForTargetSpeed.cu */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 4; name = SteerForTargetSpeed.cu; path = ../cuda/host/SteerForTargetSpeed.cu; sourceTree = SOURCE_ROOT; };
 		1C6473A60F821F92006F4046 /* MemoryBackend.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MemoryBackend.h; sourceTree = "<group>"; };
 		1C6473A70F821F92006F4046 /* MemoryBackend.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MemoryBackend.cpp; sourceTree = "<group>"; };
 		1C6A87C10F95D92500A2D253 /* steerToStayOnPathKernel.cu */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 4; name = steerToStayOnPathKernel.cu; path = ../cuda/device/steerToStayOnPathKernel.cu; sourceTree = "<group>"; };
@@ -302,6 +306,8 @@
 				1CC0349A0FA7338400104572 /* SteerForWander.h */,
 				1C4BE7CD0FAE04270028D34A /* SteerForSeek.cu */,
 				1C4BE7CC0FAE04270028D34A /* SteerForSeek.h */,
+				1C4BE7FB0FAE31D40028D34A /* SteerForTargetSpeed.cu */,
+				1C4BE7FA0FAE31D40028D34A /* SteerForTargetSpeed.h */,
 				1C9D20720FADB32800A43134 /* Update.cu */,
 				1C9D20710FADB32800A43134 /* Update.h */,
 				1C4BE7C40FAE00EC0028D34A /* FindFollower.cu */,
@@ -388,6 +394,7 @@
 				1CB06F0E0FA6401300E59A31 /* AbstractCUDAKernel.h */,
 				1CC0331A0FA7023100104572 /* CUDAPlugIn.h */,
 				1C4BE7C70FAE02860028D34A /* SeekVectorProviderCUDAKernel.h */,
+				1C4BE7F70FAE303D0028D34A /* TargetSpeedProviderCUDAKernel.h */,
 			);
 			path = OpenSteer;
 			sourceTree = "<group>";
@@ -615,6 +622,7 @@
 				1CC034D40FA73C7500104572 /* AbstractCUDAKernel.cpp in Sources */,
 				1C9D1FF00FADA58900A43134 /* JustWanderCUDA.cpp in Sources */,
 				1C9D209A0FADB57600A43134 /* Update.cu in Sources */,
+				1C4BE7FC0FAE31D40028D34A /* SteerForTargetSpeed.cu in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
