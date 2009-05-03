@@ -62,6 +62,9 @@ void OpenSteer::CUDAPlugIn::initKernels(void)
             std::cout << "Error while allocating d_vehicleData memory: " << cudaGetErrorString(retval) << std::endl;
     }
     
+    // copy vehicle data
+    cudaMemcpy(d_vehicleData, memoryBackend->getVehicleData(), mem_size_vehicle_data, cudaMemcpyHostToDevice);
+    
     // alloc memory for vehicle const
     mem_size_vehicle_const = sizeof(VehicleConst);
     
@@ -70,6 +73,9 @@ void OpenSteer::CUDAPlugIn::initKernels(void)
         if (retval != cudaSuccess)
             std::cout << "Error while allocating d_vehicleConst memory: " << cudaGetErrorString(retval) << std::endl;
     }
+    
+    // copy vehicle const
+    cudaMemcpy(d_vehicleConst, memoryBackend->getVehicleConst(), mem_size_vehicle_const, cudaMemcpyHostToDevice);
     
     // init all kernels
     for (kernel_iterator i = kernels.begin(); i != kernels.end(); i++) {
@@ -95,7 +101,18 @@ void OpenSteer::CUDAPlugIn::closeKernels(void)
 
 void OpenSteer::CUDAPlugIn::update(const float currentTime, const float elapsedTime)
 {
+    this->elapsedTime = elapsedTime;
+    
     cudaMemset(d_steeringVectors, 0, mem_size_steering);
+    
+    // launch kernels
+    for (kernel_iterator i = kernels.begin(); i != kernels.end(); i++) {
+        (*i)->run();
+    }
+    
+    // run updateKernel
+    
+    cudaMemcpy(memoryBackend->getVehicleData(), d_vehicleData, mem_size_vehicle_data, cudaMemcpyDeviceToHost);
 }
 
 void OpenSteer::CUDAPlugIn::setNumberOfAgents(int num)
@@ -121,4 +138,9 @@ VehicleData* OpenSteer::CUDAPlugIn::getVehicleData(void)
 VehicleConst* OpenSteer::CUDAPlugIn::getVehicleConst(void)
 {
     return d_vehicleConst;
+}
+
+float OpenSteer::CUDAPlugIn::getElapsedTime(void)
+{
+    return elapsedTime;
 }

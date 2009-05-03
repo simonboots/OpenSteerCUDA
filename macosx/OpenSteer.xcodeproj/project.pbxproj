@@ -34,6 +34,8 @@
 		1C8DA56C0F768139006231F5 /* updateKernel.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1C8DA5670F767783006231F5 /* updateKernel.cu */; };
 		1C9C36A20F94872900F4A359 /* FollowPathCUDA.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1C9C36A10F94872900F4A359 /* FollowPathCUDA.cpp */; };
 		1C9C36EB0F948BD500F4A359 /* PathwayDataFunc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1C9C36EA0F948BD500F4A359 /* PathwayDataFunc.cpp */; };
+		1C9D1FF00FADA58900A43134 /* JustWanderCUDA.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1C9D1FEF0FADA58900A43134 /* JustWanderCUDA.cpp */; };
+		1C9D209A0FADB57600A43134 /* Update.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1C9D20720FADB32800A43134 /* Update.cu */; };
 		1CA02A130F8D188100D03331 /* WanderAround.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1CA02A120F8D188100D03331 /* WanderAround.cpp */; };
 		1CA4556F0FA5EC15003AC8B3 /* steerToAvoidNeighborsKernel.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1CA7B0130FA5B762004E76BF /* steerToAvoidNeighborsKernel.cu */; };
 		1CA56BDF0F824EF800819A74 /* SimpleVehicleMB.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1CA56BDE0F824EF800819A74 /* SimpleVehicleMB.cpp */; };
@@ -124,6 +126,9 @@
 		1C9C36E50F948A4100F4A359 /* FollowPathCUDAStarter.cu */ = {isa = PBXFileReference; explicitFileType = sourcecode.c; fileEncoding = 4; path = FollowPathCUDAStarter.cu; sourceTree = "<group>"; };
 		1C9C36E90F948BD500F4A359 /* PathwayDataFunc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PathwayDataFunc.h; sourceTree = "<group>"; };
 		1C9C36EA0F948BD500F4A359 /* PathwayDataFunc.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PathwayDataFunc.cpp; sourceTree = "<group>"; };
+		1C9D1FEF0FADA58900A43134 /* JustWanderCUDA.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = JustWanderCUDA.cpp; sourceTree = "<group>"; };
+		1C9D20710FADB32800A43134 /* Update.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Update.h; path = ../cuda/host/Update.h; sourceTree = SOURCE_ROOT; };
+		1C9D20720FADB32800A43134 /* Update.cu */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 4; name = Update.cu; path = ../cuda/host/Update.cu; sourceTree = SOURCE_ROOT; };
 		1CA02A120F8D188100D03331 /* WanderAround.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = WanderAround.cpp; sourceTree = "<group>"; };
 		1CA56B4B0F82266200819A74 /* VehicleData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VehicleData.h; sourceTree = "<group>"; };
 		1CA56BDD0F824EF800819A74 /* SimpleVehicleMB.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SimpleVehicleMB.h; sourceTree = "<group>"; };
@@ -283,6 +288,8 @@
 			children = (
 				1CC034980FA7335F00104572 /* SteerForWander.cu */,
 				1CC0349A0FA7338400104572 /* SteerForWander.h */,
+				1C9D20720FADB32800A43134 /* Update.cu */,
+				1C9D20710FADB32800A43134 /* Update.h */,
 			);
 			name = "Host Code";
 			sourceTree = "<group>";
@@ -403,6 +410,7 @@
 				1CD457470F936E62008D29D5 /* FollowPath.cpp */,
 				1C9C36A10F94872900F4A359 /* FollowPathCUDA.cpp */,
 				1C9C36E50F948A4100F4A359 /* FollowPathCUDAStarter.cu */,
+				1C9D1FEF0FADA58900A43134 /* JustWanderCUDA.cpp */,
 				32FFF56806E9CECE00E1D8A3 /* MultiplePursuit.cpp */,
 				1C18EE1C0F7BF24A00100C21 /* MultiplePursuitCUDA.cpp */,
 				1C18EE640F7C031300100C21 /* MultiplePursuitCUDAStarter.cu */,
@@ -524,7 +532,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "rm ${PROJECT_DIR}/*.linkinfo";
+			shellScript = "rm ${PROJECT_DIR}/*.linkinfo 2> /dev/null\nexit 0";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -585,6 +593,8 @@
 				1CC034120FA725A100104572 /* CUDAPlugIn.cpp in Sources */,
 				1CC034990FA7335F00104572 /* SteerForWander.cu in Sources */,
 				1CC034D40FA73C7500104572 /* AbstractCUDAKernel.cpp in Sources */,
+				1C9D1FF00FADA58900A43134 /* JustWanderCUDA.cpp in Sources */,
+				1C9D209A0FADB57600A43134 /* Update.cu in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

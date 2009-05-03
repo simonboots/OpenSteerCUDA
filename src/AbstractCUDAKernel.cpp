@@ -29,3 +29,10 @@ float3* OpenSteer::AbstractCUDAKernel::getSteeringVectors(void) {
     }
     return NULL;
 }
+
+float OpenSteer::AbstractCUDAKernel::getElapsedTime(void) {
+    if (cudaplugin != NULL) {
+        return cudaplugin->getElapsedTime();
+    }
+    return 0.f;
+}

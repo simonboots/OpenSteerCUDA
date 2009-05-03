@@ -9,7 +9,8 @@ namespace OpenSteer {
     
     class SteerForWander : public AbstractCUDAKernel
         {
-            SteerForWander(float, float, kernel_options);
+        public:
+            SteerForWander(float, kernel_options);
             ~SteerForWander(void);
             
             void init(void);
@@ -17,7 +18,6 @@ namespace OpenSteer {
             void close(void);
             
         private:
-            float dt;
             float weight;
             kernel_options options;
             RandomizedVector *randomizedVector;

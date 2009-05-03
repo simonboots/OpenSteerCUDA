@@ -34,6 +34,7 @@ namespace OpenSteer
             VehicleData* getVehicleData(void);
             VehicleConst* getVehicleConst(void);
             float3* getSteeringVectors(void);
+            float getElapsedTime(void);
             
             void setPlugIn(CUDAPlugIn* plugin) {
                 this->cudaplugin = plugin;

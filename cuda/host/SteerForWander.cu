@@ -10,13 +10,12 @@ using namespace std;
 __global__ void
 steerForWander2DKernel(VehicleData *vehicleData, float *random, float dt, float3 *steeringVectors, float2 *wanderData, float weight, kernel_options options);
 
-OpenSteer::SteerForWander::SteerForWander(float dt, float weight, kernel_options options)
+OpenSteer::SteerForWander::SteerForWander(float weight, kernel_options options)
 {
     d_randomNumbers = NULL;
     d_wanderData = NULL;
     randomizedVector = NULL;
     threadsPerBlock = 128;
-    this->dt = dt;
     this->weight = weight;
     this->options = options;
 }
@@ -48,7 +47,7 @@ void OpenSteer::SteerForWander::run()
     randomizedVector->renew();
     cudaMemcpy(d_randomNumbers, randomizedVector->getVector(), mem_size_random, cudaMemcpyHostToDevice);
     
-    steerForWander2DKernel<<<gridDim(), blockDim()>>>(getVehicleData(), d_randomNumbers, dt, getSteeringVectors(), d_wanderData, weight, options);
+    steerForWander2DKernel<<<gridDim(), blockDim()>>>(getVehicleData(), d_randomNumbers, getElapsedTime(), getSteeringVectors(), d_wanderData, weight, options);
 }
 
 void OpenSteer::SteerForWander::close()

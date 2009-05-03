@@ -23,13 +23,15 @@ namespace OpenSteer
             void setNumberOfAgents(int);
             int getNumberOfAgents(void);
             float3* getSteeringVectors(void);
-            VehicleData* getVehicleData();
-            VehicleConst* getVehicleConst();
+            VehicleData* getVehicleData(void);
+            VehicleConst* getVehicleConst(void);
+            float getElapsedTime(void);
             
         protected:
             std::vector<AbstractCUDAKernel *> kernels;
             int numOfAgents;
             MemoryBackend *memoryBackend;
+            float elapsedTime;
             
             // device memory pointers
             float3 *d_steeringVectors;
