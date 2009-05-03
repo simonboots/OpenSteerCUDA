@@ -44,6 +44,10 @@ void OpenSteer::SteerForWander::init()
 
 void OpenSteer::SteerForWander::run()
 {
+    // renew random numbers
+    randomizedVector->renew();
+    cudaMemcpy(d_randomNumbers, randomizedVector->getVector(), mem_size_random, cudaMemcpyHostToDevice);
+    
     steerForWander2DKernel<<<gridDim(), blockDim()>>>(getVehicleData(), d_randomNumbers, dt, getSteeringVectors(), d_wanderData, weight, options);
 }
 
