@@ -64,9 +64,3 @@ void OpenSteer::SteerForWander::close()
         randomizedVector = NULL;        
     }
 }
-
-void OpenSteer::SteerForWander::reset()
-{
-    close();
-    init();
-}

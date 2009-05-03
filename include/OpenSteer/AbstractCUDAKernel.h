@@ -13,8 +13,13 @@ namespace OpenSteer
         public:
             virtual void init(void) = 0;
             virtual void run(void) = 0;
-            virtual void reset(void) = 0;
             virtual void close(void) = 0;
+            
+            virtual void reset(void) {
+                close();
+                init();
+            }
+
             
             virtual dim3 gridDim(void) {
                 return dim3(getNumberOfAgents()/threadsPerBlock);

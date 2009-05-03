@@ -15,7 +15,6 @@ namespace OpenSteer {
             void init(void);
             void run(void);
             void close(void);
-            void reset(void);
             
         private:
             float dt;
