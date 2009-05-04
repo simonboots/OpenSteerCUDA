@@ -18,6 +18,7 @@
 		1C1B66DA0F9DEBD4002C5E0C /* Boids.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 32FFF56406E9CECE00E1D8A3 /* Boids.cpp */; };
 		1C1B66E60F9DEC13002C5E0C /* BoidsCUDA.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1C1B66E50F9DEC13002C5E0C /* BoidsCUDA.cpp */; };
 		1C2995270F9B3DEB0018FD5C /* steerToFollowPathKernel.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1CD457670F937A00008D29D5 /* steerToFollowPathKernel.cu */; };
+		1C308C3E0FAED33C000510B3 /* SteerToAvoidObstacles.cu in Resources */ = {isa = PBXBuildFile; fileRef = 1C308C3D0FAED33C000510B3 /* SteerToAvoidObstacles.cu */; };
 		1C3568E70F9F0E5D0079E377 /* BoidsCUDAStarter.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1C3568AB0F9F009B0079E377 /* BoidsCUDAStarter.cu */; };
 		1C3568F50F9F0F8C0079E377 /* findNeighborsKernel.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1C6C7F310F9C8A4E003932BE /* findNeighborsKernel.cu */; };
 		1C3569F90F9F1B7C0079E377 /* libcutilD.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C3569F80F9F1B7C0079E377 /* libcutilD.a */; };
@@ -113,6 +114,8 @@
 		1C1B66130F9DD2FD002C5E0C /* steerForAlignmentKernel.cu */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 4; name = steerForAlignmentKernel.cu; path = ../cuda/device/steerForAlignmentKernel.cu; sourceTree = SOURCE_ROOT; };
 		1C1B66170F9DD4CC002C5E0C /* steerForCohesionKernel.cu */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 4; name = steerForCohesionKernel.cu; path = ../cuda/device/steerForCohesionKernel.cu; sourceTree = SOURCE_ROOT; };
 		1C1B66E50F9DEC13002C5E0C /* BoidsCUDA.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BoidsCUDA.cpp; sourceTree = "<group>"; };
+		1C308C3C0FAED33C000510B3 /* SteerToAvoidObstacles.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SteerToAvoidObstacles.h; path = ../cuda/host/SteerToAvoidObstacles.h; sourceTree = SOURCE_ROOT; };
+		1C308C3D0FAED33C000510B3 /* SteerToAvoidObstacles.cu */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 4; name = SteerToAvoidObstacles.cu; path = ../cuda/host/SteerToAvoidObstacles.cu; sourceTree = SOURCE_ROOT; };
 		1C3568AB0F9F009B0079E377 /* BoidsCUDAStarter.cu */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 4; path = BoidsCUDAStarter.cu; sourceTree = "<group>"; };
 		1C3569F80F9F1B7C0079E377 /* libcutilD.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libcutilD.a; path = CUDA/lib/libcutilD.a; sourceTree = SYSTEM_DEVELOPER_DIR; };
 		1C45007A0F8E06E900804B2F /* steerToAvoidObstaclesKernel.cu */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 4; name = steerToAvoidObstaclesKernel.cu; path = ../cuda/device/steerToAvoidObstaclesKernel.cu; sourceTree = "<group>"; };
@@ -312,6 +315,8 @@
 				1C9D20710FADB32800A43134 /* Update.h */,
 				1C4BE7C40FAE00EC0028D34A /* FindFollower.cu */,
 				1C4BE7C30FAE00EC0028D34A /* FindFollower.h */,
+				1C308C3C0FAED33C000510B3 /* SteerToAvoidObstacles.h */,
+				1C308C3D0FAED33C000510B3 /* SteerToAvoidObstacles.cu */,
 			);
 			name = "Host Code";
 			sourceTree = "<group>";
@@ -526,6 +531,7 @@
 				1C4BE7C50FAE00EC0028D34A /* FindFollower.cu in Resources */,
 				1C4BE7CE0FAE04270028D34A /* SteerForSeek.cu in Resources */,
 				1C4BE7F50FAE2D8A0028D34A /* SteerForFlee.cu in Resources */,
+				1C308C3E0FAED33C000510B3 /* SteerToAvoidObstacles.cu in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
