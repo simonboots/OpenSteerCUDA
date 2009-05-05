@@ -36,7 +36,7 @@ steerForSeekKernelSingle(float3 position, float3 velocity, float3 seekVector, fl
 __constant__ float timeFactorTable[9];
 
 __global__ void
-steerForPursuitKernel(VehicleData *vehicleData, float3 wandererPosition, float3 wandererVelocity, float3 *steeringVectors, float maxPredictionTime, float weight, kernel_options options)
+steerForPursuitKernel(VehicleData *vehicleData, float3 *quarryPosition, float3 *quarryVelocity, float3 *steeringVectors, float maxPredictionTime, float weight, kernel_options options)
 {
     int id = (blockIdx.x * blockDim.x + threadIdx.x);
     int blockOffset = (blockDim.x * blockIdx.x * 3);
@@ -49,7 +49,6 @@ steerForPursuitKernel(VehicleData *vehicleData, float3 wandererPosition, float3 
     
     // shared memory for position vector
     __shared__ float3 position[TPB];
-
     
     // copy velocity data from global memory (coalesced)
     float speed = (*vehicleData).speed[id];
@@ -71,12 +70,12 @@ steerForPursuitKernel(VehicleData *vehicleData, float3 wandererPosition, float3 
     __syncthreads();
     
     // offset from this to quarry, that distance, unit vector toward quarry
-    float3 offset = make_float3(wandererPosition.x - P(threadIdx.x).x, 0.f, wandererPosition.z - P(threadIdx.x).z);
+    float3 offset = make_float3(quarryPosition[id].x - P(threadIdx.x).x, 0.f, quarryPosition[id].z - P(threadIdx.x).z);
     float distance = float3Length(offset);
     float3 unitOffset = float3Div(offset, distance);
     
-    float wandererSpeed = float3Length(wandererVelocity);
-    float3 wandererForward = float3Div(wandererVelocity, wandererSpeed);
+    float wandererSpeed = float3Length(quarryVelocity[id]);
+    float3 wandererForward = float3Div(quarryVelocity[id], wandererSpeed);
     
     // how parallel are the paths of "this" and the quarry
     // (1 means parallel, 0 is pependicular, -1 is anti-parallel)
@@ -92,8 +91,6 @@ steerForPursuitKernel(VehicleData *vehicleData, float3 wandererPosition, float3 
     
     float timeFactor = timeFactorTable[(f+1) + (p+1)*3]; // to be filled in below
     
-    //Vec3 color;           // to be filled in below (xxx just for debugging)
-    
     // estimated time until intercept of quarry
     float et = directTravelTime * timeFactor;
     
@@ -101,7 +98,7 @@ steerForPursuitKernel(VehicleData *vehicleData, float3 wandererPosition, float3 
     float etl = (et > maxPredictionTime) ? maxPredictionTime : et;
     
     // estimated position of quarry at intercept
-    float3 target = float3PredictFuturePosition(wandererPosition, wandererVelocity, etl);
+    float3 target = float3PredictFuturePosition(quarryPosition[id], quarryVelocity[id], etl);
     
     steerForSeekKernelSingle(P(threadIdx.x), V(threadIdx.x), target, steeringVectors, weight, options);
 }

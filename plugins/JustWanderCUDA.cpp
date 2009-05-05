@@ -38,6 +38,8 @@
 #include "OpenSteer/OpenSteerDemo.h"
 #include "OpenSteer/SimpleVehicleMB.h"
 #include "OpenSteer/CUDAPlugIn.h"
+#include "FindNeighbors.h"
+#include "SteerToAvoidCloseNeighbors.h"
 #include "SteerForWander.h"
 #include "Update.h"
 
@@ -59,7 +61,7 @@ class JustWanderCUDA : public SimpleVehicleMB
             setSpeed (1.5f);         // speed along Forward direction.
             setMaxForce (10.f);      // steering force is clipped to this magnitude
             setMaxSpeed (1.5);         // velocity is clipped to this magnitude
-            setPosition ( RandomUnitVectorOnXZPlane() * 5);        // randomize initial position
+            setPosition ( RandomUnitVectorOnXZPlane() * 40);        // randomize initial position
             randomizeHeadingOnXZPlane();
             clearTrailHistory ();    // prevent long streaks due to teleportation 
         }
@@ -99,7 +101,7 @@ class JustWanderCUDAPlugIn : public CUDAPlugIn
         
         void open (void)
         {
-            setNumberOfAgents(1024);
+            setNumberOfAgents(4096);
 
             for (int i = 0; i<numOfAgents; i++) {
                 theVehicles.push_back(new JustWanderCUDA());
@@ -114,8 +116,13 @@ class JustWanderCUDAPlugIn : public CUDAPlugIn
                                                OpenSteerDemo::camera2dElevation,
                                                10);
             OpenSteerDemo::camera.fixedPosition.set (40, 40, 40);
-            addKernel(new SteerForWander(1.f, NONE));
-            addKernel(new Update(NONE));
+            
+            FindNeighbors *fn = new FindNeighbors(4.24f);
+            addKernel(fn);
+            addKernel(new SteerToAvoidCloseNeighbors(fn, 0.f, 5.f, NONE));
+            addKernel(new SteerForWander(1.f, IGNORE_UNLESS_ZERO));
+            
+            addKernel(new Update(SPHERICAL_WRAP_AROUND));
             
             initKernels();
         }

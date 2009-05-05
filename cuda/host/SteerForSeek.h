@@ -2,7 +2,7 @@
 #define _STEER_FOR_SEEK_KERNEL_H_
 
 #include "OpenSteer/AbstractCUDAKernel.h"
-#include "OpenSteer/SeekVectorProviderCUDAKernel.h"
+#include "OpenSteer/SeekVectorProvider.h"
 #include "OpenSteer/RandomizedVector.h"
 #include "CUDAKernelOptions.cu"
 
@@ -11,7 +11,7 @@ namespace OpenSteer {
     class SteerForSeek : public AbstractCUDAKernel
         {
         public:
-            SteerForSeek(SeekVectorProviderCUDAKernel*, float, kernel_options);
+            SteerForSeek(SeekVectorProvider*, float, kernel_options);
             ~SteerForSeek(void);
             
             void init(void);
@@ -19,7 +19,7 @@ namespace OpenSteer {
             void close(void);
             
         private:
-            SeekVectorProviderCUDAKernel* seekVectorProvider;
+            SeekVectorProvider* seekVectorProvider;
             float weight;
             kernel_options options;
         };

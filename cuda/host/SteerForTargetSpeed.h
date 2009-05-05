@@ -2,7 +2,7 @@
 #define _STEER_FOR_TARGET_SPEED_H_
 
 #include "OpenSteer/AbstractCUDAKernel.h"
-#include "OpenSteer/TargetSpeedProviderCUDAKernel.h"
+#include "OpenSteer/TargetSpeedProvider.h"
 #include "OpenSteer/RandomizedVector.h"
 #include "CUDAKernelOptions.cu"
 
@@ -11,7 +11,7 @@ namespace OpenSteer {
     class SteerForTargetSpeed : public AbstractCUDAKernel
         {
         public:
-            SteerForTargetSpeed(TargetSpeedProviderCUDAKernel*, float, kernel_options);
+            SteerForTargetSpeed(TargetSpeedProvider*, float, kernel_options);
             ~SteerForTargetSpeed(void);
             
             void init(void);
@@ -19,7 +19,7 @@ namespace OpenSteer {
             void close(void);
             
         private:
-            TargetSpeedProviderCUDAKernel* targetSpeedProvider;
+            TargetSpeedProvider* targetSpeedProvider;
             float weight;
             kernel_options options;
         };

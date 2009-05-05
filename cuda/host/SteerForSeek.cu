@@ -1,7 +1,7 @@
 #include "SteerForSeek.h"
 #include <cuda_runtime.h>
 #include "OpenSteer/VehicleData.h"
-#include "OpenSteer/SeekVectorProviderCUDAKernel.h"
+#include "OpenSteer/SeekVectorProvider.h"
 #include "CUDAKernelOptions.cu"
 #include <iostream>
 
@@ -11,7 +11,7 @@ using namespace std;
 __global__ void
 steerForSeekKernel(VehicleData *vehicleData, float3 *seekVectors, float3 *steeringVectors, float weight, kernel_options options);
 
-OpenSteer::SteerForSeek::SteerForSeek(SeekVectorProviderCUDAKernel* seekVectorProvider, float weight, kernel_options options)
+OpenSteer::SteerForSeek::SteerForSeek(SeekVectorProvider* seekVectorProvider, float weight, kernel_options options)
 {
     threadsPerBlock = 128;
     this->seekVectorProvider = seekVectorProvider;

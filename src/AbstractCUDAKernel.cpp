@@ -1,6 +1,9 @@
 #include "AbstractCUDAKernel.h"
 #include "OpenSteer/VehicleData.h"
+#include "OpenSteer/MemoryBackend.h"
 #include "CUDAPlugIn.h"
+
+using namespace OpenSteer;
 
 int OpenSteer::AbstractCUDAKernel::getNumberOfAgents(void) {
     if (cudaplugin != NULL) {
@@ -35,4 +38,11 @@ float OpenSteer::AbstractCUDAKernel::getElapsedTime(void) {
         return cudaplugin->getElapsedTime();
     }
     return 0.f;
+}
+
+MemoryBackend* OpenSteer::AbstractCUDAKernel::getMemoryBackend(void) {
+    if (cudaplugin != NULL) {
+        return cudaplugin->getMemoryBackend();
+    }
+    return NULL;
 }

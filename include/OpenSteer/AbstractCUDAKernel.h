@@ -3,6 +3,7 @@
 
 #include <cuda_runtime.h>
 #include "OpenSteer/VehicleData.h"
+#include "OpenSteer/MemoryBackend.h"
 
 namespace OpenSteer
 {
@@ -35,6 +36,7 @@ namespace OpenSteer
             VehicleConst* getVehicleConst(void);
             float3* getSteeringVectors(void);
             float getElapsedTime(void);
+            MemoryBackend* getMemoryBackend(void);
             
             void setPlugIn(CUDAPlugIn* plugin) {
                 this->cudaplugin = plugin;

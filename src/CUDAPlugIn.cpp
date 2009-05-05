@@ -144,3 +144,8 @@ float OpenSteer::CUDAPlugIn::getElapsedTime(void)
 {
     return elapsedTime;
 }
+
+MemoryBackend* OpenSteer::CUDAPlugIn::getMemoryBackend(void)
+{
+    return memoryBackend;
+}

@@ -1,8 +1,8 @@
-#ifndef _SEEK_VECTOR_PROVIDER_CUDA_KERNEL_H_
-#define _SEEK_VECTOR_PROVIDER_CUDA_KERNEL_H_
+#ifndef _SEEK_VECTOR_PROVIDER_H_
+#define _SEEK_VECTOR_PROVIDER_H_
 
 namespace OpenSteer {
-    class SeekVectorProviderCUDAKernel {
+    class SeekVectorProvider {
     public:
         virtual float3* getSeekVectors(void) {
             return d_seekVectors;
@@ -13,4 +13,4 @@ namespace OpenSteer {
 } // namespace
 
 
-#endif // _SEEK_VECTOR_PROVIDER_CUDA_KERNEL_H_
+#endif // _SEEK_VECTOR_PROVIDER_H_

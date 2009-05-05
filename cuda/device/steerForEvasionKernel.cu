@@ -35,7 +35,7 @@ __device__ void
 steerForFleeKernelSingle(float3 position, float3 velocity, float3 seekVector, float3 *steeringVectors, float weight, kernel_options options);
 
 __global__ void
-steerForEvasionKernel(VehicleData *vehicleData, float3 menacePosition, float3 menaceVelocity, float3 *steeringVectors, float maxPredictionTime, float weight, kernel_options options)
+steerForEvasionKernel(VehicleData *vehicleData, float3 *menacePosition, float3 *menaceVelocity, float3 *steeringVectors, float maxPredictionTime, float weight, kernel_options options)
 {
     int id = blockIdx.x * blockDim.x + threadIdx.x;
     int blockOffset = blockDim.x * blockIdx.x * 3;
@@ -68,15 +68,15 @@ steerForEvasionKernel(VehicleData *vehicleData, float3 menacePosition, float3 me
     __syncthreads();
     
     // offset from self to menace
-    float3 offset = float3Sub(menacePosition, P(threadIdx.x));
+    float3 offset = float3Sub(menacePosition[id], P(threadIdx.x));
     float distance = float3Length(offset);
         
-    float roughTime = distance / float3Length(menaceVelocity);
+    float roughTime = distance / float3Length(menaceVelocity[id]);
     float predictionTime = ((roughTime > maxPredictionTime) ?
                             maxPredictionTime :
                             roughTime);
     
-    float3 target = float3PredictFuturePosition(menacePosition, menaceVelocity, predictionTime);
+    float3 target = float3PredictFuturePosition(menacePosition[id], menaceVelocity[id], predictionTime);
 
     steerForFleeKernelSingle(P(threadIdx.x), V(threadIdx.x), target, steeringVectors, weight, options);
 }

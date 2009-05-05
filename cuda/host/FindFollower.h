@@ -2,12 +2,12 @@
 #define _FIND_FOLLOWER_H_
 
 #include "OpenSteer/AbstractCUDAKernel.h"
-#include "OpenSteer/SeekVectorProviderCUDAKernel.h"
+#include "OpenSteer/SeekVectorProvider.h"
 #include "CUDAKernelOptions.cu"
 
 namespace OpenSteer {
     
-    class FindFollower : public AbstractCUDAKernel, public SeekVectorProviderCUDAKernel
+    class FindFollower : public AbstractCUDAKernel, public SeekVectorProvider
         {
         public:
             FindFollower();
