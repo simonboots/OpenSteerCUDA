@@ -108,7 +108,6 @@
 		1C18EDEA0F7BC6BF00100C21 /* steerForWanderKernel.cu */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 4; name = steerForWanderKernel.cu; path = ../cuda/device/steerForWanderKernel.cu; sourceTree = "<group>"; };
 		1C18EE130F7BE14200100C21 /* steerForTargetSpeedKernel.cu */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 4; name = steerForTargetSpeedKernel.cu; path = ../cuda/device/steerForTargetSpeedKernel.cu; sourceTree = SOURCE_ROOT; };
 		1C18EE1C0F7BF24A00100C21 /* MultiplePursuitCUDA.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MultiplePursuitCUDA.cpp; sourceTree = "<group>"; };
-		1C18EE640F7C031300100C21 /* MultiplePursuitCUDAStarter.cu */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 4; path = MultiplePursuitCUDAStarter.cu; sourceTree = "<group>"; };
 		1C18EE6C0F7C037F00100C21 /* steerForPursuitKernel.cu */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 4; name = steerForPursuitKernel.cu; path = ../cuda/device/steerForPursuitKernel.cu; sourceTree = "<group>"; };
 		1C1B66130F9DD2FD002C5E0C /* steerForAlignmentKernel.cu */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 4; name = steerForAlignmentKernel.cu; path = ../cuda/device/steerForAlignmentKernel.cu; sourceTree = SOURCE_ROOT; };
 		1C1B66170F9DD4CC002C5E0C /* steerForCohesionKernel.cu */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 4; name = steerForCohesionKernel.cu; path = ../cuda/device/steerForCohesionKernel.cu; sourceTree = SOURCE_ROOT; };
@@ -492,7 +491,6 @@
 				1C9D1FEF0FADA58900A43134 /* JustWanderCUDA.cpp */,
 				32FFF56806E9CECE00E1D8A3 /* MultiplePursuit.cpp */,
 				1C18EE1C0F7BF24A00100C21 /* MultiplePursuitCUDA.cpp */,
-				1C18EE640F7C031300100C21 /* MultiplePursuitCUDAStarter.cu */,
 				1CC9C2180F70FD1400990434 /* Polonaise.cpp */,
 				1CBD02080F72795400DEE3E8 /* PolonaiseCUDA.cpp */,
 				1CA02A120F8D188100D03331 /* WanderAround.cpp */,
