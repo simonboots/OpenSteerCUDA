@@ -39,10 +39,9 @@
 #include "OpenSteer/SimpleVehicle.h"
 #include "OpenSteer/SimpleVehicleMB.h"
 #include "OpenSteer/OpenSteerDemo.h"
+#include "OpenSteer/CUDAPlugIn.h"
 #include "VehicleData.h"
-
-void runMultiplePursuitKernel(VehicleData *h_vehicleData, VehicleConst *h_vehicleConst, int numOfVehicles, float3 wandererPosition, float3 wandererVelocity, float elapsedTime, int copy_vehicle_data);
-void endMultiplePursuit(void);
+#include "kernelclasses.h"
 
 using namespace OpenSteer;
 
@@ -200,7 +199,7 @@ bool MpPursuerCUDA::did_reset = false;
 // PlugIn for OpenSteerDemo
 
 
-class MpPlugInCUDA : public PlugIn
+class MpPlugInCUDA : public CUDAPlugIn
     {
     public:
         
@@ -209,6 +208,7 @@ class MpPlugInCUDA : public PlugIn
         float selectionOrderSortKey (void) {return 3.f;}
 
         int pursuerCount;
+        SimplePursuitMultiplier *smp;
         
         virtual ~MpPlugInCUDA() {} // be more "nice" to avoid a compiler warning
         
@@ -219,8 +219,8 @@ class MpPlugInCUDA : public PlugIn
             //allMP.push_back (wanderer);
             
             // create the specified number of pursuers, save pointers to them
-            pursuerCount = 2048;
-            for (int i = 0; i < pursuerCount; i++)
+            setNumberOfAgents(2048);
+            for (int i = 0; i < getNumberOfAgents(); i++)
                 allMP.push_back (new MpPursuerCUDA (wanderer));
             pBegin = allMP.begin();  // iterator pointing to first pursuer
             pEnd = allMP.end();          // iterator pointing to last pursuer
@@ -230,36 +230,36 @@ class MpPlugInCUDA : public PlugIn
             OpenSteerDemo::camera.mode = Camera::cmStraightDown;
             OpenSteerDemo::camera.fixedDistDistance = OpenSteerDemo::cameraTargetDistance;
             OpenSteerDemo::camera.fixedDistVOffset = OpenSteerDemo::camera2dElevation;
+            
+            smp = new SimplePursuitMultiplier();
+            addKernel(smp);
+            addKernel(new SteerForPursuit(smp, 20.f, 1.f, NONE));
+            addKernel(new Update(NONE));
+            
+            initKernels();
         }
         
         void update (const float currentTime, const float elapsedTime)
         {
+            static bool copy_vehicle_data = true;
+
             // update the wanderer
             wanderer->update (currentTime, elapsedTime);
             
-            static bool copy_vehicle_data = true;
+            smp->setNewPosition(make_float3((wanderer->position()).x, (wanderer->position()).y, (wanderer->position()).z));
+            smp->setNewVelocity(make_float3((wanderer->velocity()).x, (wanderer->velocity()).y, (wanderer->velocity()).z));
             
-            MemoryBackend *mb = MemoryBackend::instance();
-            VehicleData *vData = mb->getVehicleData();
-            VehicleConst *vConst = mb->getVehicleConst();
+            if (copy_vehicle_data) {
+                recopyVehicleData();
+                copy_vehicle_data = false;
+            }
             
-            runMultiplePursuitKernel(vData,
-                                     vConst,
-                                     pursuerCount,
-                                     make_float3(wanderer->position().x, wanderer->position().y, wanderer->position().z),
-                                     make_float3(wanderer->velocity().x, wanderer->velocity().y, wanderer->velocity().z),
-                                     elapsedTime,
-                                     copy_vehicle_data ? 1 : 0);
+            CUDAPlugIn::update(currentTime, elapsedTime);
             
-            copy_vehicle_data = false;
-            
-           
-            // copy data back
             for (iterator i = pBegin; i != pEnd; i++)
             {
                   ((MpPursuerCUDA&) (**i)).update (currentTime, elapsedTime);
             }
-            
             
             copy_vehicle_data = MpPursuerCUDA::did_reset;
             MpPursuerCUDA::did_reset = false;
@@ -290,14 +290,12 @@ class MpPlugInCUDA : public PlugIn
         
         void close (void)
         {
+            closeKernels();
             // delete wanderer, all pursuers, and clear list
             delete (wanderer);
             for (iterator i = pBegin; i != pEnd; i++) delete ((MpPursuerCUDA*)*i);
             allMP.clear();
-            endMultiplePursuit();
-            
-            // reset MemoryBackend of SimpleVehicleMB
-            SimpleVehicleMB::resetBackend();
+            CUDAPlugIn::close();
         }
         
         void reset (void)

@@ -62,10 +62,7 @@ void OpenSteer::CUDAPlugIn::initKernels(void)
             std::cout << "Error while allocating d_vehicleData memory: " << cudaGetErrorString(retval) << std::endl;
     }
     
-    // copy vehicle data
-    cudaError_t retval = cudaMemcpy(d_vehicleData, memoryBackend->getVehicleData(), mem_size_vehicle_data, cudaMemcpyHostToDevice);
-    if (retval != cudaSuccess)
-        std::cout << "Error while copying d_vehicleData memory: " << cudaGetErrorString(retval) << std::endl;
+    copyVehicleData();
     
     // alloc memory for vehicle const
     mem_size_vehicle_const = sizeof(VehicleConst);
@@ -152,4 +149,17 @@ float OpenSteer::CUDAPlugIn::getElapsedTime(void)
 MemoryBackend* OpenSteer::CUDAPlugIn::getMemoryBackend(void)
 {
     return memoryBackend;
+}
+
+void OpenSteer::CUDAPlugIn::copyVehicleData(void)
+{
+    // copy vehicle data
+    cudaError_t retval = cudaMemcpy(d_vehicleData, memoryBackend->getVehicleData(), mem_size_vehicle_data, cudaMemcpyHostToDevice);
+    if (retval != cudaSuccess)
+        std::cout << "Error while copying d_vehicleData memory: " << cudaGetErrorString(retval) << std::endl;
+}
+
+void OpenSteer::CUDAPlugIn::recopyVehicleData(void)
+{
+    copyVehicleData();
 }

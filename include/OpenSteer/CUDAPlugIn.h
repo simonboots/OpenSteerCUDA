@@ -27,8 +27,10 @@ namespace OpenSteer
             VehicleConst* getVehicleConst(void);
             float getElapsedTime(void);
             MemoryBackend* getMemoryBackend(void);
+            void recopyVehicleData(void);
             
         protected:
+            void copyVehicleData(void);
             std::vector<AbstractCUDAKernel *> kernels;
             int numOfAgents;
             MemoryBackend *memoryBackend;

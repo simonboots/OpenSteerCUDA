@@ -16,6 +16,8 @@ OpenSteer::SimplePursuitMultiplier::SimplePursuitMultiplier()
     d_pursuitPosition = NULL;
     threadsPerBlock = 128;
     change = true;
+    newPosition = make_float3(0, 0, 0);
+    newVelocity = make_float3(0, 0, 0);
 }
 
 OpenSteer::SimplePursuitMultiplier::~SimplePursuitMultiplier() {}

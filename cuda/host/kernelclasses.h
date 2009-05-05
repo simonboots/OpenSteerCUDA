@@ -3,6 +3,7 @@
 
 #include "FindFollower.h"
 #include "FindNeighbors.h"
+#include "SimplePursuitMultiplier.h"
 #include "SteerForAlignment.h"
 #include "SteerForCohesion.h"
 #include "SteerForEvasion.h"

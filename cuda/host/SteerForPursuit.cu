@@ -24,7 +24,8 @@ OpenSteer::SteerForPursuit::~SteerForPursuit() {}
 
 void OpenSteer::SteerForPursuit::init()
 {
-    // nothing to do
+    const float h_timeFactorTable[9] = {2.f, 4.f, 0.85f, 2.f, 0.8f, 1.8f, 0.5f, 1.f, 4.f};
+    cudaMemcpyToSymbol("timeFactorTable", h_timeFactorTable, sizeof(float) * 9, 0, cudaMemcpyHostToDevice);
 }
 
 void OpenSteer::SteerForPursuit::run()

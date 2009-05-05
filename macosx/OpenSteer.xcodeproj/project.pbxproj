@@ -40,8 +40,9 @@
 		1C7204FC0FB05A130045C647 /* SteerForCohesion.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1C308D850FAF109C000510B3 /* SteerForCohesion.cu */; };
 		1C7204FD0FB05A160045C647 /* SteerForAlignment.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1C308D7B0FAF0DDD000510B3 /* SteerForAlignment.cu */; };
 		1C7204FE0FB05A180045C647 /* FindFollower.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1C4BE7C40FAE00EC0028D34A /* FindFollower.cu */; };
-		1C7206390FB06A060045C647 /* SimplePursuitMultiplier.cu in Resources */ = {isa = PBXBuildFile; fileRef = 1C7206380FB06A060045C647 /* SimplePursuitMultiplier.cu */; };
-		1C72063F0FB06DE60045C647 /* simplePursuitMultiplierKernel.cu in Resources */ = {isa = PBXBuildFile; fileRef = 1C72063E0FB06DE60045C647 /* simplePursuitMultiplierKernel.cu */; };
+		1C7206AC0FB07D080045C647 /* MultiplePursuitCUDA.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1C18EE1C0F7BF24A00100C21 /* MultiplePursuitCUDA.cpp */; };
+		1C7206B20FB07D510045C647 /* SimplePursuitMultiplier.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1C7206380FB06A060045C647 /* SimplePursuitMultiplier.cu */; };
+		1C7206B40FB07D640045C647 /* simplePursuitMultiplierKernel.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1C72063E0FB06DE60045C647 /* simplePursuitMultiplierKernel.cu */; };
 		1C8DA56C0F768139006231F5 /* updateKernel.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1C8DA5670F767783006231F5 /* updateKernel.cu */; };
 		1C9C36EB0F948BD500F4A359 /* PathwayDataFunc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1C9C36EA0F948BD500F4A359 /* PathwayDataFunc.cpp */; };
 		1C9D1FF00FADA58900A43134 /* JustWanderCUDA.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1C9D1FEF0FADA58900A43134 /* JustWanderCUDA.cpp */; };
@@ -576,8 +577,6 @@
 				1CCE694C0F7A3C5800DB4AA8 /* steerForSeekKernel.cu in Resources */,
 				1CE2B0710F90D092002F3089 /* CUDAKernelOptions.cu in Resources */,
 				1CD457360F9350A3008D29D5 /* CUDAPathwayUtilities.cu in Resources */,
-				1C7206390FB06A060045C647 /* SimplePursuitMultiplier.cu in Resources */,
-				1C72063F0FB06DE60045C647 /* simplePursuitMultiplierKernel.cu in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -675,6 +674,9 @@
 				1C7204FC0FB05A130045C647 /* SteerForCohesion.cu in Sources */,
 				1C7204FD0FB05A160045C647 /* SteerForAlignment.cu in Sources */,
 				1C7204FE0FB05A180045C647 /* FindFollower.cu in Sources */,
+				1C7206AC0FB07D080045C647 /* MultiplePursuitCUDA.cpp in Sources */,
+				1C7206B20FB07D510045C647 /* SimplePursuitMultiplier.cu in Sources */,
+				1C7206B40FB07D640045C647 /* simplePursuitMultiplierKernel.cu in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
