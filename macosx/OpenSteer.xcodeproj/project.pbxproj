@@ -173,7 +173,6 @@
 		1CA7B0130FA5B762004E76BF /* steerToAvoidNeighborsKernel.cu */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 4; name = steerToAvoidNeighborsKernel.cu; path = ../cuda/device/steerToAvoidNeighborsKernel.cu; sourceTree = SOURCE_ROOT; };
 		1CB06F0E0FA6401300E59A31 /* AbstractCUDAKernel.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.h; fileEncoding = 4; path = AbstractCUDAKernel.h; sourceTree = "<group>"; };
 		1CBD02080F72795400DEE3E8 /* PolonaiseCUDA.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PolonaiseCUDA.cpp; sourceTree = "<group>"; };
-		1CBD023E0F72876D00DEE3E8 /* PolonaiseCUDAStarter.cu */ = {isa = PBXFileReference; explicitFileType = sourcecode.c; fileEncoding = 4; path = PolonaiseCUDAStarter.cu; sourceTree = "<group>"; };
 		1CBD02860F728D4800DEE3E8 /* libcutil.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libcutil.a; path = CUDA/lib/libcutil.a; sourceTree = SYSTEM_DEVELOPER_DIR; };
 		1CC0331A0FA7023100104572 /* CUDAPlugIn.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUDAPlugIn.h; sourceTree = "<group>"; };
 		1CC0333F0FA70F9D00104572 /* CUDAPlugIn.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUDAPlugIn.cpp; sourceTree = "<group>"; };
@@ -487,7 +486,6 @@
 				1C18EE640F7C031300100C21 /* MultiplePursuitCUDAStarter.cu */,
 				1CC9C2180F70FD1400990434 /* Polonaise.cpp */,
 				1CBD02080F72795400DEE3E8 /* PolonaiseCUDA.cpp */,
-				1CBD023E0F72876D00DEE3E8 /* PolonaiseCUDAStarter.cu */,
 				1CA02A120F8D188100D03331 /* WanderAround.cpp */,
 				1CC8D5FB0F8DC64B006CEA94 /* WanderAroundCUDA.cpp */,
 				1CC8D6060F8DC8D9006CEA94 /* WanderAroundCUDAStarter.cu */,
