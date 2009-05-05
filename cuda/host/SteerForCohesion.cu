@@ -11,7 +11,7 @@ using namespace std;
 __global__ void
 steerForCohesionKernel(VehicleData *vehicleData, VehicleConst *vehicleConst, float3 *steeringVectors, float maxDistance, float cosMaxAngle, NeighborData* neighborData, float weight, kernel_options options);
 
-OpenSteer::SteerForCohesion::SteerForCohesion(NeighborDataProvider* pursuitDataProvider, float maxDistance, float cosMaxAngle, float weight, kernel_options options)
+OpenSteer::SteerForCohesion::SteerForCohesion(NeighborDataProvider* neighborDataProvider, float maxDistance, float cosMaxAngle, float weight, kernel_options options)
 {
     threadsPerBlock = 128;
     this->weight = weight;

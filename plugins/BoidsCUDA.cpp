@@ -39,21 +39,11 @@
 #include <sstream>
 #include "OpenSteer/SimpleVehicleMB.h"
 #include "OpenSteer/OpenSteerDemo.h"
-#include "OpenSteer/Grid.h"
-
-
-
+#include "OpenSteer/CUDAPlugIn.h"
+#include "kernelclasses.h"
 
 // Include names declared in the OpenSteer namespace into the namespaces to search to find names.
 using namespace OpenSteer;
-
-// ----------------------------------------------------------------------------
-
-void runBoidsKernel(VehicleData *h_vehicleData, VehicleConst *h_vehicleConst, int numOfVehicles, int* h_neighborIndices, int numOfNIndices, int* h_neighborAgents, int numOfNAgents, float elapsedTime);
-void endBoids(void);
-
-// ----------------------------------------------------------------------------
-
 
 class BoidCUDA : public OpenSteer::SimpleVehicleMB
 {
@@ -114,13 +104,13 @@ public:
 
 
 AVGroup BoidCUDA::neighbors;
-float BoidCUDA::worldRadius = 50.0f;
+float BoidCUDA::worldRadius = 100.0f;
 
 // ----------------------------------------------------------------------------
 // PlugIn for OpenSteerDemo
 
 
-class BoidsCUDAPlugIn : public PlugIn
+class BoidsCUDAPlugIn : public CUDAPlugIn
     {
     public:
         
@@ -128,17 +118,15 @@ class BoidsCUDAPlugIn : public PlugIn
         
         float selectionOrderSortKey (void) {return 1.f;}
         
-        static const int numOfAgents = 4096;
-        
         virtual ~BoidsCUDAPlugIn() {} // be more "nice" to avoid a compiler warning
-        
-        Grid *grid;
-        
+                
         void open (void)
         {
+            setNumberOfAgents(4096);
+
             // make default-sized flock
             population = 0;
-            for (int i = 0; i < numOfAgents; i++) addBoidToFlock ();
+            for (int i = 0; i < getNumberOfAgents(); i++) addBoidToFlock ();
             
             // initialize camera
             OpenSteerDemo::init3dCamera (*OpenSteerDemo::selectedVehicle);
@@ -148,25 +136,20 @@ class BoidsCUDAPlugIn : public PlugIn
             OpenSteerDemo::camera.lookdownDistance = 20;
             OpenSteerDemo::camera.aimLeadTime = 0.5;
             OpenSteerDemo::camera.povOffset.set (0, 0.5, -2);
+
+            FindNeighbors *fn = new FindNeighbors(4.24f);
+            addKernel(fn);
+            addKernel(new SteerForSeparation(fn, 5.f, -0.707f, 5.f, NONE));
+            addKernel(new SteerForAlignment(fn, 7.5f, 0.7f, 8.f, NONE));
+            addKernel(new SteerForCohesion(fn, 9.f, -0.15f, 8.f, NONE));
+            addKernel(new Update((kernel_options)(SPHERICAL_WRAP_AROUND | LOCAL_SPACE_BANKING)));
             
-            grid = new Grid();
+            initKernels();
         }
         
         void update (const float currentTime, const float elapsedTime)
         {
-            MemoryBackend *mb = MemoryBackend::instance();
-            VehicleData *vData = mb->getVehicleData();
-            VehicleConst *vConst = mb->getVehicleConst();
-            
-            int n = 0;
-            for (iterator i = flock.begin(); i != flock.end(); i++)
-            {
-                grid->save((**i).position(), n++);
-            }
-            
-            runBoidsKernel(vData, vConst, numOfAgents, grid->getIndices(), grid->numOfCells(), grid->getAgents(), grid->numOfAgents(), elapsedTime);
-            
-            grid->clear();
+            CUDAPlugIn::update(currentTime, elapsedTime);
         }
         
         void redraw (const float currentTime, const float elapsedTime)
@@ -192,15 +175,11 @@ class BoidsCUDAPlugIn : public PlugIn
         
         void close (void)
         {
+            closeKernels();
             // delete each member of the flock
             while (population > 0) removeBoidFromFlock ();
-            
-            endBoids();
-            
-            delete grid;
-            
-            // reset MemoryBackend of SimpleVehicleMB
-            SimpleVehicleMB::resetBackend();
+                        
+            CUDAPlugIn::close();
         }
         
         void reset (void)

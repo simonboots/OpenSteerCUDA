@@ -11,7 +11,7 @@ using namespace std;
 __global__ void
 steerForAlignmentKernel(VehicleData *vehicleData, VehicleConst *vehicleConst, float3 *steeringVectors, float maxDistance, float cosMaxAngle, NeighborData* neighborData, float weight, kernel_options options);
 
-OpenSteer::SteerForAlignment::SteerForAlignment(NeighborDataProvider* pursuitDataProvider, float maxDistance, float cosMaxAngle, float weight, kernel_options options)
+OpenSteer::SteerForAlignment::SteerForAlignment(NeighborDataProvider*neighborDataProvider, float maxDistance, float cosMaxAngle, float weight, kernel_options options)
 {
     threadsPerBlock = 128;
     this->weight = weight;

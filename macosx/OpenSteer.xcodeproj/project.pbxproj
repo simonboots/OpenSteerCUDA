@@ -43,6 +43,7 @@
 		1C7206AC0FB07D080045C647 /* MultiplePursuitCUDA.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1C18EE1C0F7BF24A00100C21 /* MultiplePursuitCUDA.cpp */; };
 		1C7206B20FB07D510045C647 /* SimplePursuitMultiplier.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1C7206380FB06A060045C647 /* SimplePursuitMultiplier.cu */; };
 		1C7206B40FB07D640045C647 /* simplePursuitMultiplierKernel.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1C72063E0FB06DE60045C647 /* simplePursuitMultiplierKernel.cu */; };
+		1C7206EB0FB0850F0045C647 /* BoidsCUDA.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1C1B66E50F9DEC13002C5E0C /* BoidsCUDA.cpp */; };
 		1C8DA56C0F768139006231F5 /* updateKernel.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1C8DA5670F767783006231F5 /* updateKernel.cu */; };
 		1C9C36EB0F948BD500F4A359 /* PathwayDataFunc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1C9C36EA0F948BD500F4A359 /* PathwayDataFunc.cpp */; };
 		1C9D1FF00FADA58900A43134 /* JustWanderCUDA.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1C9D1FEF0FADA58900A43134 /* JustWanderCUDA.cpp */; };
@@ -675,6 +676,7 @@
 				1C7206AC0FB07D080045C647 /* MultiplePursuitCUDA.cpp in Sources */,
 				1C7206B20FB07D510045C647 /* SimplePursuitMultiplier.cu in Sources */,
 				1C7206B40FB07D640045C647 /* simplePursuitMultiplierKernel.cu in Sources */,
+				1C7206EB0FB0850F0045C647 /* BoidsCUDA.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
