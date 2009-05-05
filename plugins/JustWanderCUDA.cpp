@@ -94,7 +94,7 @@ class JustWanderCUDAPlugIn : public CUDAPlugIn
         
         const char* name (void) {return "JustWander CUDA";}
         
-        float selectionOrderSortKey (void) {return 0.f;}
+        float selectionOrderSortKey (void) {return 0.4f;}
                 
         // be more "nice" to avoid a compiler warning
         virtual ~JustWanderCUDAPlugIn() {}

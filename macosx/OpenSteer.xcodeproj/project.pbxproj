@@ -13,14 +13,6 @@
 		1C18EDA70F7BC2FD00100C21 /* CUDAFloatUtilities.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1C18EDA60F7BC25D00100C21 /* CUDAFloatUtilities.cu */; };
 		1C18EE6D0F7C039A00100C21 /* steerForPursuitKernel.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1C18EE6C0F7C037F00100C21 /* steerForPursuitKernel.cu */; };
 		1C2995270F9B3DEB0018FD5C /* steerToFollowPathKernel.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1CD457670F937A00008D29D5 /* steerToFollowPathKernel.cu */; };
-		1C308C3E0FAED33C000510B3 /* SteerToAvoidObstacles.cu in Resources */ = {isa = PBXBuildFile; fileRef = 1C308C3D0FAED33C000510B3 /* SteerToAvoidObstacles.cu */; };
-		1C308C760FAEDF1F000510B3 /* SteerForPursuit.cu in Resources */ = {isa = PBXBuildFile; fileRef = 1C308C750FAEDF1F000510B3 /* SteerForPursuit.cu */; };
-		1C308CA90FAEE200000510B3 /* SteerForEvasion.cu in Resources */ = {isa = PBXBuildFile; fileRef = 1C308CA80FAEE200000510B3 /* SteerForEvasion.cu */; };
-		1C308CD40FAF0B23000510B3 /* SteerForSeparation.cu in Resources */ = {isa = PBXBuildFile; fileRef = 1C308CD30FAF0B23000510B3 /* SteerForSeparation.cu */; };
-		1C308D7C0FAF0DDD000510B3 /* SteerForAlignment.cu in Resources */ = {isa = PBXBuildFile; fileRef = 1C308D7B0FAF0DDD000510B3 /* SteerForAlignment.cu */; };
-		1C308D860FAF109C000510B3 /* SteerForCohesion.cu in Resources */ = {isa = PBXBuildFile; fileRef = 1C308D850FAF109C000510B3 /* SteerForCohesion.cu */; };
-		1C308DAA0FAF15CC000510B3 /* SteerToStayOnPath.cu in Resources */ = {isa = PBXBuildFile; fileRef = 1C308DA90FAF15CC000510B3 /* SteerToStayOnPath.cu */; };
-		1C308DAF0FAF1B68000510B3 /* SteerToFollowPath.cu in Resources */ = {isa = PBXBuildFile; fileRef = 1C308DAE0FAF1B68000510B3 /* SteerToFollowPath.cu */; };
 		1C308E3B0FB03E76000510B3 /* FindNeighbors.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1C308CBC0FAEFA12000510B3 /* FindNeighbors.cu */; };
 		1C308E3C0FB03E7E000510B3 /* SteerToAvoidNeighbors.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1C308CB10FAEF7A2000510B3 /* SteerToAvoidNeighbors.cu */; };
 		1C308E7A0FB0401F000510B3 /* SteerToAvoidCloseNeighbors.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1C308CAD0FAEE528000510B3 /* SteerToAvoidCloseNeighbors.cu */; };
@@ -31,14 +23,23 @@
 		1C356C8D0F9F46DD0079E377 /* steerForAlignmentKernel.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1C1B66130F9DD2FD002C5E0C /* steerForAlignmentKernel.cu */; };
 		1C356C8E0F9F46E10079E377 /* steerForCohesionKernel.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1C1B66170F9DD4CC002C5E0C /* steerForCohesionKernel.cu */; };
 		1C45011C0F8E404C00804B2F /* steerToAvoidObstaclesKernel.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1C45007A0F8E06E900804B2F /* steerToAvoidObstaclesKernel.cu */; };
-		1C4BE7C50FAE00EC0028D34A /* FindFollower.cu in Resources */ = {isa = PBXBuildFile; fileRef = 1C4BE7C40FAE00EC0028D34A /* FindFollower.cu */; };
-		1C4BE7CE0FAE04270028D34A /* SteerForSeek.cu in Resources */ = {isa = PBXBuildFile; fileRef = 1C4BE7CD0FAE04270028D34A /* SteerForSeek.cu */; };
-		1C4BE7F50FAE2D8A0028D34A /* SteerForFlee.cu in Resources */ = {isa = PBXBuildFile; fileRef = 1C4BE7F40FAE2D8A0028D34A /* SteerForFlee.cu */; };
 		1C4BE7FC0FAE31D40028D34A /* SteerForTargetSpeed.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1C4BE7FB0FAE31D40028D34A /* SteerForTargetSpeed.cu */; };
 		1C6473A80F821F92006F4046 /* MemoryBackend.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1C6473A70F821F92006F4046 /* MemoryBackend.cpp */; };
 		1C6A888E0F95F6F100A2D253 /* steerForEvasionKernel.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1C6A88860F95EE6900A2D253 /* steerForEvasionKernel.cu */; };
 		1C6A89DA0F96182D00A2D253 /* steerForFleeKernel.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1C18EDA90F7BC3B600100C21 /* steerForFleeKernel.cu */; };
 		1C6A89EB0F96267F00A2D253 /* steerForTargetSpeedKernel.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1C18EE130F7BE14200100C21 /* steerForTargetSpeedKernel.cu */; };
+		1C7204E50FB058ED0045C647 /* PolonaiseCUDA.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1CBD02080F72795400DEE3E8 /* PolonaiseCUDA.cpp */; };
+		1C7204E60FB058F10045C647 /* Polonaise.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1CC9C2180F70FD1400990434 /* Polonaise.cpp */; };
+		1C7204F50FB05A080045C647 /* SteerToFollowPath.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1C308DAE0FAF1B68000510B3 /* SteerToFollowPath.cu */; };
+		1C7204F60FB05A0A0045C647 /* SteerToAvoidObstacles.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1C308C3D0FAED33C000510B3 /* SteerToAvoidObstacles.cu */; };
+		1C7204F70FB05A0F0045C647 /* SteerForSeparation.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1C308CD30FAF0B23000510B3 /* SteerForSeparation.cu */; };
+		1C7204F80FB05A0F0045C647 /* SteerForSeek.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1C4BE7CD0FAE04270028D34A /* SteerForSeek.cu */; };
+		1C7204F90FB05A110045C647 /* SteerForPursuit.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1C308C750FAEDF1F000510B3 /* SteerForPursuit.cu */; };
+		1C7204FA0FB05A110045C647 /* SteerForFlee.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1C4BE7F40FAE2D8A0028D34A /* SteerForFlee.cu */; };
+		1C7204FB0FB05A120045C647 /* SteerForEvasion.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1C308CA80FAEE200000510B3 /* SteerForEvasion.cu */; };
+		1C7204FC0FB05A130045C647 /* SteerForCohesion.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1C308D850FAF109C000510B3 /* SteerForCohesion.cu */; };
+		1C7204FD0FB05A160045C647 /* SteerForAlignment.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1C308D7B0FAF0DDD000510B3 /* SteerForAlignment.cu */; };
+		1C7204FE0FB05A180045C647 /* FindFollower.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1C4BE7C40FAE00EC0028D34A /* FindFollower.cu */; };
 		1C8DA56C0F768139006231F5 /* updateKernel.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1C8DA5670F767783006231F5 /* updateKernel.cu */; };
 		1C9C36EB0F948BD500F4A359 /* PathwayDataFunc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1C9C36EA0F948BD500F4A359 /* PathwayDataFunc.cpp */; };
 		1C9D1FF00FADA58900A43134 /* JustWanderCUDA.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1C9D1FEF0FADA58900A43134 /* JustWanderCUDA.cpp */; };
@@ -153,6 +154,7 @@
 		1C6A88860F95EE6900A2D253 /* steerForEvasionKernel.cu */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 4; name = steerForEvasionKernel.cu; path = ../cuda/device/steerForEvasionKernel.cu; sourceTree = "<group>"; };
 		1C6C7F310F9C8A4E003932BE /* findNeighborsKernel.cu */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 4; name = findNeighborsKernel.cu; path = ../cuda/device/findNeighborsKernel.cu; sourceTree = "<group>"; };
 		1C6C7F3A0F9C8BEE003932BE /* NeighborData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NeighborData.h; sourceTree = "<group>"; };
+		1C7204E90FB059250045C647 /* kernelclasses.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = kernelclasses.h; path = ../cuda/host/kernelclasses.h; sourceTree = SOURCE_ROOT; };
 		1C8DA5670F767783006231F5 /* updateKernel.cu */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 4; name = updateKernel.cu; path = ../cuda/device/updateKernel.cu; sourceTree = "<group>"; };
 		1C9118E40F9C919600941CFC /* CUDANeighborUtilities.cu */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 4; name = CUDANeighborUtilities.cu; path = ../cuda/device/CUDANeighborUtilities.cu; sourceTree = "<group>"; };
 		1C9119700F9CDB3900941CFC /* steerForSeparationKernel.cu */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 4; name = steerForSeparationKernel.cu; path = ../cuda/device/steerForSeparationKernel.cu; sourceTree = "<group>"; };
@@ -354,6 +356,7 @@
 				1C308DA90FAF15CC000510B3 /* SteerToStayOnPath.cu */,
 				1C308DAD0FAF1B68000510B3 /* SteerToFollowPath.h */,
 				1C308DAE0FAF1B68000510B3 /* SteerToFollowPath.cu */,
+				1C7204E90FB059250045C647 /* kernelclasses.h */,
 			);
 			name = "Host Code";
 			sourceTree = "<group>";
@@ -567,17 +570,6 @@
 				1CCE694C0F7A3C5800DB4AA8 /* steerForSeekKernel.cu in Resources */,
 				1CE2B0710F90D092002F3089 /* CUDAKernelOptions.cu in Resources */,
 				1CD457360F9350A3008D29D5 /* CUDAPathwayUtilities.cu in Resources */,
-				1C4BE7C50FAE00EC0028D34A /* FindFollower.cu in Resources */,
-				1C4BE7CE0FAE04270028D34A /* SteerForSeek.cu in Resources */,
-				1C4BE7F50FAE2D8A0028D34A /* SteerForFlee.cu in Resources */,
-				1C308C3E0FAED33C000510B3 /* SteerToAvoidObstacles.cu in Resources */,
-				1C308C760FAEDF1F000510B3 /* SteerForPursuit.cu in Resources */,
-				1C308CA90FAEE200000510B3 /* SteerForEvasion.cu in Resources */,
-				1C308CD40FAF0B23000510B3 /* SteerForSeparation.cu in Resources */,
-				1C308D7C0FAF0DDD000510B3 /* SteerForAlignment.cu in Resources */,
-				1C308D860FAF109C000510B3 /* SteerForCohesion.cu in Resources */,
-				1C308DAA0FAF15CC000510B3 /* SteerToStayOnPath.cu in Resources */,
-				1C308DAF0FAF1B68000510B3 /* SteerToFollowPath.cu in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -663,6 +655,18 @@
 				1C308E3B0FB03E76000510B3 /* FindNeighbors.cu in Sources */,
 				1C308E3C0FB03E7E000510B3 /* SteerToAvoidNeighbors.cu in Sources */,
 				1C308E7A0FB0401F000510B3 /* SteerToAvoidCloseNeighbors.cu in Sources */,
+				1C7204E50FB058ED0045C647 /* PolonaiseCUDA.cpp in Sources */,
+				1C7204E60FB058F10045C647 /* Polonaise.cpp in Sources */,
+				1C7204F50FB05A080045C647 /* SteerToFollowPath.cu in Sources */,
+				1C7204F60FB05A0A0045C647 /* SteerToAvoidObstacles.cu in Sources */,
+				1C7204F70FB05A0F0045C647 /* SteerForSeparation.cu in Sources */,
+				1C7204F80FB05A0F0045C647 /* SteerForSeek.cu in Sources */,
+				1C7204F90FB05A110045C647 /* SteerForPursuit.cu in Sources */,
+				1C7204FA0FB05A110045C647 /* SteerForFlee.cu in Sources */,
+				1C7204FB0FB05A120045C647 /* SteerForEvasion.cu in Sources */,
+				1C7204FC0FB05A130045C647 /* SteerForCohesion.cu in Sources */,
+				1C7204FD0FB05A160045C647 /* SteerForAlignment.cu in Sources */,
+				1C7204FE0FB05A180045C647 /* FindFollower.cu in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

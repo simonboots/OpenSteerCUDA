@@ -24,8 +24,6 @@ OpenSteer::CUDAPlugIn::~CUDAPlugIn() {}
 void OpenSteer::CUDAPlugIn::close(void)
 {
     kernels.clear();
-    
-    MemoryBackend::reset();
 }
 
 bool OpenSteer::CUDAPlugIn::addKernel(AbstractCUDAKernel *kernel)
@@ -44,6 +42,8 @@ bool OpenSteer::CUDAPlugIn::removeKernel(AbstractCUDAKernel *kernel)
 
 void OpenSteer::CUDAPlugIn::initKernels(void)
 {
+    memoryBackend = MemoryBackend::instance();
+
     // alloc memory for steering vectors
     mem_size_steering = sizeof(float3) * this->getNumberOfAgents();
     
@@ -63,7 +63,9 @@ void OpenSteer::CUDAPlugIn::initKernels(void)
     }
     
     // copy vehicle data
-    cudaMemcpy(d_vehicleData, memoryBackend->getVehicleData(), mem_size_vehicle_data, cudaMemcpyHostToDevice);
+    cudaError_t retval = cudaMemcpy(d_vehicleData, memoryBackend->getVehicleData(), mem_size_vehicle_data, cudaMemcpyHostToDevice);
+    if (retval != cudaSuccess)
+        std::cout << "Error while copying d_vehicleData memory: " << cudaGetErrorString(retval) << std::endl;
     
     // alloc memory for vehicle const
     mem_size_vehicle_const = sizeof(VehicleConst);
@@ -97,6 +99,8 @@ void OpenSteer::CUDAPlugIn::closeKernels(void)
     d_steeringVectors = NULL;
     d_vehicleData = NULL;
     d_vehicleConst = NULL;
+    
+    MemoryBackend::reset();
 }
 
 void OpenSteer::CUDAPlugIn::update(const float currentTime, const float elapsedTime)

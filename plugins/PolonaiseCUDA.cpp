@@ -40,11 +40,9 @@
 #include <sstream>
 #include "OpenSteer/SimpleVehicleMB.h"
 #include "OpenSteer/OpenSteerDemo.h"
+#include "OpenSteer/CUDAPlugIn.h"
 #include "VehicleData.h"
-
-
-void runPolonaiseKernel(VehicleData *h_vehicleData, VehicleConst *h_vehicleConst, int numOfAgents, float elapsedTime);
-void endPolonaise(void);
+#include "kernelclasses.h"
 
 using namespace OpenSteer;
 
@@ -57,8 +55,7 @@ class PolonaiseCUDA : public SimpleVehicleMB
 public:
 
     // constructor
-    PolonaiseCUDA (std::vector<PolonaiseCUDA*> *vehicles) {
-        allVehicles = vehicles;
+    PolonaiseCUDA () {
         reset ();
     }
 
@@ -98,23 +95,22 @@ private:
 // PlugIn for OpenSteerDemo
 
 
-class PolonaiseCUDAPlugIn : public PlugIn
+class PolonaiseCUDAPlugIn : public CUDAPlugIn
 {
 public:
     
     const char* name (void) {return "Polonaise CUDA";}
 
     float selectionOrderSortKey (void) {return 4.f;}
-    
-    const static int numOfAgents = 2048;
 
     // be more "nice" to avoid a compiler warning
     virtual ~PolonaiseCUDAPlugIn() {}
 
     void open (void)
     {
-        for (int i = 0; i<numOfAgents; i++) {
-            theVehicle.push_back(new PolonaiseCUDA(&theVehicle));
+        setNumberOfAgents(2048);
+        for (int i = 0; i<getNumberOfAgents(); i++) {
+            theVehicle.push_back(new PolonaiseCUDA());
         }
         gPolonaise = theVehicle.front();
         OpenSteerDemo::selectedVehicle = gPolonaise;
@@ -125,15 +121,19 @@ public:
                                            OpenSteerDemo::camera2dElevation,
                                            10);
         OpenSteerDemo::camera.fixedPosition.set (40, 40, 40);
+        
+        // initialize kernels
+        FindFollower *ff = new FindFollower();
+        addKernel(ff);
+        addKernel(new SteerForSeek(ff, 1.f, NONE));
+        addKernel(new Update(NONE));
+        
+        initKernels();
     }
 
     void update (const float currentTime, const float elapsedTime)
     {        
-        MemoryBackend *mb = MemoryBackend::instance();
-        VehicleData *vData = mb->getVehicleData();
-        VehicleConst *vConst = mb->getVehicleConst();
-        
-        runPolonaiseKernel(vData, vConst, numOfAgents, elapsedTime);
+        CUDAPlugIn::update(currentTime, elapsedTime);
         
         for (iterator iter = theVehicle.begin(); iter != theVehicle.end(); iter++) {
             (*iter)->update(currentTime, elapsedTime);
@@ -161,13 +161,12 @@ public:
 
     void close (void)
     {
+        closeKernels();
         theVehicle.clear ();
         delete (gPolonaise);
         gPolonaise = NULL;        
-        endPolonaise();
         
-        // reset MemoryBackend of SimpleVehicleMB
-        SimpleVehicleMB::resetBackend();
+        CUDAPlugIn::close();
     }
 
     void reset (void)
@@ -186,8 +185,5 @@ public:
 
 
 PolonaiseCUDAPlugIn gPolonaiseCUDAPlugIn;
-
-
-
 
 // ----------------------------------------------------------------------------
