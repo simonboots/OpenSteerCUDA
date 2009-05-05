@@ -40,6 +40,8 @@
 		1C7204FC0FB05A130045C647 /* SteerForCohesion.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1C308D850FAF109C000510B3 /* SteerForCohesion.cu */; };
 		1C7204FD0FB05A160045C647 /* SteerForAlignment.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1C308D7B0FAF0DDD000510B3 /* SteerForAlignment.cu */; };
 		1C7204FE0FB05A180045C647 /* FindFollower.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1C4BE7C40FAE00EC0028D34A /* FindFollower.cu */; };
+		1C7206390FB06A060045C647 /* SimplePursuitMultiplier.cu in Resources */ = {isa = PBXBuildFile; fileRef = 1C7206380FB06A060045C647 /* SimplePursuitMultiplier.cu */; };
+		1C72063F0FB06DE60045C647 /* simplePursuitMultiplierKernel.cu in Resources */ = {isa = PBXBuildFile; fileRef = 1C72063E0FB06DE60045C647 /* simplePursuitMultiplierKernel.cu */; };
 		1C8DA56C0F768139006231F5 /* updateKernel.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1C8DA5670F767783006231F5 /* updateKernel.cu */; };
 		1C9C36EB0F948BD500F4A359 /* PathwayDataFunc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1C9C36EA0F948BD500F4A359 /* PathwayDataFunc.cpp */; };
 		1C9D1FF00FADA58900A43134 /* JustWanderCUDA.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1C9D1FEF0FADA58900A43134 /* JustWanderCUDA.cpp */; };
@@ -155,6 +157,9 @@
 		1C6C7F310F9C8A4E003932BE /* findNeighborsKernel.cu */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 4; name = findNeighborsKernel.cu; path = ../cuda/device/findNeighborsKernel.cu; sourceTree = "<group>"; };
 		1C6C7F3A0F9C8BEE003932BE /* NeighborData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NeighborData.h; sourceTree = "<group>"; };
 		1C7204E90FB059250045C647 /* kernelclasses.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = kernelclasses.h; path = ../cuda/host/kernelclasses.h; sourceTree = SOURCE_ROOT; };
+		1C7206370FB06A060045C647 /* SimplePursuitMultiplier.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SimplePursuitMultiplier.h; path = ../cuda/host/SimplePursuitMultiplier.h; sourceTree = SOURCE_ROOT; };
+		1C7206380FB06A060045C647 /* SimplePursuitMultiplier.cu */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 4; name = SimplePursuitMultiplier.cu; path = ../cuda/host/SimplePursuitMultiplier.cu; sourceTree = SOURCE_ROOT; };
+		1C72063E0FB06DE60045C647 /* simplePursuitMultiplierKernel.cu */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 4; name = simplePursuitMultiplierKernel.cu; path = ../cuda/device/simplePursuitMultiplierKernel.cu; sourceTree = SOURCE_ROOT; };
 		1C8DA5670F767783006231F5 /* updateKernel.cu */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 4; name = updateKernel.cu; path = ../cuda/device/updateKernel.cu; sourceTree = "<group>"; };
 		1C9118E40F9C919600941CFC /* CUDANeighborUtilities.cu */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 4; name = CUDANeighborUtilities.cu; path = ../cuda/device/CUDANeighborUtilities.cu; sourceTree = "<group>"; };
 		1C9119700F9CDB3900941CFC /* steerForSeparationKernel.cu */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 4; name = steerForSeparationKernel.cu; path = ../cuda/device/steerForSeparationKernel.cu; sourceTree = "<group>"; };
@@ -295,6 +300,7 @@
 				1C0FF03C0F88E5A5002009B6 /* findFollowerKernel.cu */,
 				1C6C7F310F9C8A4E003932BE /* findNeighborsKernel.cu */,
 				1CC990830F8B5346009D50A4 /* resetOnCollisionKernel.cu */,
+				1C72063E0FB06DE60045C647 /* simplePursuitMultiplierKernel.cu */,
 				1C8DA5670F767783006231F5 /* updateKernel.cu */,
 				1C18ED9A0F7BB51000100C21 /* CUDAVectorUtilities.cu */,
 				1C18EDA60F7BC25D00100C21 /* CUDAFloatUtilities.cu */,
@@ -356,6 +362,8 @@
 				1C308DAD0FAF1B68000510B3 /* SteerToFollowPath.h */,
 				1C308DAE0FAF1B68000510B3 /* SteerToFollowPath.cu */,
 				1C7204E90FB059250045C647 /* kernelclasses.h */,
+				1C7206370FB06A060045C647 /* SimplePursuitMultiplier.h */,
+				1C7206380FB06A060045C647 /* SimplePursuitMultiplier.cu */,
 			);
 			name = "Host Code";
 			sourceTree = "<group>";
@@ -568,6 +576,8 @@
 				1CCE694C0F7A3C5800DB4AA8 /* steerForSeekKernel.cu in Resources */,
 				1CE2B0710F90D092002F3089 /* CUDAKernelOptions.cu in Resources */,
 				1CD457360F9350A3008D29D5 /* CUDAPathwayUtilities.cu in Resources */,
+				1C7206390FB06A060045C647 /* SimplePursuitMultiplier.cu in Resources */,
+				1C72063F0FB06DE60045C647 /* simplePursuitMultiplierKernel.cu in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
