@@ -393,12 +393,12 @@ namespace OpenSteer {
             // constructors
             
             
-            LocalSpaceMixin (void)
+            LocalSpaceMixinMB (void)
             {
-                resetLocalSpace ();
+                //resetLocalSpace ();
             };
             
-            LocalSpaceMixin (const Vec3& Side,
+            LocalSpaceMixinMB (const Vec3& Side,
                              const Vec3& Up,
                              const Vec3& Forward,
                              const Vec3& Position)
@@ -410,7 +410,7 @@ namespace OpenSteer {
             };
             
             
-            LocalSpaceMixin (const Vec3& Up,
+            LocalSpaceMixinMB (const Vec3& Up,
                              const Vec3& Forward,
                              const Vec3& Position)
             {                

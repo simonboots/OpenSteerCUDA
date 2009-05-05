@@ -47,11 +47,8 @@
 #include "OpenSteer/PathwayDataFunc.h"
 #include "OpenSteer/VehicleData.h"
 #include "OpenSteer/ObstacleData.h"
-
-void runFollowPathKernel(VehicleData *h_vehicleData, VehicleConst *h_vehicleConst, int numOfVehicles, PathwayData *h_pathwayData, int *h_directions, ObstacleData *h_obstacleData, int numOfObstacles, float elapsedTime);
-void endFollowPath(void);
-
-
+#include "OpenSteer/CUDAPlugIn.h"
+#include "kernelclasses.h"
 
 using namespace OpenSteer;
 
@@ -120,7 +117,7 @@ class FollowPathCUDA : public SimpleVehicleMB
 // PlugIn for OpenSteerDemo
 
 
-class FollowPathCUDAPlugIn : public PlugIn
+class FollowPathCUDAPlugIn : public CUDAPlugIn
     {
     public:
         
@@ -128,19 +125,17 @@ class FollowPathCUDAPlugIn : public PlugIn
         
         float selectionOrderSortKey (void) {return 2.f;}
         
-        const static int numOfAgents = 2048;
         const static int numOfObstacles = 2;
         
-        PathwayData *pwd;
         int *directions;
-        int first_time;
         
         // be more "nice" to avoid a compiler warning
         virtual ~FollowPathCUDAPlugIn() {}
         
         void open (void)
         {
-            directions = new int[numOfAgents];
+            setNumberOfAgents(2048);
+            directions = new int[getNumberOfAgents()];
             
             for (int i = 0; i<numOfAgents; i++) {
                 theVehicles.push_back(new FollowPathCUDA());
@@ -155,40 +150,31 @@ class FollowPathCUDAPlugIn : public PlugIn
                                                OpenSteerDemo::camera2dElevation,
                                                10);
             OpenSteerDemo::camera.fixedPosition.set (40, 40, 40);
-            pwd = transformPathway(*(getTestPathForFollowPathCUDA()));
             
             allObstacles.push_back(new SphericalObstacle(3.f, Vec3(0.5, 0, 30.5)));
             allObstacles.push_back(new SphericalObstacle(8.f, Vec3(51.5, 0, 15.5)));
             
-            first_time = 1;
+            SteerToAvoidObstacles *stao = new SteerToAvoidObstacles(1.f, NONE);
+            addKernel(stao);
+            
+            SteerToFollowPath *stsop = new SteerToFollowPath(3.f, 1.f, IGNORE_UNLESS_ZERO);
+            addKernel(stsop);
+            
+            addKernel(new Update(NONE));
+            
+            initKernels();
+            
+            stao->setObstacles(&allObstacles);
+            stsop->setPathwayData(*(getTestPathForFollowPathCUDA()));
         }
         
         void update (const float currentTime, const float elapsedTime)
         {
-            // prepare obstacle data
-            static ObstacleData *obstacles = NULL;
-            if (first_time == true) {
-                obstacles = new ObstacleData[numOfObstacles];
-                for (int i = 0; i < numOfObstacles; i++) {
-                    obstacles[i].center = make_float3(allObstacles.at(i)->center.x,
-                                                      allObstacles.at(i)->center.y,
-                                                      allObstacles.at(i)->center.z);
-                    obstacles[i].radius = allObstacles.at(i)->radius;
-                }
-                
-            }
-            
-            MemoryBackend *mb = MemoryBackend::instance();
-            VehicleData *vData = mb->getVehicleData();
-            VehicleConst *vConst = mb->getVehicleConst();
-            
-            runFollowPathKernel(vData, vConst, numOfAgents, pwd, directions, obstacles, numOfObstacles, elapsedTime);
+            CUDAPlugIn::update(currentTime, elapsedTime);
             
             for (iterator iter = theVehicles.begin(); iter != theVehicles.end(); iter++) {
                 (*iter)->update(currentTime, elapsedTime);
             }
-            
-            first_time = 0;
         }
         
         void redraw (const float currentTime, const float elapsedTime)
@@ -234,14 +220,13 @@ class FollowPathCUDAPlugIn : public PlugIn
         
         void close (void)
         {
-            delete pwd;
+            closeKernels();
+
             theVehicles.clear ();
             delete (gFollowPathCUDA);
             gFollowPathCUDA = NULL;
-            endFollowPath();
             
-            // reset MemoryBackend of SimpleVehicleMB
-            SimpleVehicleMB::resetBackend();
+            CUDAPlugIn::close();
         }
         
         void reset (void)

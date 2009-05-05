@@ -2,7 +2,8 @@
 #define _STEER_TO_AVOID_OBSTACLES_H_
 
 #include "OpenSteer/AbstractCUDAKernel.h"
-#include "OpenSteer/ObstacleData.h"
+#include "OpenSteer/LocalSpace.h"
+#include "OpenSteer/Obstacle.h"
 #include "CUDAKernelOptions.cu"
 
 namespace OpenSteer {
@@ -17,7 +18,7 @@ namespace OpenSteer {
             void run(void);
             void close(void);
             
-            void setObstacles(ObstacleData *obstacleData, int numOfObstacles);
+            void setObstacles(std::vector<SphericalObstacle *> *);
             
         private:
             float weight;

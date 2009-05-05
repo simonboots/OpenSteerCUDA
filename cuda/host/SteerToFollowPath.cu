@@ -2,6 +2,7 @@
 #include <cuda_runtime.h>
 #include "OpenSteer/VehicleData.h"
 #include "OpenSteer/PathwayData.h"
+#include "OpenSteer/PathwayDataFunc.h"
 #include "CUDAKernelOptions.cu"
 #include <iostream>
 
@@ -40,7 +41,7 @@ void OpenSteer::SteerToFollowPath::init()
     if (retval != cudaSuccess)
         cout << "Error while allocating d_seekVectors memory: " << cudaGetErrorString(retval) << endl;
     
-    cudaMemset(d_directions, 1, getNumberOfAgents());
+    cudaMemset(d_directions, 1, getNumberOfAgents()*sizeof(int));
 }
 
 void OpenSteer::SteerToFollowPath::run()
@@ -53,9 +54,11 @@ void OpenSteer::SteerToFollowPath::close()
     // nothing to do
 }
 
-void OpenSteer::SteerToFollowPath::setPathwayData(PathwayData* pathwayData)
+void OpenSteer::SteerToFollowPath::setPathwayData(PolylinePathway& pathway)
 {
-    cudaMemcpyToSymbol("pathway", pathwayData, sizeof(PathwayData), 0, cudaMemcpyHostToDevice);
+    PathwayData *pwData = transformPathway(pathway);
+    cudaMemcpyToSymbol("pathway", pwData, sizeof(PathwayData), 0, cudaMemcpyHostToDevice);
+    delete pwData;
 }
 
 void OpenSteer::SteerToFollowPath::setDirections(int *directions)

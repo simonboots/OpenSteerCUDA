@@ -2,6 +2,7 @@
 #include <cuda_runtime.h>
 #include "OpenSteer/VehicleData.h"
 #include "OpenSteer/PathwayData.h"
+#include "OpenSteer/PathwayDataFunc.h"
 #include "CUDAKernelOptions.cu"
 #include <iostream>
 
@@ -44,8 +45,10 @@ void OpenSteer::SteerToStayOnPath::close()
     // nothing to do
 }
 
-void OpenSteer::SteerToStayOnPath::setPathwayData(PathwayData* pathwayData)
+void OpenSteer::SteerToStayOnPath::setPathwayData(PolylinePathway& pathway)
 {
-    cudaMemcpyToSymbol("pathway", pathwayData, sizeof(PathwayData), 0, cudaMemcpyHostToDevice);
+    PathwayData *pwData = transformPathway(pathway);
+    cudaMemcpyToSymbol("pathway", pwData, sizeof(PathwayData), 0, cudaMemcpyHostToDevice);
+    delete pwData;
 }
 

@@ -2,7 +2,7 @@
 #define _STEER_TO_STAY_ON_PATH_H_
 
 #include "OpenSteer/AbstractCUDAKernel.h"
-#include "OpenSteer/PathwayData.h"
+#include "OpenSteer/Pathway.h"
 #include "CUDAKernelOptions.cu"
 
 namespace OpenSteer {
@@ -17,7 +17,7 @@ namespace OpenSteer {
             void run(void);
             void close(void);
             
-            void setPathwayData(PathwayData*);
+            void setPathwayData(PolylinePathway&);
             
         private:
             float weight;

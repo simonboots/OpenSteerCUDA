@@ -1,6 +1,5 @@
 #include "SteerToAvoidObstacles.h"
 #include <cuda_runtime.h>
-#include "OpenSteer/VehicleData.h"
 #include "OpenSteer/ObstacleData.h"
 #include "CUDAKernelOptions.cu"
 #include <iostream>
@@ -35,9 +34,21 @@ void OpenSteer::SteerToAvoidObstacles::close()
     // nothing to do
 }
 
-void OpenSteer::SteerToAvoidObstacles::setObstacles(ObstacleData *obstacleData, int numOfObstacles)
+void OpenSteer::SteerToAvoidObstacles::setObstacles(std::vector<SphericalObstacle *> *obstacles)
 {
+    int numOfObstacles = obstacles->size();
+    ObstacleData *obstacleData = new ObstacleData[numOfObstacles];
+    
+    for (int i = 0; i < numOfObstacles; i++) {
+        obstacleData[i].center = make_float3(obstacles->at(i)->center.x,
+                                             obstacles->at(i)->center.y,
+                                             obstacles->at(i)->center.z);
+        obstacleData[i].radius = obstacles->at(i)->radius;
+    }
+    
     cudaMemcpyToSymbol("d_obstacles", obstacleData, sizeof(ObstacleData) * numOfObstacles, 0, cudaMemcpyHostToDevice);
     cudaMemcpyToSymbol("d_numOfObstacles", &numOfObstacles, sizeof(int), 0, cudaMemcpyHostToDevice);
+    
+    delete[] obstacleData;
 }
 

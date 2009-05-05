@@ -30,7 +30,6 @@
 		1C6A89EB0F96267F00A2D253 /* steerForTargetSpeedKernel.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1C18EE130F7BE14200100C21 /* steerForTargetSpeedKernel.cu */; };
 		1C7204E50FB058ED0045C647 /* PolonaiseCUDA.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1CBD02080F72795400DEE3E8 /* PolonaiseCUDA.cpp */; };
 		1C7204E60FB058F10045C647 /* Polonaise.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1CC9C2180F70FD1400990434 /* Polonaise.cpp */; };
-		1C7204F50FB05A080045C647 /* SteerToFollowPath.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1C308DAE0FAF1B68000510B3 /* SteerToFollowPath.cu */; };
 		1C7204F60FB05A0A0045C647 /* SteerToAvoidObstacles.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1C308C3D0FAED33C000510B3 /* SteerToAvoidObstacles.cu */; };
 		1C7204F70FB05A0F0045C647 /* SteerForSeparation.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1C308CD30FAF0B23000510B3 /* SteerForSeparation.cu */; };
 		1C7204F80FB05A0F0045C647 /* SteerForSeek.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1C4BE7CD0FAE04270028D34A /* SteerForSeek.cu */; };
@@ -44,6 +43,8 @@
 		1C7206B20FB07D510045C647 /* SimplePursuitMultiplier.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1C7206380FB06A060045C647 /* SimplePursuitMultiplier.cu */; };
 		1C7206B40FB07D640045C647 /* simplePursuitMultiplierKernel.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1C72063E0FB06DE60045C647 /* simplePursuitMultiplierKernel.cu */; };
 		1C7206EB0FB0850F0045C647 /* BoidsCUDA.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1C1B66E50F9DEC13002C5E0C /* BoidsCUDA.cpp */; };
+		1C7207390FB095C10045C647 /* FollowPathCUDA.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1C9C36A10F94872900F4A359 /* FollowPathCUDA.cpp */; };
+		1C7208150FB09E470045C647 /* SteerToFollowPath.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1C308DAE0FAF1B68000510B3 /* SteerToFollowPath.cu */; };
 		1C8DA56C0F768139006231F5 /* updateKernel.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1C8DA5670F767783006231F5 /* updateKernel.cu */; };
 		1C9C36EB0F948BD500F4A359 /* PathwayDataFunc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1C9C36EA0F948BD500F4A359 /* PathwayDataFunc.cpp */; };
 		1C9D1FF00FADA58900A43134 /* JustWanderCUDA.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1C9D1FEF0FADA58900A43134 /* JustWanderCUDA.cpp */; };
@@ -661,7 +662,6 @@
 				1C308E7A0FB0401F000510B3 /* SteerToAvoidCloseNeighbors.cu in Sources */,
 				1C7204E50FB058ED0045C647 /* PolonaiseCUDA.cpp in Sources */,
 				1C7204E60FB058F10045C647 /* Polonaise.cpp in Sources */,
-				1C7204F50FB05A080045C647 /* SteerToFollowPath.cu in Sources */,
 				1C7204F60FB05A0A0045C647 /* SteerToAvoidObstacles.cu in Sources */,
 				1C7204F70FB05A0F0045C647 /* SteerForSeparation.cu in Sources */,
 				1C7204F80FB05A0F0045C647 /* SteerForSeek.cu in Sources */,
@@ -675,6 +675,8 @@
 				1C7206B20FB07D510045C647 /* SimplePursuitMultiplier.cu in Sources */,
 				1C7206B40FB07D640045C647 /* simplePursuitMultiplierKernel.cu in Sources */,
 				1C7206EB0FB0850F0045C647 /* BoidsCUDA.cpp in Sources */,
+				1C7207390FB095C10045C647 /* FollowPathCUDA.cpp in Sources */,
+				1C7208150FB09E470045C647 /* SteerToFollowPath.cu in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

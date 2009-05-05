@@ -53,7 +53,7 @@
 #include "Vec3.h"
 
 // XXX 4-23-03: Temporary work around (see comment above)
-#include "AbstractVehicle.h"
+#include "OpenSteer/AbstractVehicle.h"
 
 
 namespace OpenSteer {

@@ -41,7 +41,6 @@
 #include "OpenSteer/SimpleVehicleMB.h"
 #include "OpenSteer/OpenSteerDemo.h"
 #include "OpenSteer/CUDAPlugIn.h"
-#include "VehicleData.h"
 #include "kernelclasses.h"
 
 using namespace OpenSteer;
