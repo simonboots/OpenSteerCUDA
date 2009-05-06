@@ -157,16 +157,16 @@ class FollowPathCUDAPlugIn : public CUDAPlugIn
             SteerToAvoidObstacles *stao = new SteerToAvoidObstacles(1.f, NONE);
             addKernel(stao);
             
-            SteerToStayOnPath *stsop = new SteerToStayOnPath(1.f, 1.f, IGNORE_UNLESS_ZERO);
-            addKernel(stsop);
+            SteerToFollowPath *stfp = new SteerToFollowPath(3.f, 1.f, IGNORE_UNLESS_ZERO);
+            addKernel(stfp);
             
             addKernel(new Update(NONE));
             
             initKernels();
             
             stao->setObstacles(&allObstacles);
-            stsop->setPathwayData(*(getTestPathForFollowPathCUDA()));
-            //stsop->setDirections(directions);
+            stfp->setPathwayData(*(getTestPathForFollowPathCUDA()));
+            stfp->setDirections(directions);
         }
         
         void update (const float currentTime, const float elapsedTime)
