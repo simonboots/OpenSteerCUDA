@@ -30,7 +30,7 @@ void OpenSteer::SteerToStayOnPath::init()
     pwData->isCyclic = 0;
     pwData->radius = 1.f;
     
-    cudaMemcpyToSymbol("pathway", pwData, sizeof(PathwayData), 0, cudaMemcpyHostToDevice);
+    cudaMemcpyToSymbol("stayOnPathway", pwData, sizeof(PathwayData), 0, cudaMemcpyHostToDevice);
     
     delete pwData;
 }
@@ -48,7 +48,7 @@ void OpenSteer::SteerToStayOnPath::close()
 void OpenSteer::SteerToStayOnPath::setPathwayData(PolylinePathway& pathway)
 {
     PathwayData *pwData = transformPathway(pathway);
-    cudaMemcpyToSymbol("pathway", pwData, sizeof(PathwayData), 0, cudaMemcpyHostToDevice);
+    cudaMemcpyToSymbol("stayOnPathway", pwData, sizeof(PathwayData), 0, cudaMemcpyHostToDevice);
     delete pwData;
 }
 

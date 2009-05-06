@@ -33,7 +33,7 @@
 #endif
 
 // Pathway data
-__constant__ PathwayData pathway;
+__constant__ PathwayData followPathway;
 
 __device__ void
 steerForSeekKernelSingle(float3 position, float3 velocity, float3 seekVector, float3 *steeringVectors, int ignore, float weight, kernel_options options);
@@ -77,8 +77,8 @@ steerToFollowPathKernel(VehicleData *vehicleData, float3 *steeringVectors, int *
     float3 futurePosition = float3PredictFuturePosition(P(threadIdx.x), V(threadIdx.x), predictionTime);
 
     // measure distance along path of our current and predicted positions
-    float nowPathDistance = mapPointToPathDistance(pathway.points, pathway.numElements, P(threadIdx.x));
-    float futurePathDistance = mapPointToPathDistance(pathway.points, pathway.numElements, futurePosition);
+    float nowPathDistance = mapPointToPathDistance(followPathway.points, followPathway.numElements, P(threadIdx.x));
+    float futurePathDistance = mapPointToPathDistance(followPathway.points, followPathway.numElements, futurePosition);
            
     // are we facing in the correction direction?
     int rightway = ((pathDistanceOffset > 0) ?
@@ -92,11 +92,11 @@ steerToFollowPathKernel(VehicleData *vehicleData, float3 *steeringVectors, int *
     // XXX bool (onPath,tangent (ignored), withinPath)
     float3 tangent;
     float outside;
-    float3 onPath = mapPointToPath(pathway.points, pathway.numElements, pathway.radius, futurePosition, &tangent, &outside);
+    float3 onPath = mapPointToPath(followPathway.points, followPathway.numElements, followPathway.radius, futurePosition, &tangent, &outside);
     
     // check if end of path reached and turn direction
-    if (float3Distance(P(threadIdx.x), pathway.points[0]) < pathway.radius) direction[id] = 1;
-    if (float3Distance(P(threadIdx.x), pathway.points[pathway.numElements - 1]) < pathway.radius) direction[id] = -1;
+    if (float3Distance(P(threadIdx.x), followPathway.points[0]) < followPathway.radius) direction[id] = 1;
+    if (float3Distance(P(threadIdx.x), followPathway.points[followPathway.numElements - 1]) < followPathway.radius) direction[id] = -1;
     
     // no steering is required if (a) our future position is inside
     // the path tube and (b) we are facing in the correct direction
@@ -109,7 +109,7 @@ steerToFollowPathKernel(VehicleData *vehicleData, float3 *steeringVectors, int *
         // otherwise we need to steer towards a target point obtained
         // by adding pathDistanceOffset to our current path position
         float targetPathDistance = nowPathDistance + pathDistanceOffset;
-        target = mapPathDistanceToPoint(pathway.points, pathway.numElements, pathway.isCyclic, targetPathDistance);
+        target = mapPathDistanceToPoint(followPathway.points, followPathway.numElements, followPathway.isCyclic, targetPathDistance);
         ignore = 0;
     }
     

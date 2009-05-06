@@ -31,7 +31,7 @@ void OpenSteer::SteerToFollowPath::init()
     pwData->isCyclic = 0;
     pwData->radius = 1.f;
     
-    cudaMemcpyToSymbol("pathway", pwData, sizeof(PathwayData), 0, cudaMemcpyHostToDevice);
+    cudaMemcpyToSymbol("followPathway", pwData, sizeof(PathwayData), 0, cudaMemcpyHostToDevice);
     
     delete pwData;
     
@@ -41,7 +41,8 @@ void OpenSteer::SteerToFollowPath::init()
     if (retval != cudaSuccess)
         cout << "Error while allocating d_seekVectors memory: " << cudaGetErrorString(retval) << endl;
     
-    cudaMemset(d_directions, 1, getNumberOfAgents()*sizeof(int));
+    // seems to be buggy? please use setDirections(int) to set directions
+    retval = cudaMemset(d_directions, 1, mem_size_directions);
 }
 
 void OpenSteer::SteerToFollowPath::run()
@@ -57,12 +58,12 @@ void OpenSteer::SteerToFollowPath::close()
 void OpenSteer::SteerToFollowPath::setPathwayData(PolylinePathway& pathway)
 {
     PathwayData *pwData = transformPathway(pathway);
-    cudaMemcpyToSymbol("pathway", pwData, sizeof(PathwayData), 0, cudaMemcpyHostToDevice);
+    cudaMemcpyToSymbol("followPathway", pwData, sizeof(PathwayData), 0, cudaMemcpyHostToDevice);
     delete pwData;
 }
 
 void OpenSteer::SteerToFollowPath::setDirections(int *directions)
 {
-    cudaMemcpy(d_directions, directions, getNumberOfAgents()*sizeof(int), cudaMemcpyHostToDevice);
+    cudaMemcpy(d_directions, directions, mem_size_directions, cudaMemcpyHostToDevice);
 }
 

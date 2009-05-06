@@ -29,7 +29,7 @@
 #endif
 
 // Pathway data
-__constant__ PathwayData pathway;
+__constant__ PathwayData stayOnPathway;
 
 __device__ void
 steerForSeekKernelSingle(float3 position, float3 velocity, float3 seekVector, float3 *steeringVectors, int ignore, float weight, kernel_options options);
@@ -73,7 +73,7 @@ steerToStayOnPathKernel(VehicleData *vehicleData, float3 *steeringVectors, float
     // find the point on the path nearest the predicted future position
     float3 tangent;
     float outside;
-    float3 onPath = mapPointToPath(pathway.points, pathway.numElements, pathway.radius, futurePosition, &tangent, &outside);
+    float3 onPath = mapPointToPath(stayOnPathway.points, stayOnPathway.numElements, stayOnPathway.radius, futurePosition, &tangent, &outside);
     
     float3 target;
     int ignore;
