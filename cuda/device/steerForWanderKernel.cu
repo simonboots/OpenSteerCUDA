@@ -53,6 +53,8 @@ steerForWander2DKernel(VehicleData *vehicleData, float *random, float dt, float3
     U_F(threadIdx.x + blockDim.x) = ((float*)(*vehicleData).up)[blockOffset3 + threadIdx.x + blockDim.x];
     U_F(threadIdx.x + 2*blockDim.x) = ((float*)(*vehicleData).up)[blockOffset3 + threadIdx.x + 2*blockDim.x];
     
+    __syncthreads();
+    
     float speed = 12 * dt;
     
     float wanderSide = scalarRandomWalk(wanderData[id].x, speed, -1, +1, random[id]);

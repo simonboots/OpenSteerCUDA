@@ -134,7 +134,7 @@ float3TruncateLength(float3 vec, float maxLength)
 {
     float lengthSquared = maxLength * maxLength;
     float vecLengthSquared = float3LengthSquared(vec);
-    if (vecLengthSquared <= lengthSquared)
+    if (vecLengthSquared <= lengthSquared || fabs(vecLengthSquared) < 0.01f)
         return vec;
     else {
         float vecLength = sqrtf(vecLengthSquared);

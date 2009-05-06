@@ -35,6 +35,7 @@ namespace OpenSteer
             int numOfAgents;
             MemoryBackend *memoryBackend;
             float elapsedTime;
+            //float3* h_steeringVectors;
             
             // device memory pointers
             float3 *d_steeringVectors;

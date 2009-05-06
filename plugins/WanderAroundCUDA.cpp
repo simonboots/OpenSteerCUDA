@@ -39,10 +39,11 @@
 #include <iomanip>
 #include <sstream>
 #include "OpenSteer/SimpleVehicleMB.h"
-#include "ObstacleData.h"
+#include "OpenSteer/ObstacleData.h"
 #include "OpenSteer/OpenSteerDemo.h"
-#include "OpenSteer/Grid.h"
+#include "OpenSteer/CUDAPlugIn.h"
 #include "CUDAKernelOptions.cu"
+#include "kernelclasses.h"
 
 #define testOneObstacleOverlap(radius, center)               \
 {                                                            \
@@ -52,9 +53,6 @@
 }
 
 using namespace OpenSteer;
-
-void runWanderAroundKernel(VehicleData *h_vehicleData, VehicleConst *h_vehicleConst, int numOfVehicles, ObstacleData *h_obstacleData, int numOfObstacles, int* h_neighborIndices, int numOfNIndices, int* h_neighborAgents, int numOfNAgents, float elapsedTime);
-void endWanderAround(void);
 
 typedef std::vector<SphericalObstacle*> SOG;  // spherical obstacle group
 typedef SOG::const_iterator SOI;              // spherical obstacle iterator
@@ -89,7 +87,6 @@ class WanderAroundCUDA : public SimpleVehicleMB
         // per frame simulation update
         void update (const float currentTime, const float elapsedTime)
         {
-            //applySteeringForce(steerForWander(elapsedTime).setYtoZero(), elapsedTime);
             annotationVelocityAcceleration ();
             recordTrailVertex (currentTime, position());
         }
@@ -107,7 +104,7 @@ class WanderAroundCUDA : public SimpleVehicleMB
 // PlugIn for OpenSteerDemo
 
 
-class WanderAroundCUDAPlugIn : public PlugIn
+class WanderAroundCUDAPlugIn : public CUDAPlugIn
     {
     public:
         
@@ -115,22 +112,20 @@ class WanderAroundCUDAPlugIn : public PlugIn
         
         float selectionOrderSortKey (void) {return 5.f;}
         
-        const static int numOfAgents = 1024;
         const static int numOfObstacles = 30;
         unsigned int obstacleCount;
-        bool first_time;
-        Grid *grid;
         
         // be more "nice" to avoid a compiler warning
         virtual ~WanderAroundCUDAPlugIn() {}
         
         void open (void)
         {
-            for (int i = 0; i<numOfAgents; i++) {
+            setNumberOfAgents(1024);
+            
+            for (int i = 0; i<getNumberOfAgents(); i++) {
                 theVehicles.push_back(new WanderAroundCUDA());
             }
             
-            first_time = true;
             gWanderAround = theVehicles.front();
             OpenSteerDemo::selectedVehicle = gWanderAround;
             
@@ -145,47 +140,28 @@ class WanderAroundCUDAPlugIn : public PlugIn
             
             for (int i = 0; i < numOfObstacles; i++) addOneObstacle();
             
-            grid = new Grid();
+            FindNeighbors *fn = new FindNeighbors(4.24f);
+            addKernel(fn);
+            SteerToAvoidObstacles *stao = new SteerToAvoidObstacles(1.f, NONE);
+            addKernel(stao);
+            addKernel(new SteerToAvoidCloseNeighbors(fn, 0.f, 8.f, IGNORE_UNLESS_ZERO));
+            addKernel(new SteerToAvoidNeighbors(fn, 3.f, 8.f, IGNORE_UNLESS_ZERO));
+            addKernel(new SteerForWander(1.f, NONE));
+            addKernel(new Update(NONE));
+            
+            initKernels();
+            
+            stao->setObstacles(&allObstacles);
+            
         }
         
         void update (const float currentTime, const float elapsedTime)
         {
-            // prepare obstacle data
-            static ObstacleData *obstacles = NULL;
-            if (first_time == true) {
-                obstacles = new ObstacleData[numOfObstacles];
-                for (int i = 0; i < numOfObstacles; i++) {
-                    obstacles[i].center = make_float3(allObstacles.at(i)->center.x,
-                                                      allObstacles.at(i)->center.y,
-                                                      allObstacles.at(i)->center.z);
-                    obstacles[i].radius = allObstacles.at(i)->radius;
-                }
-
-            }
-            
-            MemoryBackend *mb = MemoryBackend::instance();
-            VehicleData *vData = mb->getVehicleData();
-            VehicleConst *vConst = mb->getVehicleConst();
-            
-            int n = 0;
-            for (iterator iter = theVehicles.begin(); iter != theVehicles.end(); iter++) {
-                grid->save((**iter).position(), n++);
-            }
-            
-            runWanderAroundKernel(vData, vConst, numOfAgents, obstacles, numOfObstacles, grid->getIndices(), grid->numOfCells(), grid->getAgents(), grid->numOfAgents(), elapsedTime);
-            
-            grid->clear();
-            
-            if (obstacles != NULL) {
-                delete[] obstacles;
-                obstacles = NULL;
-            }
+            CUDAPlugIn::update(currentTime, elapsedTime);
             
             for (iterator iter = theVehicles.begin(); iter != theVehicles.end(); iter++) {
                 (*iter)->update(currentTime, elapsedTime);
             }
-            
-            first_time = false;
         }
         
         void redraw (const float currentTime, const float elapsedTime)
@@ -243,17 +219,14 @@ class WanderAroundCUDAPlugIn : public PlugIn
         
         void close (void)
         {
+            closeKernels();
             theVehicles.clear ();
             delete (gWanderAround);
             gWanderAround = NULL;
-            endWanderAround();
             allObstacles.clear();
             //obstacleCount = 0;
-            
-            delete grid;
-            
-            // reset MemoryBackend of SimpleVehicleMB
-            SimpleVehicleMB::resetBackend();
+
+            CUDAPlugIn::close();
         }
         
         void reset (void)
@@ -273,8 +246,6 @@ class WanderAroundCUDAPlugIn : public PlugIn
 
 
 WanderAroundCUDAPlugIn gWanderAroundCUDAPlugIn;
-
-
 
 
 // ----------------------------------------------------------------------------

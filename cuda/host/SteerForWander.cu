@@ -33,6 +33,9 @@ void OpenSteer::SteerForWander::init()
     if (retval != cudaSuccess)
         cout << "Error while allocating d_wanderData memory: " << cudaGetErrorString(retval) << endl;
     
+    // d_wanderData memset
+    cudaMemset(d_wanderData, 0, mem_size_wander);
+    
     // device memory for random numbers
     mem_size_random = randomizedVector->size() * sizeof(float);
     retval = cudaMalloc((void **)&d_randomNumbers, mem_size_random);

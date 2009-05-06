@@ -6,7 +6,6 @@ typedef std::vector<AbstractCUDAKernel *>::const_iterator kernel_iterator;
 
 OpenSteer::CUDAPlugIn::CUDAPlugIn()
 {
-    memoryBackend = MemoryBackend::instance();
     this->setNumberOfAgents(0);
     kernels.clear();
     
@@ -80,6 +79,9 @@ void OpenSteer::CUDAPlugIn::initKernels(void)
     for (kernel_iterator i = kernels.begin(); i != kernels.end(); i++) {
         (*i)->init();
     }
+    
+    // alloc memory for steering vectors (for debuggin reasons)
+    //h_steeringVectors = new float3[getNumberOfAgents()];
 }
 
 void OpenSteer::CUDAPlugIn::closeKernels(void)
@@ -98,6 +100,9 @@ void OpenSteer::CUDAPlugIn::closeKernels(void)
     d_vehicleConst = NULL;
     
     MemoryBackend::reset();
+    
+    // for debugging reasons
+    //delete[] h_steeringVectors;
 }
 
 void OpenSteer::CUDAPlugIn::update(const float currentTime, const float elapsedTime)
@@ -106,13 +111,15 @@ void OpenSteer::CUDAPlugIn::update(const float currentTime, const float elapsedT
     
     cudaMemset(d_steeringVectors, 0, mem_size_steering);
     
+//    int h = 0;
     // launch kernels
     for (kernel_iterator i = kernels.begin(); i != kernels.end(); i++) {
         (*i)->run();
+//        if (h == 4)
+//            cudaMemcpy(h_steeringVectors, d_steeringVectors, sizeof(float3)*this->getNumberOfAgents(), cudaMemcpyDeviceToHost);
+//        h++;
     }
-    
-    // run updateKernel
-    
+        
     cudaMemcpy(memoryBackend->getVehicleData(), d_vehicleData, mem_size_vehicle_data, cudaMemcpyDeviceToHost);
 }
 
