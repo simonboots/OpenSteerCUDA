@@ -167,7 +167,6 @@
 		1C9118E40F9C919600941CFC /* CUDANeighborUtilities.cu */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 4; name = CUDANeighborUtilities.cu; path = ../cuda/device/CUDANeighborUtilities.cu; sourceTree = "<group>"; };
 		1C9119700F9CDB3900941CFC /* steerForSeparationKernel.cu */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 4; name = steerForSeparationKernel.cu; path = ../cuda/device/steerForSeparationKernel.cu; sourceTree = "<group>"; };
 		1C9C36A10F94872900F4A359 /* FollowPathCUDA.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FollowPathCUDA.cpp; sourceTree = "<group>"; };
-		1C9C36E50F948A4100F4A359 /* FollowPathCUDAStarter.cu */ = {isa = PBXFileReference; explicitFileType = sourcecode.c; fileEncoding = 4; path = FollowPathCUDAStarter.cu; sourceTree = "<group>"; };
 		1C9C36E90F948BD500F4A359 /* PathwayDataFunc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PathwayDataFunc.h; sourceTree = "<group>"; };
 		1C9C36EA0F948BD500F4A359 /* PathwayDataFunc.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PathwayDataFunc.cpp; sourceTree = "<group>"; };
 		1C9D1FEF0FADA58900A43134 /* JustWanderCUDA.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = JustWanderCUDA.cpp; sourceTree = "<group>"; };
@@ -489,7 +488,6 @@
 				1C1B66E50F9DEC13002C5E0C /* BoidsCUDA.cpp */,
 				1CD457470F936E62008D29D5 /* FollowPath.cpp */,
 				1C9C36A10F94872900F4A359 /* FollowPathCUDA.cpp */,
-				1C9C36E50F948A4100F4A359 /* FollowPathCUDAStarter.cu */,
 				1C9D1FEF0FADA58900A43134 /* JustWanderCUDA.cpp */,
 				32FFF56806E9CECE00E1D8A3 /* MultiplePursuit.cpp */,
 				1C18EE1C0F7BF24A00100C21 /* MultiplePursuitCUDA.cpp */,
