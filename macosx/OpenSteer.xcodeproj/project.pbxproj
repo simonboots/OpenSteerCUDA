@@ -183,7 +183,6 @@
 		1CC0349A0FA7338400104572 /* SteerForWander.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SteerForWander.h; path = ../cuda/host/SteerForWander.h; sourceTree = "<group>"; };
 		1CC034D30FA73C7500104572 /* AbstractCUDAKernel.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AbstractCUDAKernel.cpp; sourceTree = "<group>"; };
 		1CC8D5FB0F8DC64B006CEA94 /* WanderAroundCUDA.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = WanderAroundCUDA.cpp; sourceTree = "<group>"; };
-		1CC8D6060F8DC8D9006CEA94 /* WanderAroundCUDAStarter.cu */ = {isa = PBXFileReference; explicitFileType = sourcecode.c; fileEncoding = 4; path = WanderAroundCUDAStarter.cu; sourceTree = "<group>"; };
 		1CC990830F8B5346009D50A4 /* resetOnCollisionKernel.cu */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 4; name = resetOnCollisionKernel.cu; path = ../cuda/device/resetOnCollisionKernel.cu; sourceTree = "<group>"; };
 		1CC9C2180F70FD1400990434 /* Polonaise.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Polonaise.cpp; sourceTree = "<group>"; };
 		1CCAD2CB0F6E81CA005A3712 /* libcuda.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libcuda.dylib; path = /usr/local/cuda/lib/libcuda.dylib; sourceTree = "<absolute>"; };
@@ -491,7 +490,6 @@
 				1CBD02080F72795400DEE3E8 /* PolonaiseCUDA.cpp */,
 				1CA02A120F8D188100D03331 /* WanderAround.cpp */,
 				1CC8D5FB0F8DC64B006CEA94 /* WanderAroundCUDA.cpp */,
-				1CC8D6060F8DC8D9006CEA94 /* WanderAroundCUDAStarter.cu */,
 			);
 			name = plugins;
 			path = ../plugins;
