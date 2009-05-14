@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1C0335330FBAFBA9005D2DCC /* Boids.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 32FFF56406E9CECE00E1D8A3 /* Boids.cpp */; };
 		1C0FEF1D0F88C816002009B6 /* RandomizedVector.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1C0FEF1C0F88C816002009B6 /* RandomizedVector.cpp */; };
 		1C0FF04D0F88F388002009B6 /* findFollowerKernel.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1C0FF03C0F88E5A5002009B6 /* findFollowerKernel.cu */; };
 		1C18ED9E0F7BB6A800100C21 /* CUDAVectorUtilities.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1C18ED9A0F7BB51000100C21 /* CUDAVectorUtilities.cu */; };
@@ -669,6 +670,7 @@
 				1C5581960FB1A930009151EB /* SteerToStayOnPath.cu in Sources */,
 				1C5581C60FB1B524009151EB /* WanderAroundCUDA.cpp in Sources */,
 				1C5582150FB1B7D4009151EB /* PolonaiseCUDA.cpp in Sources */,
+				1C0335330FBAFBA9005D2DCC /* Boids.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
