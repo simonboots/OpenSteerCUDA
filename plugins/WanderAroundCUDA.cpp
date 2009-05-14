@@ -147,7 +147,7 @@ class WanderAroundCUDAPlugIn : public CUDAPlugIn
             addKernel(new SteerToAvoidCloseNeighbors(fn, 0.f, 8.f, IGNORE_UNLESS_ZERO));
             addKernel(new SteerToAvoidNeighbors(fn, 3.f, 8.f, IGNORE_UNLESS_ZERO));
             addKernel(new SteerForWander(1.f, NONE));
-            addKernel(new Update(NONE));
+            addKernel(new Modify(NONE));
             
             initKernels();
             

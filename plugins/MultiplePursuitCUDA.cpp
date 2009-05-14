@@ -234,7 +234,7 @@ class MpPlugInCUDA : public CUDAPlugIn
             smp = new SimplePursuitMultiplier();
             addKernel(smp);
             addKernel(new SteerForPursuit(smp, 20.f, 1.f, NONE));
-            addKernel(new Update(NONE));
+            addKernel(new Modify(NONE));
             
             initKernels();
         }

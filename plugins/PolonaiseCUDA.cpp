@@ -125,7 +125,7 @@ public:
         FindFollower *ff = new FindFollower();
         addKernel(ff);
         addKernel(new SteerForSeek(ff, 1.f, NONE));
-        addKernel(new Update(NONE));
+        addKernel(new Modify(NONE));
         
         initKernels();
     }

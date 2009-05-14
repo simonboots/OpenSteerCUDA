@@ -142,7 +142,7 @@ class BoidsCUDAPlugIn : public CUDAPlugIn
             addKernel(new SteerForSeparation(fn, 5.f, -0.707f, 5.f, NONE));
             addKernel(new SteerForAlignment(fn, 7.5f, 0.7f, 8.f, NONE));
             addKernel(new SteerForCohesion(fn, 9.f, -0.15f, 8.f, NONE));
-            addKernel(new Update((kernel_options)(SPHERICAL_WRAP_AROUND | LOCAL_SPACE_BANKING)));
+            addKernel(new Modify((kernel_options)(SPHERICAL_WRAP_AROUND | LOCAL_SPACE_BANKING)));
             
             initKernels();
         }

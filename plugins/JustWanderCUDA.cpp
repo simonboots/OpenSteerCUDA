@@ -122,7 +122,7 @@ class JustWanderCUDAPlugIn : public CUDAPlugIn
             addKernel(new SteerToAvoidCloseNeighbors(fn, 0.f, 5.f, NONE));
             addKernel(new SteerForWander(1.f, IGNORE_UNLESS_ZERO));
             
-            addKernel(new Update(SPHERICAL_WRAP_AROUND));
+            addKernel(new Modify(SPHERICAL_WRAP_AROUND));
             
             initKernels();
         }

@@ -1,5 +1,5 @@
-#ifndef _UPDATE_KERNEL_CU_
-#define _UPDATE_KERNEL_CU_
+#ifndef _MODIFY_KERNEL_CU_
+#define _MODIFY_KERNEL_CU_
 
 #include <cutil.h>
 #include "OpenSteer/VehicleData.h"
@@ -25,7 +25,7 @@
 #endif
 
 __global__ void
-updateKernel(VehicleData *vehicleData, VehicleConst *vehicleConst, float3 *steeringVectors, float elapsedTime, kernel_options options)
+modifyKernel(VehicleData *vehicleData, VehicleConst *vehicleConst, float3 *steeringVectors, float elapsedTime, kernel_options options)
 {
     int id = (blockIdx.x * blockDim.x + threadIdx.x);
     //int numOfAgents = gridDim.x * blockDim.x;
@@ -213,4 +213,4 @@ updateKernel(VehicleData *vehicleData, VehicleConst *vehicleConst, float3 *steer
     
 }
 
-#endif // _UPDATE_KERNEL_CU_
+#endif // _MODIFY_KERNEL_CU_

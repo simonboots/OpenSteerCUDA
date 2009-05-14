@@ -1,16 +1,16 @@
-#ifndef _UPDATE_H_
-#define _UPDATE_H_
+#ifndef _MODIFY_H_
+#define _MODIFY_H_
 
 #include "OpenSteer/AbstractCUDAKernel.h"
 #include "CUDAKernelOptions.cu"
 
 namespace OpenSteer {
     
-    class Update : public AbstractCUDAKernel
+    class Modify : public AbstractCUDAKernel
         {
         public:
-            Update(kernel_options);
-            ~Update(void);
+            Modify(kernel_options);
+            ~Modify(void);
             
             void init(void);
             void run(void);
@@ -22,4 +22,4 @@ namespace OpenSteer {
     
 } // namespace
 
-#endif // _UPDATE_H_
+#endif // _MODIFY_H_

@@ -160,7 +160,7 @@ class FollowPathCUDAPlugIn : public CUDAPlugIn
             SteerToFollowPath *stfp = new SteerToFollowPath(3.f, 1.f, IGNORE_UNLESS_ZERO);
             addKernel(stfp);
             
-            addKernel(new Update(NONE));
+            addKernel(new Modify(NONE));
             
             initKernels();
             

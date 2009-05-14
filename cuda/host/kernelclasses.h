@@ -18,6 +18,6 @@
 #include "SteerToAvoidObstacles.h"
 #include "SteerToFollowPath.h"
 #include "SteerToStayOnPath.h"
-#include "Update.h"
+#include "Modify.h"
 
 #endif // _KERNELCLASSES_H_
