@@ -107,7 +107,7 @@ public:
 
     void open (void)
     {
-        setNumberOfAgents(2048);
+        setNumberOfAgents(128);
         for (int i = 0; i<getNumberOfAgents(); i++) {
             theVehicle.push_back(new PolonaiseCUDA());
         }

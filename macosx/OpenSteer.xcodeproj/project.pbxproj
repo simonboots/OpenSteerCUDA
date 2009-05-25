@@ -593,7 +593,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "install_name_tool -change /Volumes/Builds/nv/build/rel/gpu_drv/r180/r180_00/drivers/gpgpu/bin/i386_Darwin_release/libcuda.dylib @rpath/libcuda.dylib $BUILT_PRODUCTS_DIR/OpenSteerDemo.app/Contents/MacOS/OpenSteerDemo";
+			shellScript = "#install_name_tool -change /Volumes/Builds/nv/build/rel/gpu_drv/r180/r180_00/drivers/gpgpu/bin/i386_Darwin_release/libcuda.dylib @rpath/libcuda.dylib $BUILT_PRODUCTS_DIR/OpenSteerDemo.app/Contents/MacOS/OpenSteerDemo";
 		};
 		1C66895B0FACB9D0003361FD /* Remove .linkinfo files */ = {
 			isa = PBXShellScriptBuildPhase;
