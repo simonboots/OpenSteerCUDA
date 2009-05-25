@@ -122,9 +122,9 @@ public:
         OpenSteerDemo::camera.fixedPosition.set (40, 40, 40);
         
         // initialize kernels
-        FindFollower *ff = new FindFollower();
-        addKernel(ff);
-        addKernel(new SteerForSeek(ff, 1.f, NONE));
+        FindHaunted *fh = new FindHaunted(16);
+        addKernel(fh);
+        addKernel(new SteerForSeek(fh, 1.f, NONE));
         addKernel(new Modify(NONE));
         
         initKernels();

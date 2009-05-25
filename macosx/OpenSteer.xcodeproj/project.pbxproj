@@ -8,8 +8,12 @@
 
 /* Begin PBXBuildFile section */
 		1C0335330FBAFBA9005D2DCC /* Boids.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 32FFF56406E9CECE00E1D8A3 /* Boids.cpp */; };
+		1C0537BA0FC7FA7F001496D9 /* findHauntedKernel.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1C0FF03C0F88E5A5002009B6 /* findHauntedKernel.cu */; };
+		1C0A205B0FBF1B2C0041CA7D /* MultiplePursuitCUDA.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1C18EE1C0F7BF24A00100C21 /* MultiplePursuitCUDA.cpp */; };
+		1C0A205C0FBF1B310041CA7D /* FollowPathCUDA.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1C9C36A10F94872900F4A359 /* FollowPathCUDA.cpp */; };
+		1C0A205D0FBF1B340041CA7D /* BoidsCUDA.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1C1B66E50F9DEC13002C5E0C /* BoidsCUDA.cpp */; };
+		1C0A20650FBF1C260041CA7D /* MapDrive.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 32FFF56706E9CECE00E1D8A3 /* MapDrive.cpp */; };
 		1C0FEF1D0F88C816002009B6 /* RandomizedVector.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1C0FEF1C0F88C816002009B6 /* RandomizedVector.cpp */; };
-		1C0FF04D0F88F388002009B6 /* findFollowerKernel.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1C0FF03C0F88E5A5002009B6 /* findFollowerKernel.cu */; };
 		1C18ED9E0F7BB6A800100C21 /* CUDAVectorUtilities.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1C18ED9A0F7BB51000100C21 /* CUDAVectorUtilities.cu */; };
 		1C18EDA70F7BC2FD00100C21 /* CUDAFloatUtilities.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1C18EDA60F7BC25D00100C21 /* CUDAFloatUtilities.cu */; };
 		1C18EE6D0F7C039A00100C21 /* steerForPursuitKernel.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1C18EE6C0F7C037F00100C21 /* steerForPursuitKernel.cu */; };
@@ -40,7 +44,7 @@
 		1C7204FB0FB05A120045C647 /* SteerForEvasion.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1C308CA80FAEE200000510B3 /* SteerForEvasion.cu */; };
 		1C7204FC0FB05A130045C647 /* SteerForCohesion.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1C308D850FAF109C000510B3 /* SteerForCohesion.cu */; };
 		1C7204FD0FB05A160045C647 /* SteerForAlignment.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1C308D7B0FAF0DDD000510B3 /* SteerForAlignment.cu */; };
-		1C7204FE0FB05A180045C647 /* FindFollower.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1C4BE7C40FAE00EC0028D34A /* FindFollower.cu */; };
+		1C7204FE0FB05A180045C647 /* FindHaunted.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1C4BE7C40FAE00EC0028D34A /* FindHaunted.cu */; };
 		1C7206B20FB07D510045C647 /* SimplePursuitMultiplier.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1C7206380FB06A060045C647 /* SimplePursuitMultiplier.cu */; };
 		1C7206B40FB07D640045C647 /* simplePursuitMultiplierKernel.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1C72063E0FB06DE60045C647 /* simplePursuitMultiplierKernel.cu */; };
 		1C7208150FB09E470045C647 /* SteerToFollowPath.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1C308DAE0FAF1B68000510B3 /* SteerToFollowPath.cu */; };
@@ -102,7 +106,7 @@
 		1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
 		1C0FEF1C0F88C816002009B6 /* RandomizedVector.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RandomizedVector.cpp; sourceTree = "<group>"; };
 		1C0FEF380F88CC59002009B6 /* RandomizedVector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RandomizedVector.h; sourceTree = "<group>"; };
-		1C0FF03C0F88E5A5002009B6 /* findFollowerKernel.cu */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 4; name = findFollowerKernel.cu; path = ../cuda/device/findFollowerKernel.cu; sourceTree = "<group>"; };
+		1C0FF03C0F88E5A5002009B6 /* findHauntedKernel.cu */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 4; name = findHauntedKernel.cu; path = ../cuda/device/findHauntedKernel.cu; sourceTree = "<group>"; };
 		1C18ED9A0F7BB51000100C21 /* CUDAVectorUtilities.cu */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 4; name = CUDAVectorUtilities.cu; path = ../cuda/device/CUDAVectorUtilities.cu; sourceTree = "<group>"; };
 		1C18EDA60F7BC25D00100C21 /* CUDAFloatUtilities.cu */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 4; name = CUDAFloatUtilities.cu; path = ../cuda/device/CUDAFloatUtilities.cu; sourceTree = "<group>"; };
 		1C18EDA90F7BC3B600100C21 /* steerForFleeKernel.cu */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 4; name = steerForFleeKernel.cu; path = ../cuda/device/steerForFleeKernel.cu; sourceTree = "<group>"; };
@@ -140,8 +144,8 @@
 		1C3569F80F9F1B7C0079E377 /* libcutilD.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libcutilD.a; path = CUDA/lib/libcutilD.a; sourceTree = SYSTEM_DEVELOPER_DIR; };
 		1C45007A0F8E06E900804B2F /* steerToAvoidObstaclesKernel.cu */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 4; name = steerToAvoidObstaclesKernel.cu; path = ../cuda/device/steerToAvoidObstaclesKernel.cu; sourceTree = "<group>"; };
 		1C4500920F8E0EA000804B2F /* ObstacleData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObstacleData.h; sourceTree = "<group>"; };
-		1C4BE7C30FAE00EC0028D34A /* FindFollower.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FindFollower.h; path = ../cuda/host/FindFollower.h; sourceTree = "<group>"; };
-		1C4BE7C40FAE00EC0028D34A /* FindFollower.cu */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 4; name = FindFollower.cu; path = ../cuda/host/FindFollower.cu; sourceTree = "<group>"; };
+		1C4BE7C30FAE00EC0028D34A /* FindHaunted.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FindHaunted.h; path = ../cuda/host/FindHaunted.h; sourceTree = "<group>"; };
+		1C4BE7C40FAE00EC0028D34A /* FindHaunted.cu */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 4; name = FindHaunted.cu; path = ../cuda/host/FindHaunted.cu; sourceTree = "<group>"; };
 		1C4BE7C70FAE02860028D34A /* SeekVectorProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SeekVectorProvider.h; sourceTree = "<group>"; };
 		1C4BE7CC0FAE04270028D34A /* SteerForSeek.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SteerForSeek.h; path = ../cuda/host/SteerForSeek.h; sourceTree = "<group>"; };
 		1C4BE7CD0FAE04270028D34A /* SteerForSeek.cu */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 4; name = SteerForSeek.cu; path = ../cuda/host/SteerForSeek.cu; sourceTree = "<group>"; };
@@ -295,7 +299,7 @@
 				1C9119700F9CDB3900941CFC /* steerForSeparationKernel.cu */,
 				1C1B66130F9DD2FD002C5E0C /* steerForAlignmentKernel.cu */,
 				1C1B66170F9DD4CC002C5E0C /* steerForCohesionKernel.cu */,
-				1C0FF03C0F88E5A5002009B6 /* findFollowerKernel.cu */,
+				1C0FF03C0F88E5A5002009B6 /* findHauntedKernel.cu */,
 				1C6C7F310F9C8A4E003932BE /* findNeighborsKernel.cu */,
 				1CC990830F8B5346009D50A4 /* resetOnCollisionKernel.cu */,
 				1C72063E0FB06DE60045C647 /* simplePursuitMultiplierKernel.cu */,
@@ -335,8 +339,8 @@
 				1C4BE7FA0FAE31D40028D34A /* SteerForTargetSpeed.h */,
 				1C9D20720FADB32800A43134 /* Modify.cu */,
 				1C9D20710FADB32800A43134 /* Modify.h */,
-				1C4BE7C40FAE00EC0028D34A /* FindFollower.cu */,
-				1C4BE7C30FAE00EC0028D34A /* FindFollower.h */,
+				1C4BE7C40FAE00EC0028D34A /* FindHaunted.cu */,
+				1C4BE7C30FAE00EC0028D34A /* FindHaunted.h */,
 				1C308C3C0FAED33C000510B3 /* SteerToAvoidObstacles.h */,
 				1C308C3D0FAED33C000510B3 /* SteerToAvoidObstacles.cu */,
 				1C308C740FAEDF1F000510B3 /* SteerForPursuit.h */,
@@ -630,7 +634,6 @@
 				1C6473A80F821F92006F4046 /* MemoryBackend.cpp in Sources */,
 				1CA56BDF0F824EF800819A74 /* SimpleVehicleMB.cpp in Sources */,
 				1C0FEF1D0F88C816002009B6 /* RandomizedVector.cpp in Sources */,
-				1C0FF04D0F88F388002009B6 /* findFollowerKernel.cu in Sources */,
 				1C45011C0F8E404C00804B2F /* steerToAvoidObstaclesKernel.cu in Sources */,
 				1C9C36EB0F948BD500F4A359 /* PathwayDataFunc.cpp in Sources */,
 				1C6A888E0F95F6F100A2D253 /* steerForEvasionKernel.cu in Sources */,
@@ -661,7 +664,7 @@
 				1C7204FB0FB05A120045C647 /* SteerForEvasion.cu in Sources */,
 				1C7204FC0FB05A130045C647 /* SteerForCohesion.cu in Sources */,
 				1C7204FD0FB05A160045C647 /* SteerForAlignment.cu in Sources */,
-				1C7204FE0FB05A180045C647 /* FindFollower.cu in Sources */,
+				1C7204FE0FB05A180045C647 /* FindHaunted.cu in Sources */,
 				1C7206B20FB07D510045C647 /* SimplePursuitMultiplier.cu in Sources */,
 				1C7206B40FB07D640045C647 /* simplePursuitMultiplierKernel.cu in Sources */,
 				1C7208150FB09E470045C647 /* SteerToFollowPath.cu in Sources */,
@@ -671,6 +674,11 @@
 				1C5581C60FB1B524009151EB /* WanderAroundCUDA.cpp in Sources */,
 				1C5582150FB1B7D4009151EB /* PolonaiseCUDA.cpp in Sources */,
 				1C0335330FBAFBA9005D2DCC /* Boids.cpp in Sources */,
+				1C0A205B0FBF1B2C0041CA7D /* MultiplePursuitCUDA.cpp in Sources */,
+				1C0A205C0FBF1B310041CA7D /* FollowPathCUDA.cpp in Sources */,
+				1C0A205D0FBF1B340041CA7D /* BoidsCUDA.cpp in Sources */,
+				1C0A20650FBF1C260041CA7D /* MapDrive.cpp in Sources */,
+				1C0537BA0FC7FA7F001496D9 /* findHauntedKernel.cu in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

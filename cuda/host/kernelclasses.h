@@ -1,7 +1,7 @@
 #ifndef _KERNELCLASSES_H_
 #define _KERNELCLASSES_H_
 
-#include "FindFollower.h"
+#include "FindHaunted.h"
 #include "FindNeighbors.h"
 #include "SimplePursuitMultiplier.h"
 #include "SteerForAlignment.h"

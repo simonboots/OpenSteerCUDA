@@ -1,4 +1,4 @@
-#include "FindFollower.h"
+#include "FindHaunted.h"
 #include <cuda_runtime.h>
 #include "OpenSteer/VehicleData.h"
 #include "CUDAKernelOptions.cu"
@@ -8,17 +8,18 @@ using namespace OpenSteer;
 using namespace std;
 
 __global__ void
-findFollowerKernel(VehicleData *vehicleData, float3 *seekVectors);
+findHauntedKernel(VehicleData *vehicleData, float3 *seekVectors, unsigned int stride);
 
-OpenSteer::FindFollower::FindFollower()
+OpenSteer::FindHaunted::FindHaunted(unsigned int stride)
 {
     d_seekVectors = NULL;
     threadsPerBlock = 128;
+    this->stride = stride;
 }
 
-OpenSteer::FindFollower::~FindFollower() {}
+OpenSteer::FindHaunted::~FindHaunted() {}
 
-void OpenSteer::FindFollower::init()
+void OpenSteer::FindHaunted::init()
 {
     // device memory for seek vector
     mem_size_seek_vectors = getNumberOfAgents()*sizeof(float3);
@@ -27,12 +28,12 @@ void OpenSteer::FindFollower::init()
         cout << "Error while allocating d_seekVectors memory: " << cudaGetErrorString(retval) << endl;
 }
 
-void OpenSteer::FindFollower::run()
+void OpenSteer::FindHaunted::run()
 {    
-    findFollowerKernel<<<gridDim(), blockDim()>>>(getVehicleData(), d_seekVectors);
+    findHauntedKernel<<<gridDim(), blockDim()>>>(getVehicleData(), d_seekVectors, stride);
 }
 
-void OpenSteer::FindFollower::close()
+void OpenSteer::FindHaunted::close()
 {
     if (d_seekVectors != NULL) {
         cudaFree(d_seekVectors);

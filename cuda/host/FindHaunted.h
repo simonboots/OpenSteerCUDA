@@ -1,5 +1,5 @@
-#ifndef _FIND_FOLLOWER_H_
-#define _FIND_FOLLOWER_H_
+#ifndef _FIND_HAUNTED_H_
+#define _FIND_HAUNTED_H_
 
 #include "OpenSteer/AbstractCUDAKernel.h"
 #include "OpenSteer/SeekVectorProvider.h"
@@ -7,11 +7,11 @@
 
 namespace OpenSteer {
     
-    class FindFollower : public AbstractCUDAKernel, public SeekVectorProvider
+    class FindHaunted : public AbstractCUDAKernel, public SeekVectorProvider
         {
         public:
-            FindFollower();
-            ~FindFollower(void);
+            FindHaunted(unsigned int);
+            ~FindHaunted(void);
             
             void init(void);
             void run(void);
@@ -19,8 +19,9 @@ namespace OpenSteer {
             
         private:
             unsigned int mem_size_seek_vectors;
+            unsigned int stride;
         };
     
 } // namespace
 
-#endif // _FIND_FOLLOWER_H_
+#endif // _FIND_HAUNTED_H_
