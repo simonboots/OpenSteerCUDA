@@ -10,14 +10,14 @@ using namespace OpenSteer;
 using namespace std;
 
 __global__ void
-findNeighborsKernel(VehicleData* vehicleData, int* indices, int* agents, NeighborData* neighbors, float radius);
+findNeighborsKernel(VehicleData* vehicleData, int* indices, int* vehicles, NeighborData* neighbors, float radius);
 
 OpenSteer::FindNeighbors::FindNeighbors(float radius)
 {
     grid = NULL;
     d_neighborData = NULL;
     d_indices = NULL;
-    d_agents = NULL;
+    d_vehicles = NULL;
     threadsPerBlock = 128;
     this->radius = radius;
 }
@@ -41,8 +41,8 @@ void OpenSteer::FindNeighbors::init()
         cout << "Error while allocating d_indices memory: " << cudaGetErrorString(retval) << endl;
     
     // device memory for neighbor agents
-    mem_size_neighbor_agents = getNumberOfAgents()*sizeof(int);
-    retval = cudaMalloc((void **)&d_agents, mem_size_neighbor_agents);
+    mem_size_neighbor_vehicles = getNumberOfAgents()*sizeof(int);
+    retval = cudaMalloc((void **)&d_vehicles, mem_size_neighbor_vehicles);
     if (retval != cudaSuccess)
         cout << "Error while allocating d_agents memory: " << cudaGetErrorString(retval) << endl;
 }
@@ -56,9 +56,9 @@ void OpenSteer::FindNeighbors::run()
     }
     
     cudaMemcpy(d_indices, grid->getIndices(), grid->numOfCells()*sizeof(int), cudaMemcpyHostToDevice);
-    cudaMemcpy(d_agents, grid->getAgents(), grid->numOfAgents()*sizeof(int), cudaMemcpyHostToDevice);
+    cudaMemcpy(d_vehicles, grid->getAgents(), grid->numOfAgents()*sizeof(int), cudaMemcpyHostToDevice);
     
-    findNeighborsKernel<<<gridDim(), blockDim()>>>(getVehicleData(), d_indices, d_agents, d_neighborData, radius);
+    findNeighborsKernel<<<gridDim(), blockDim()>>>(getVehicleData(), d_indices, d_vehicles, d_neighborData, radius);
     
     grid->clear();
 }
@@ -77,8 +77,8 @@ void OpenSteer::FindNeighbors::close()
         d_indices = NULL;
     }
     
-    if (d_agents != NULL) {
-        cudaFree(d_agents);
-        d_agents = NULL;
+    if (d_vehicles != NULL) {
+        cudaFree(d_vehicles);
+        d_vehicles = NULL;
     }
 }

@@ -26,8 +26,8 @@ namespace OpenSteer {
         // device memory pointers
         int* d_indices;
         unsigned int mem_size_neighbor_indices;
-        int* d_agents;
-        unsigned int mem_size_neighbor_agents;
+        int* d_vehicles;
+        unsigned int mem_size_neighbor_vehicles;
     };
     
 } // namespace

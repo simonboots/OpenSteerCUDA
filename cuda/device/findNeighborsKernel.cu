@@ -17,7 +17,7 @@
 #endif
 
 __global__ void
-findNeighborsKernel(VehicleData* vehicleData, int* indices, int* agents, NeighborData* neighbors, float radius)
+findNeighborsKernel(VehicleData* vehicleData, int* indices, int* vehicles, NeighborData* neighbors, float radius)
 {
     int id = (blockIdx.x * blockDim.x + threadIdx.x);
     int blockOffsetNeighbors = (blockDim.x * blockIdx.x * (MAX_NEIGHBORS + 1));
@@ -63,8 +63,8 @@ findNeighborsKernel(VehicleData* vehicleData, int* indices, int* agents, Neighbo
                 
                 int i = startID;
                 for (; i < endID; i++) {
-                    if (agents[i] != id)
-                        addNeighbor(neighbor, radius, vehicleData, agents[i], id);
+                    if (vehicles[i] != id)
+                        addNeighbor(neighbor, radius, vehicleData, vehicles[i], id);
                 }
             }
         }
