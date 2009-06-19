@@ -40,6 +40,7 @@
 #include <sstream>
 #include "OpenSteer/SimpleVehicleMB.h"
 #include "OpenSteer/OpenSteerDemo.h"
+#include "OpenSteer/Proximity.h"
 
 #define testOneObstacleOverlap(radius, center)               \
 {                                                            \
@@ -50,6 +51,8 @@ if (minClearance > clearance) minClearance = clearance;  \
 
 using namespace OpenSteer;
 
+typedef OpenSteer::AbstractProximityDatabase<AbstractVehicle*> ProximityDatabase;
+typedef OpenSteer::AbstractTokenForProximityDatabase<AbstractVehicle*> ProximityToken;
 
 typedef std::vector<SphericalObstacle*> SOG;  // spherical obstacle group
 typedef SOG::const_iterator SOI;              // spherical obstacle iterator
@@ -66,8 +69,15 @@ class WanderAround : public SimpleVehicleMB
     public:
         
         // constructor
-        WanderAround () {
+        WanderAround (ProximityDatabase& pd) {
+            proximityToken = NULL;
+            newPD(pd);
+            
             reset ();
+        }
+        
+        ~WanderAround() {
+            delete proximityToken;
         }
         
         // reset state
@@ -80,22 +90,40 @@ class WanderAround : public SimpleVehicleMB
             setPosition ( RandomUnitVectorOnXZPlane() * 5);        // randomize initial position
             randomizeHeadingOnXZPlane();
             clearTrailHistory ();    // prevent long streaks due to teleportation 
+            proximityToken->updateForNewPosition(position());
         }
         
         // per frame simulation update
         void update (const float currentTime, const float elapsedTime)
         {
+            //neighbors.clear();
+            //proximityToken->findNeighbors(position(), 4.24f, neighbors);
             Vec3 steering = steerToAvoidObstacles(0.9f, (ObstacleGroup&) allObstacles);
             
             bool avoiding = (steering != Vec3::zero);
+            
+            //if (! avoiding) {
+//                steering = 8*steerToAvoidCloseNeighbors(0.f, neighbors);
+//            }
+//            
+//            avoiding = (steering != Vec3::zero);
+//            
+//            if (! avoiding) {
+//                steering = 8*steerToAvoidNeighbors(3.f, neighbors);
+//            }
+//            
+//            avoiding = (steering != Vec3::zero);
             
             if (! avoiding) {
                 steering = steerForWander(elapsedTime).setYtoZero();
             }
             
+            steering += handleBoundary();
+            
             applySteeringForce(steering, elapsedTime);
             annotationVelocityAcceleration ();
             recordTrailVertex (currentTime, position());
+            //proximityToken->updateForNewPosition(position());
         }
         
         // draw this character/vehicle into the scene
@@ -104,7 +132,68 @@ class WanderAround : public SimpleVehicleMB
             drawBasic2dCircularVehicle (*this, gGray50);
             drawTrail ();
         }
+        
+        // Take action to stay within sphereical boundary.  Returns steering
+        // value (which is normally zero) and may take other side-effecting
+        // actions such as kinematically changing the Boid's position.
+        Vec3 handleBoundary (void)
+        {
+            // while inside the sphere do noting
+            if (position().length() < worldRadius) return Vec3::zero;
+            
+            // once outside, select strategy
+            switch (boundaryCondition)
+            {
+                case 0:
+                {
+                    // steer back when outside
+                    const Vec3 seek = xxxsteerForSeek (Vec3::zero);
+                    const Vec3 lateral = seek.perpendicularComponent (forward ());
+                    return lateral;
+                }
+                case 1:
+                {
+                    // wrap around (teleport)
+                    setPosition (position().sphericalWrapAround (Vec3::zero,
+                                                                 worldRadius));
+                    return Vec3::zero;
+                }
+            }
+            return Vec3::zero; // should not reach here
+        }
+        
+        // switch to new proximity database -- just for demo purposes
+        void newPD (ProximityDatabase& pd)
+        {
+            // delete this boid's token in the old proximity database
+            delete proximityToken;
+            
+            // allocate a token for this boid in the proximity database
+            proximityToken = pd.allocateToken (this);
+        }
+        
+        // cycle through various boundary conditions
+        static void nextBoundaryCondition (void)
+        {
+            const int max = 2;
+            boundaryCondition = (boundaryCondition + 1) % max;
+        }
+        static int boundaryCondition;
+        
+        
+        // a pointer to this boid's interface object for the proximity database
+        ProximityToken* proximityToken;
+        
+        // allocate one and share amoung instances just to save memory usage
+        // (change to per-instance allocation to be more MP-safe)
+        static AVGroup neighbors;
+        
+        static float worldRadius;
     };
+
+AVGroup WanderAround::neighbors;
+float WanderAround::worldRadius = 100.0f;
+int WanderAround::boundaryCondition = 0;
 
 
 // ----------------------------------------------------------------------------
@@ -119,17 +208,21 @@ class WanderAroundPlugIn : public PlugIn
         
         float selectionOrderSortKey (void) {return 4.5f;}
         
-        const static int numOfAgents = 2048;
-        const static int numOfObstacles = 100;
+        const static int numOfAgents = 8192;
+        const static int numOfObstacles = 30;
         unsigned int obstacleCount;
         
         // be more "nice" to avoid a compiler warning
         virtual ~WanderAroundPlugIn() {}
         
         void open (void)
-        {
+        {   
+            // make the database used to accelerate proximity queries
+            cyclePD = -1;
+            nextPD ();
+            
             for (int i = 0; i<numOfAgents; i++) {
-                theVehicles.push_back(new WanderAround());
+                theVehicles.push_back(new WanderAround(*pd));
             }
             gWanderAround = theVehicles.front();
             OpenSteerDemo::selectedVehicle = gWanderAround;
@@ -147,7 +240,7 @@ class WanderAroundPlugIn : public PlugIn
         }
         
         void update (const float currentTime, const float elapsedTime)
-        {
+        {           
             for (iterator iter = theVehicles.begin(); iter != theVehicles.end(); iter++) {
                 (*iter)->update(currentTime, elapsedTime);
             }
@@ -230,11 +323,52 @@ class WanderAroundPlugIn : public PlugIn
             }
         }
         
+        void nextPD (void)
+        {
+            // save pointer to old PD
+            ProximityDatabase* oldPD = pd;
+            
+            // allocate new PD
+            const int totalPD = 2;
+            switch (cyclePD = (cyclePD + 1) % totalPD)
+            {
+                case 0:
+                {
+                    const Vec3 center;
+                    const float div = 10.0f;
+                    const Vec3 divisions (div, div, div);
+                    const float diameter = WanderAround::worldRadius * 1.1f * 2;
+                    const Vec3 dimensions (diameter, diameter, diameter);
+                    typedef LQProximityDatabase<AbstractVehicle*> LQPDAV;
+                    pd = new LQPDAV (center, dimensions, divisions);
+                    break;
+                }
+                case 1:
+                {
+                    pd = new BruteForceProximityDatabase<AbstractVehicle*> ();
+                    break;
+                }
+            }
+            
+            // switch each boid to new PD
+            for (iterator i=theVehicles.begin(); i!=theVehicles.end(); i++) (**i).newPD(*pd);
+            
+            // delete old PD (if any)
+            delete oldPD;
+        }
+        
+        
         const AVGroup& allVehicles (void) {return (const AVGroup&) theVehicles;}
         
         WanderAround* gWanderAround;
         std::vector<WanderAround*> theVehicles; // for allVehicles
         typedef std::vector<WanderAround*>::const_iterator iterator;
+        
+        // pointer to database used to accelerate proximity queries
+        ProximityDatabase* pd;
+        
+        // which of the various proximity databases is currently in use
+        int cyclePD;
     };
 
 

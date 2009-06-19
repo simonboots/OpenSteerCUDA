@@ -60,7 +60,7 @@ modifyKernel(VehicleData *vehicleData, VehicleConst *vehicleConst, float3 *steer
 
     __syncthreads();
     
-    // multiply forward vector with speed
+    // multiply forward vector with speed [3 FLOPS]
     V(threadIdx.x) = float3Mul(V(threadIdx.x), speed);
     
     __syncthreads();
@@ -68,20 +68,30 @@ modifyKernel(VehicleData *vehicleData, VehicleConst *vehicleConst, float3 *steer
     // adjustRawSteeringForce
     float3 v; // v = adjustedForce
     
+    // [1 FLOPS]
     float maxAdjustedSpeed = 0.2f * (*vehicleConst).maxSpeed[id];
     
+    // [3 FLOPS]
     if ((speed > maxAdjustedSpeed) || (FV(threadIdx.x).x == 0.f && FV(threadIdx.x).z == 0.f)) {
         v = FV(threadIdx.x);
     } else {
+        // [3 FLOPS] / [2 FLOPS]
         float cosine = interpolate (__powf(speed / maxAdjustedSpeed, 20), 1.0f, -1.0f);
+        // [52 FLOPS] / [3 FLOPS]
         v = limitMaxDeviationAngle(FV(threadIdx.x), cosine, float3Div(V(threadIdx.x), speed));
     }
     
+    // [14 FLOPS]
     v = float3TruncateLength(v, (*vehicleConst).maxForce[id]); // v = clippedForce
+    // [3 FLOPS]
     v = float3Div(v, (*vehicleConst).mass[id]); // v = new_acceleration
     
+    // [1 FLOPS]
     if (elapsedTime > 0) {
+        // [2 FLOPS] / [1 FLOPS]
         float smoothRate = clip(9 * elapsedTime, 0.15f, 0.4f);
+        
+        // [9 FLOPS]
         SA(threadIdx.x) = float3BlendIn(smoothRate, v, SA(threadIdx.x));
     }
     
@@ -92,11 +102,13 @@ modifyKernel(VehicleData *vehicleData, VehicleConst *vehicleConst, float3 *steer
     ((float*)(*vehicleData).smoothedAcceleration)[blockOffset + threadIdx.x + blockDim.x] = SA_F(threadIdx.x + blockDim.x);
     ((float*)(*vehicleData).smoothedAcceleration)[blockOffset + threadIdx.x + 2*blockDim.x] = SA_F(threadIdx.x + 2*blockDim.x);
     
+    // [4 FLOPS]
     V(threadIdx.x).x += SA(threadIdx.x).x * elapsedTime;
     V(threadIdx.x).z += SA(threadIdx.x).z * elapsedTime;
     
     __syncthreads();
     
+    //[14 FLOPS]
     V(threadIdx.x) = float3TruncateLength(V(threadIdx.x), (*vehicleConst).maxSpeed[id]);
     
     __syncthreads(); // position is re-written
@@ -120,6 +132,7 @@ modifyKernel(VehicleData *vehicleData, VehicleConst *vehicleConst, float3 *steer
     
     // handle spherical wrap around
     if ((options & SPHERICAL_WRAP_AROUND) != 0) {
+        // [20 FLOPS]
         FV(threadIdx.x) = sphericalWrapAround(FV(threadIdx.x), make_float3(0.f, 0.f, 0.f));
         __syncthreads();
     }
@@ -133,12 +146,14 @@ modifyKernel(VehicleData *vehicleData, VehicleConst *vehicleConst, float3 *steer
     __syncthreads();
         
     // copy speed back to global memory
+    // [6 FLOPS]
     speed = float3Length(V(threadIdx.x));
     (*vehicleData).speed[id] = speed;
     
     // **********************************************
     // using velocity vector to store forward vector!
     // **********************************************
+    // [6 FLOPS]
     V(threadIdx.x) = float3Div(V(threadIdx.x), speed);
     __syncthreads();
     
@@ -189,10 +204,12 @@ modifyKernel(VehicleData *vehicleData, VehicleConst *vehicleConst, float3 *steer
     // ******************************************
     
     // setUnitSideFromForwardAndUp()
+    // [10 9 FLOPS]
     FV(threadIdx.x) = float3Normalize(float3Cross(V(threadIdx.x), SA(threadIdx.x)));
     __syncthreads();
     
     // new up vector
+    // [9 FLOPS]
     SA(threadIdx.x) = float3Cross(FV(threadIdx.x), V(threadIdx.x));
     __syncthreads();
 

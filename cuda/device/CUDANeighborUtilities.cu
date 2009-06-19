@@ -121,10 +121,14 @@ inNeighborhood(float3 myPosition, float3 myForward, float3 otherPosition, float 
 __device__ float3
 sphericalWrapAround (float3 myPosition, float3 center)
 {
+    // [3 FLOPS]
     float3 offset = float3Sub(myPosition, center);
+    // [6 FLOPS]
     float r = float3Length(offset);
+    // [1 FLOPS]
     if (r > WORLD_SIZE)
-        return float3Add(myPosition, float3Mul(float3Div(offset, r), WORLD_SIZE * -2));      \
+        // [3 4 3 FLOPS]
+        return float3Add(myPosition, float3Mul(float3Div(offset, r), WORLD_SIZE * -2));
         //return *this + ((offset/r) * radius * -2);
     else
         return myPosition;

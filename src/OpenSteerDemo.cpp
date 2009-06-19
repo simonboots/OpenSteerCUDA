@@ -43,6 +43,7 @@
 
 #include <algorithm>
 #include <sstream>
+#include <cuda_runtime.h>
 #include "OpenSteer/OpenSteerDemo.h"
 
 
@@ -112,6 +113,9 @@ namespace {
 void 
 OpenSteer::OpenSteerDemo::initialize (void)
 {
+//    clock.setVariableFrameRateMode(false);
+//    clock.setAnimationMode(false);
+//    clock.setFixedFrameRate(2);
     // select the default PlugIn
     selectDefaultPlugIn ();
 
@@ -141,7 +145,7 @@ OpenSteer::OpenSteerDemo::initialize (void)
 
 void 
 OpenSteer::OpenSteerDemo::updateSimulationAndRedraw (void)
-{
+{        
     // update global simulation clock
     clock.update ();
 

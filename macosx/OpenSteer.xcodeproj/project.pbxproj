@@ -7,12 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		1C0335330FBAFBA9005D2DCC /* Boids.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 32FFF56406E9CECE00E1D8A3 /* Boids.cpp */; };
 		1C0537BA0FC7FA7F001496D9 /* findHauntedKernel.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1C0FF03C0F88E5A5002009B6 /* findHauntedKernel.cu */; };
-		1C0A205B0FBF1B2C0041CA7D /* MultiplePursuitCUDA.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1C18EE1C0F7BF24A00100C21 /* MultiplePursuitCUDA.cpp */; };
-		1C0A205C0FBF1B310041CA7D /* FollowPathCUDA.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1C9C36A10F94872900F4A359 /* FollowPathCUDA.cpp */; };
-		1C0A205D0FBF1B340041CA7D /* BoidsCUDA.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1C1B66E50F9DEC13002C5E0C /* BoidsCUDA.cpp */; };
-		1C0A20650FBF1C260041CA7D /* MapDrive.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 32FFF56706E9CECE00E1D8A3 /* MapDrive.cpp */; };
+		1C0DFC2B0FE2859600C686EB /* WanderAroundCUDA.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1CC8D5FB0F8DC64B006CEA94 /* WanderAroundCUDA.cpp */; };
+		1C0DFC650FE2994400C686EB /* WanderAround.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1CA02A120F8D188100D03331 /* WanderAround.cpp */; };
 		1C0FEF1D0F88C816002009B6 /* RandomizedVector.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1C0FEF1C0F88C816002009B6 /* RandomizedVector.cpp */; };
 		1C18ED9E0F7BB6A800100C21 /* CUDAVectorUtilities.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1C18ED9A0F7BB51000100C21 /* CUDAVectorUtilities.cu */; };
 		1C18EDA70F7BC2FD00100C21 /* CUDAFloatUtilities.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1C18EDA60F7BC25D00100C21 /* CUDAFloatUtilities.cu */; };
@@ -30,8 +27,6 @@
 		1C4BE7FC0FAE31D40028D34A /* SteerForTargetSpeed.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1C4BE7FB0FAE31D40028D34A /* SteerForTargetSpeed.cu */; };
 		1C5581950FB1A92C009151EB /* steerToStayOnPathKernel.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1C6A87C10F95D92500A2D253 /* steerToStayOnPathKernel.cu */; };
 		1C5581960FB1A930009151EB /* SteerToStayOnPath.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1C308DA90FAF15CC000510B3 /* SteerToStayOnPath.cu */; };
-		1C5581C60FB1B524009151EB /* WanderAroundCUDA.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1CC8D5FB0F8DC64B006CEA94 /* WanderAroundCUDA.cpp */; };
-		1C5582150FB1B7D4009151EB /* PolonaiseCUDA.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1CBD02080F72795400DEE3E8 /* PolonaiseCUDA.cpp */; };
 		1C6473A80F821F92006F4046 /* MemoryBackend.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1C6473A70F821F92006F4046 /* MemoryBackend.cpp */; };
 		1C6A888E0F95F6F100A2D253 /* steerForEvasionKernel.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1C6A88860F95EE6900A2D253 /* steerForEvasionKernel.cu */; };
 		1C6A89DA0F96182D00A2D253 /* steerForFleeKernel.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1C18EDA90F7BC3B600100C21 /* steerForFleeKernel.cu */; };
@@ -97,7 +92,7 @@
 			outputFiles = (
 				"$(DERIVED_FILES_DIR)/$(INPUT_FILE_BASE).o",
 			);
-			script = "if [ \"${CONFIGURATION}\" == \"Development\" ]; then\n\tFLAGS=\"-g --device-emulation -D_DEBUG\"\nelif [ \"${CONFIGURATION}\" == \"DevelopmentWithGPU\" ]; then\n\tFLAGS=\"-g\"\nelse\n\tFLAGS=\"-O3\"\nfi\n\n/usr/local/cuda/bin/nvcc $FLAGS -c ${INPUT_FILE_PATH} -o ${DERIVED_FILES_DIR}/${INPUT_FILE_BASE}.o -DNVCC -I${PROJECT_DIR}/../include/ -I${PROJECT_DIR}/../cuda/device -I/usr/local/cuda/include/ -I/Developer/CUDA/common/inc --ptxas-options=\"-v\"";
+			script = "if [ \"${CONFIGURATION}\" == \"Development\" ]; then\n\tFLAGS=\"-g --device-emulation -D_DEBUG\"\nelif [ \"${CONFIGURATION}\" == \"DevelopmentWithGPU\" ]; then\n\tFLAGS=\"-g\"\nelse\n\tFLAGS=\"-O3 --maxrregcount=32\"\nfi\n\n/usr/local/cuda/bin/nvcc $FLAGS -c ${INPUT_FILE_PATH} -o ${DERIVED_FILES_DIR}/${INPUT_FILE_BASE}.o -DNVCC -I${PROJECT_DIR}/../include/ -I${PROJECT_DIR}/../cuda/device -I/usr/local/cuda/include/ -I/Developer/CUDA/common/inc --ptxas-options=\"-v\"";
 		};
 /* End PBXBuildRule section */
 
@@ -671,14 +666,9 @@
 				1C9FD2480FB19D860082EB96 /* steerToFollowPathKernel.cu in Sources */,
 				1C5581950FB1A92C009151EB /* steerToStayOnPathKernel.cu in Sources */,
 				1C5581960FB1A930009151EB /* SteerToStayOnPath.cu in Sources */,
-				1C5581C60FB1B524009151EB /* WanderAroundCUDA.cpp in Sources */,
-				1C5582150FB1B7D4009151EB /* PolonaiseCUDA.cpp in Sources */,
-				1C0335330FBAFBA9005D2DCC /* Boids.cpp in Sources */,
-				1C0A205B0FBF1B2C0041CA7D /* MultiplePursuitCUDA.cpp in Sources */,
-				1C0A205C0FBF1B310041CA7D /* FollowPathCUDA.cpp in Sources */,
-				1C0A205D0FBF1B340041CA7D /* BoidsCUDA.cpp in Sources */,
-				1C0A20650FBF1C260041CA7D /* MapDrive.cpp in Sources */,
 				1C0537BA0FC7FA7F001496D9 /* findHauntedKernel.cu in Sources */,
+				1C0DFC2B0FE2859600C686EB /* WanderAroundCUDA.cpp in Sources */,
+				1C0DFC650FE2994400C686EB /* WanderAround.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

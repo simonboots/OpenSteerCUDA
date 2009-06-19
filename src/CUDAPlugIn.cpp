@@ -119,7 +119,7 @@ void OpenSteer::CUDAPlugIn::update(const float currentTime, const float elapsedT
 //            cudaMemcpy(h_steeringVectors, d_steeringVectors, sizeof(float3)*this->getNumberOfAgents(), cudaMemcpyDeviceToHost);
 //        h++;
     }
-        
+
     cudaMemcpy(memoryBackend->getVehicleData(), d_vehicleData, mem_size_vehicle_data, cudaMemcpyDeviceToHost);
 }
 

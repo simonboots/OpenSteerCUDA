@@ -87,15 +87,15 @@ class WanderAroundCUDA : public SimpleVehicleMB
         // per frame simulation update
         void update (const float currentTime, const float elapsedTime)
         {
-            annotationVelocityAcceleration ();
-            recordTrailVertex (currentTime, position());
+            //annotationVelocityAcceleration ();
+            //recordTrailVertex (currentTime, position());
         }
         
         // draw this character/vehicle into the scene
         void draw (void)
         {
             drawBasic2dCircularVehicle (*this, gGray50);
-            drawTrail ();
+            //drawTrail ();
         }
     };
 
@@ -120,7 +120,7 @@ class WanderAroundCUDAPlugIn : public CUDAPlugIn
         
         void open (void)
         {
-            setNumberOfAgents(1024);
+            setNumberOfAgents(8192);
             
             for (int i = 0; i<getNumberOfAgents(); i++) {
                 theVehicles.push_back(new WanderAroundCUDA());
@@ -140,14 +140,14 @@ class WanderAroundCUDAPlugIn : public CUDAPlugIn
             
             for (int i = 0; i < numOfObstacles; i++) addOneObstacle();
             
-            FindNeighbors *fn = new FindNeighbors(4.24f);
-            addKernel(fn);
+            //FindNeighbors *fn = new FindNeighbors(4.24f);
+            //addKernel(fn);
             SteerToAvoidObstacles *stao = new SteerToAvoidObstacles(1.f, NONE);
             addKernel(stao);
-            addKernel(new SteerToAvoidCloseNeighbors(fn, 0.f, 8.f, IGNORE_UNLESS_ZERO));
-            addKernel(new SteerToAvoidNeighbors(fn, 3.f, 8.f, IGNORE_UNLESS_ZERO));
+            //addKernel(new SteerToAvoidCloseNeighbors(fn, 0.f, 8.f, IGNORE_UNLESS_ZERO));
+            //addKernel(new SteerToAvoidNeighbors(fn, 3.f, 8.f, IGNORE_UNLESS_ZERO));
             addKernel(new SteerForWander(1.f, NONE));
-            addKernel(new Modify(NONE));
+            addKernel(new Modify(SPHERICAL_WRAP_AROUND));
             
             initKernels();
             
@@ -158,10 +158,10 @@ class WanderAroundCUDAPlugIn : public CUDAPlugIn
         void update (const float currentTime, const float elapsedTime)
         {
             CUDAPlugIn::update(currentTime, elapsedTime);
-            
-            for (iterator iter = theVehicles.begin(); iter != theVehicles.end(); iter++) {
-                (*iter)->update(currentTime, elapsedTime);
-            }
+
+            //for (iterator iter = theVehicles.begin(); iter != theVehicles.end(); iter++) {
+//                (*iter)->update(currentTime, elapsedTime);
+//            }
         }
         
         void redraw (const float currentTime, const float elapsedTime)
