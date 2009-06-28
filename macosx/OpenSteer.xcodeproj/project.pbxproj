@@ -8,8 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		1C0537BA0FC7FA7F001496D9 /* findHauntedKernel.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1C0FF03C0F88E5A5002009B6 /* findHauntedKernel.cu */; };
-		1C0DFC2B0FE2859600C686EB /* WanderAroundCUDA.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1CC8D5FB0F8DC64B006CEA94 /* WanderAroundCUDA.cpp */; };
-		1C0DFC650FE2994400C686EB /* WanderAround.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1CA02A120F8D188100D03331 /* WanderAround.cpp */; };
 		1C0FEF1D0F88C816002009B6 /* RandomizedVector.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1C0FEF1C0F88C816002009B6 /* RandomizedVector.cpp */; };
 		1C18ED9E0F7BB6A800100C21 /* CUDAVectorUtilities.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1C18ED9A0F7BB51000100C21 /* CUDAVectorUtilities.cu */; };
 		1C18EDA70F7BC2FD00100C21 /* CUDAFloatUtilities.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1C18EDA60F7BC25D00100C21 /* CUDAFloatUtilities.cu */; };
@@ -27,6 +25,8 @@
 		1C4BE7FC0FAE31D40028D34A /* SteerForTargetSpeed.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1C4BE7FB0FAE31D40028D34A /* SteerForTargetSpeed.cu */; };
 		1C5581950FB1A92C009151EB /* steerToStayOnPathKernel.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1C6A87C10F95D92500A2D253 /* steerToStayOnPathKernel.cu */; };
 		1C5581960FB1A930009151EB /* SteerToStayOnPath.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1C308DA90FAF15CC000510B3 /* SteerToStayOnPath.cu */; };
+		1C5AA0DF0FF7D13D00BC170A /* BoidsCUDA.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1C1B66E50F9DEC13002C5E0C /* BoidsCUDA.cpp */; };
+		1C5AA0E00FF7D13D00BC170A /* Boids.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 32FFF56406E9CECE00E1D8A3 /* Boids.cpp */; };
 		1C6473A80F821F92006F4046 /* MemoryBackend.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1C6473A70F821F92006F4046 /* MemoryBackend.cpp */; };
 		1C6A888E0F95F6F100A2D253 /* steerForEvasionKernel.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1C6A88860F95EE6900A2D253 /* steerForEvasionKernel.cu */; };
 		1C6A89DA0F96182D00A2D253 /* steerForFleeKernel.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1C18EDA90F7BC3B600100C21 /* steerForFleeKernel.cu */; };
@@ -667,8 +667,8 @@
 				1C5581950FB1A92C009151EB /* steerToStayOnPathKernel.cu in Sources */,
 				1C5581960FB1A930009151EB /* SteerToStayOnPath.cu in Sources */,
 				1C0537BA0FC7FA7F001496D9 /* findHauntedKernel.cu in Sources */,
-				1C0DFC2B0FE2859600C686EB /* WanderAroundCUDA.cpp in Sources */,
-				1C0DFC650FE2994400C686EB /* WanderAround.cpp in Sources */,
+				1C5AA0DF0FF7D13D00BC170A /* BoidsCUDA.cpp in Sources */,
+				1C5AA0E00FF7D13D00BC170A /* Boids.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

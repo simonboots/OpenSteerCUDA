@@ -120,7 +120,7 @@ class WanderAroundCUDAPlugIn : public CUDAPlugIn
         
         void open (void)
         {
-            setNumberOfAgents(8192);
+            setNumberOfAgents(4096);
             
             for (int i = 0; i<getNumberOfAgents(); i++) {
                 theVehicles.push_back(new WanderAroundCUDA());
@@ -140,12 +140,12 @@ class WanderAroundCUDAPlugIn : public CUDAPlugIn
             
             for (int i = 0; i < numOfObstacles; i++) addOneObstacle();
             
-            //FindNeighbors *fn = new FindNeighbors(4.24f);
-            //addKernel(fn);
+            FindNeighbors *fn = new FindNeighbors(4.24f);
+            addKernel(fn);
             SteerToAvoidObstacles *stao = new SteerToAvoidObstacles(1.f, NONE);
             addKernel(stao);
-            //addKernel(new SteerToAvoidCloseNeighbors(fn, 0.f, 8.f, IGNORE_UNLESS_ZERO));
-            //addKernel(new SteerToAvoidNeighbors(fn, 3.f, 8.f, IGNORE_UNLESS_ZERO));
+            addKernel(new SteerToAvoidCloseNeighbors(fn, 0.f, 8.f, IGNORE_UNLESS_ZERO));
+            addKernel(new SteerToAvoidNeighbors(fn, 3.f, 8.f, IGNORE_UNLESS_ZERO));
             addKernel(new SteerForWander(1.f, NONE));
             addKernel(new Modify(SPHERICAL_WRAP_AROUND));
             

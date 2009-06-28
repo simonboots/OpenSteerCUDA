@@ -96,23 +96,23 @@ class WanderAround : public SimpleVehicleMB
         // per frame simulation update
         void update (const float currentTime, const float elapsedTime)
         {
-            //neighbors.clear();
-            //proximityToken->findNeighbors(position(), 4.24f, neighbors);
+            neighbors.clear();
+            proximityToken->findNeighbors(position(), 4.24f, neighbors);
             Vec3 steering = steerToAvoidObstacles(0.9f, (ObstacleGroup&) allObstacles);
             
             bool avoiding = (steering != Vec3::zero);
             
-            //if (! avoiding) {
-//                steering = 8*steerToAvoidCloseNeighbors(0.f, neighbors);
-//            }
-//            
-//            avoiding = (steering != Vec3::zero);
-//            
-//            if (! avoiding) {
-//                steering = 8*steerToAvoidNeighbors(3.f, neighbors);
-//            }
-//            
-//            avoiding = (steering != Vec3::zero);
+            if (! avoiding) {
+                steering = 8*steerToAvoidCloseNeighbors(0.f, neighbors);
+            }
+            
+            avoiding = (steering != Vec3::zero);
+            
+            if (! avoiding) {
+                steering = 8*steerToAvoidNeighbors(3.f, neighbors);
+            }
+            
+            avoiding = (steering != Vec3::zero);
             
             if (! avoiding) {
                 steering = steerForWander(elapsedTime).setYtoZero();
@@ -123,7 +123,7 @@ class WanderAround : public SimpleVehicleMB
             applySteeringForce(steering, elapsedTime);
             annotationVelocityAcceleration ();
             recordTrailVertex (currentTime, position());
-            //proximityToken->updateForNewPosition(position());
+            proximityToken->updateForNewPosition(position());
         }
         
         // draw this character/vehicle into the scene
@@ -208,7 +208,7 @@ class WanderAroundPlugIn : public PlugIn
         
         float selectionOrderSortKey (void) {return 4.5f;}
         
-        const static int numOfAgents = 8192;
+        const static int numOfAgents = 1024;
         const static int numOfObstacles = 30;
         unsigned int obstacleCount;
         
