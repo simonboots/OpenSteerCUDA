@@ -1,4 +1,4 @@
-# A OpenSteer CUDA port #
+# An OpenSteer CUDA port #
 
 This is the source code of a [CUDA](http://www.nvidia.com/object/cuda_home.html)-enhanced version of [OpenSteer](http://opensteer.sf.net).
 
