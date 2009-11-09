@@ -16,13 +16,16 @@
 		1C308E3C0FB03E7E000510B3 /* SteerToAvoidNeighbors.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1C308CB10FAEF7A2000510B3 /* SteerToAvoidNeighbors.cu */; };
 		1C308E7A0FB0401F000510B3 /* SteerToAvoidCloseNeighbors.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1C308CAD0FAEE528000510B3 /* SteerToAvoidCloseNeighbors.cu */; };
 		1C3568F50F9F0F8C0079E377 /* findNeighborsKernel.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1C6C7F310F9C8A4E003932BE /* findNeighborsKernel.cu */; };
-		1C3569F90F9F1B7C0079E377 /* libcutilD.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C3569F80F9F1B7C0079E377 /* libcutilD.a */; };
 		1C356C5A0F9F2ECF0079E377 /* CUDANeighborUtilities.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1C9118E40F9C919600941CFC /* CUDANeighborUtilities.cu */; };
 		1C356C8C0F9F46D90079E377 /* steerForSeparationKernel.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1C9119700F9CDB3900941CFC /* steerForSeparationKernel.cu */; };
 		1C356C8D0F9F46DD0079E377 /* steerForAlignmentKernel.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1C1B66130F9DD2FD002C5E0C /* steerForAlignmentKernel.cu */; };
 		1C356C8E0F9F46E10079E377 /* steerForCohesionKernel.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1C1B66170F9DD4CC002C5E0C /* steerForCohesionKernel.cu */; };
 		1C45011C0F8E404C00804B2F /* steerToAvoidObstaclesKernel.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1C45007A0F8E06E900804B2F /* steerToAvoidObstaclesKernel.cu */; };
 		1C4BE7FC0FAE31D40028D34A /* SteerForTargetSpeed.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1C4BE7FB0FAE31D40028D34A /* SteerForTargetSpeed.cu */; };
+		1C51682C10A7E31400936A13 /* CaptureTheFlag.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 32FFF56506E9CECE00E1D8A3 /* CaptureTheFlag.cpp */; };
+		1C51682D10A7E31400936A13 /* FollowPath.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1CD457470F936E62008D29D5 /* FollowPath.cpp */; };
+		1C51682E10A7E31500936A13 /* FollowPathCUDA.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1C9C36A10F94872900F4A359 /* FollowPathCUDA.cpp */; };
+		1C51683610A7E39C00936A13 /* MultiplePursuitCUDA.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1C18EE1C0F7BF24A00100C21 /* MultiplePursuitCUDA.cpp */; };
 		1C5581950FB1A92C009151EB /* steerToStayOnPathKernel.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1C6A87C10F95D92500A2D253 /* steerToStayOnPathKernel.cu */; };
 		1C5581960FB1A930009151EB /* SteerToStayOnPath.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1C308DA90FAF15CC000510B3 /* SteerToStayOnPath.cu */; };
 		1C5AA0DF0FF7D13D00BC170A /* BoidsCUDA.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1C1B66E50F9DEC13002C5E0C /* BoidsCUDA.cpp */; };
@@ -50,7 +53,7 @@
 		1CA4556F0FA5EC15003AC8B3 /* steerToAvoidNeighborsKernel.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1CA7B0130FA5B762004E76BF /* steerToAvoidNeighborsKernel.cu */; };
 		1CA56BDF0F824EF800819A74 /* SimpleVehicleMB.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1CA56BDE0F824EF800819A74 /* SimpleVehicleMB.cpp */; };
 		1CA7B0970FA5DE99004E76BF /* steerToAvoidCloseNeighborsKernel.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1CA7B00D0FA5AD0F004E76BF /* steerToAvoidCloseNeighborsKernel.cu */; };
-		1CBD02870F728D4800DEE3E8 /* libcutil.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1CBD02860F728D4800DEE3E8 /* libcutil.a */; };
+		1CBD02870F728D4800DEE3E8 /* libcutil_i386.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1CBD02860F728D4800DEE3E8 /* libcutil_i386.a */; };
 		1CC033B70FA71E6C00104572 /* steerForWanderKernel.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1C18EDEA0F7BC6BF00100C21 /* steerForWanderKernel.cu */; };
 		1CC034120FA725A100104572 /* CUDAPlugIn.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1CC0333F0FA70F9D00104572 /* CUDAPlugIn.cpp */; };
 		1CC034990FA7335F00104572 /* SteerForWander.cu in Sources */ = {isa = PBXBuildFile; fileRef = 1CC034980FA7335F00104572 /* SteerForWander.cu */; };
@@ -92,7 +95,7 @@
 			outputFiles = (
 				"$(DERIVED_FILES_DIR)/$(INPUT_FILE_BASE).o",
 			);
-			script = "if [ \"${CONFIGURATION}\" == \"Development\" ]; then\n\tFLAGS=\"-g --device-emulation -D_DEBUG\"\nelif [ \"${CONFIGURATION}\" == \"DevelopmentWithGPU\" ]; then\n\tFLAGS=\"-g\"\nelse\n\tFLAGS=\"-O3 --maxrregcount=32\"\nfi\n\n/usr/local/cuda/bin/nvcc $FLAGS -c ${INPUT_FILE_PATH} -o ${DERIVED_FILES_DIR}/${INPUT_FILE_BASE}.o -DNVCC -I${PROJECT_DIR}/../include/ -I${PROJECT_DIR}/../cuda/device -I/usr/local/cuda/include/ -I/Developer/CUDA/common/inc --ptxas-options=\"-v\"";
+			script = "if [ \"${CONFIGURATION}\" == \"Development\" ]; then\n\tFLAGS=\"-g --device-emulation -D_DEBUG\"\nelif [ \"${CONFIGURATION}\" == \"DevelopmentWithGPU\" ]; then\n\tFLAGS=\"-g\"\nelse\n\tFLAGS=\"-O3 --maxrregcount=32\"\nfi\n\n/usr/local/cuda/bin/nvcc $FLAGS -c ${INPUT_FILE_PATH} -o ${DERIVED_FILES_DIR}/${INPUT_FILE_BASE}.o -DNVCC -I${PROJECT_DIR}/../include/ -I${PROJECT_DIR}/../cuda/device -I/usr/local/cuda/include/ -I/Developer/GPU\\ Computing/C/common/inc --ptxas-options=\"-v\" --compiler-bindir=/usr/bin/gcc-4.0";
 		};
 /* End PBXBuildRule section */
 
@@ -176,7 +179,7 @@
 		1CA7B0130FA5B762004E76BF /* steerToAvoidNeighborsKernel.cu */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 4; name = steerToAvoidNeighborsKernel.cu; path = ../cuda/device/steerToAvoidNeighborsKernel.cu; sourceTree = SOURCE_ROOT; };
 		1CB06F0E0FA6401300E59A31 /* AbstractCUDAKernel.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.h; fileEncoding = 4; path = AbstractCUDAKernel.h; sourceTree = "<group>"; };
 		1CBD02080F72795400DEE3E8 /* PolonaiseCUDA.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PolonaiseCUDA.cpp; sourceTree = "<group>"; };
-		1CBD02860F728D4800DEE3E8 /* libcutil.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libcutil.a; path = CUDA/lib/libcutil.a; sourceTree = SYSTEM_DEVELOPER_DIR; };
+		1CBD02860F728D4800DEE3E8 /* libcutil_i386.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libcutil_i386.a; path = "GPU Computing/C/lib/libcutil_i386.a"; sourceTree = SYSTEM_DEVELOPER_DIR; };
 		1CC0331A0FA7023100104572 /* CUDAPlugIn.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUDAPlugIn.h; sourceTree = "<group>"; };
 		1CC0333F0FA70F9D00104572 /* CUDAPlugIn.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUDAPlugIn.cpp; sourceTree = "<group>"; };
 		1CC034980FA7335F00104572 /* SteerForWander.cu */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = SteerForWander.cu; path = ../cuda/host/SteerForWander.cu; sourceTree = "<group>"; };
@@ -252,8 +255,7 @@
 				32FFF4FB06E958DE00E1D8A3 /* libstdc++.a in Frameworks */,
 				1CCAD2CD0F6E81CA005A3712 /* libcuda.dylib in Frameworks */,
 				1CCAD2CE0F6E81CA005A3712 /* libcudart.dylib in Frameworks */,
-				1CBD02870F728D4800DEE3E8 /* libcutil.a in Frameworks */,
-				1C3569F90F9F1B7C0079E377 /* libcutilD.a in Frameworks */,
+				1CBD02870F728D4800DEE3E8 /* libcutil_i386.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -392,7 +394,7 @@
 			isa = PBXGroup;
 			children = (
 				1C3569F80F9F1B7C0079E377 /* libcutilD.a */,
-				1CBD02860F728D4800DEE3E8 /* libcutil.a */,
+				1CBD02860F728D4800DEE3E8 /* libcutil_i386.a */,
 				1CCAD2CB0F6E81CA005A3712 /* libcuda.dylib */,
 				1CCAD2CC0F6E81CA005A3712 /* libcudart.dylib */,
 				32FFF4FA06E958DE00E1D8A3 /* libstdc++.a */,
@@ -669,6 +671,10 @@
 				1C0537BA0FC7FA7F001496D9 /* findHauntedKernel.cu in Sources */,
 				1C5AA0DF0FF7D13D00BC170A /* BoidsCUDA.cpp in Sources */,
 				1C5AA0E00FF7D13D00BC170A /* Boids.cpp in Sources */,
+				1C51682C10A7E31400936A13 /* CaptureTheFlag.cpp in Sources */,
+				1C51682D10A7E31400936A13 /* FollowPath.cpp in Sources */,
+				1C51682E10A7E31500936A13 /* FollowPathCUDA.cpp in Sources */,
+				1C51683610A7E39C00936A13 /* MultiplePursuitCUDA.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -766,8 +772,8 @@
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2)",
 				);
-				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(DEVELOPER_DIR)/CUDA/lib\"";
-				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2 = "\"$(DEVELOPER_DIR)/CUDA/lib\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(DEVELOPER_DIR)/GPU Computing/C/lib\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2 = "\"$(DEVELOPER_DIR)/GPU Computing/C/lib\"";
 				PRODUCT_NAME = OpenSteerDemo;
 				WRAPPER_EXTENSION = app;
 				ZERO_LINK = YES;
@@ -793,8 +799,8 @@
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2)",
 				);
-				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(DEVELOPER_DIR)/CUDA/lib\"";
-				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2 = "\"$(DEVELOPER_DIR)/CUDA/lib\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(DEVELOPER_DIR)/GPU Computing/C/lib\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2 = "\"$(DEVELOPER_DIR)/GPU Computing/C/lib\"";
 				PRODUCT_NAME = OpenSteerDemo;
 				WRAPPER_EXTENSION = app;
 				ZERO_LINK = NO;
@@ -815,8 +821,8 @@
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2)",
 				);
-				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(DEVELOPER_DIR)/CUDA/lib\"";
-				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2 = "\"$(DEVELOPER_DIR)/CUDA/lib\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(DEVELOPER_DIR)/GPU Computing/C/lib\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2 = "\"$(DEVELOPER_DIR)/GPU Computing/C/lib\"";
 				PRODUCT_NAME = OpenSteerDemo;
 				WRAPPER_EXTENSION = app;
 			};
@@ -872,8 +878,8 @@
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2)",
 				);
-				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(DEVELOPER_DIR)/CUDA/lib\"";
-				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2 = "\"$(DEVELOPER_DIR)/CUDA/lib\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(DEVELOPER_DIR)/GPU Computing/C/lib\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2 = "\"$(DEVELOPER_DIR)/GPU Computing/C/lib\"";
 				PRODUCT_NAME = OpenSteerDemo;
 				WRAPPER_EXTENSION = app;
 				ZERO_LINK = YES;

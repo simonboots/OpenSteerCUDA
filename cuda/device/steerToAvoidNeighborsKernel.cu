@@ -72,7 +72,7 @@ steerToAvoidNeighbors(VehicleData *vehicleData, VehicleConst *vehicleConst, floa
     // avoid when future positions are this close (or less)
     float collisionDangerThreshold = (*vehicleConst).radius[id];
     
-    float3 threatPositionAtNearestApproach;
+    float3 threatPositionAtNearestApproach = make_float3(0.f, 0.f, 0.f);
     
     // for each of the other vehicles, determine which (if any)
     // pose the most immediate threat of collision.
